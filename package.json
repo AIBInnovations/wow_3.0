@@ -1,5 +1,5 @@
 {
-  "name": "nicole-nero-react",
+  "name": "wow-weddings-events",
   "version": "3.0.0",
   "private": true,
   "scripts": {
@@ -22,5 +22,6 @@
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "typescript": "^5.7.3"
-  }
+  },
+  "description": "WOW Weddings & Events \u2014 celebrations, composed with intention."
 }
