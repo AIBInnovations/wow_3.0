@@ -1,0 +1,78 @@
+/*
+ * WOW Weddings & Events palette.
+ *
+ * Colour only — every font token in webflow.css is left exactly as it was, so
+ * the typography of the clone is untouched. The values come from the main
+ * site's own brand layer (`../../../wow/src/styles/brand.scss`): a wine-black
+ * ground, cream text and a single gold accent in place of the export's
+ * near-black / white / pink.
+ *
+ * Applied as an override on :root rather than by editing webflow.css, so the
+ * exported stylesheet stays a faithful copy and the rebrand is one file.
+ */
+
+:root {
+  /* Brand source values, named as the main site names them. */
+  --wow-wine-deep: #2b0d0f;
+  --wow-wine: #5a1f24;
+  --wow-black: #3b1215;
+  --wow-cream: #fbf4e9;
+  --wow-gold: #c9a24d;
+  --wow-gold-soft: #c6a96e;
+
+  /* The export's tokens, repointed. Names kept so every rule still resolves. */
+  --swatch--dark: var(--wow-wine-deep);
+  --swatch--dark2: rgb(59 18 21 / 87%);
+  --swatch--dark-fade: rgb(43 13 15 / 13%);
+  --swatch--light: var(--wow-cream);
+  --swatch--light-fade: rgb(251 244 233 / 10%);
+  --light-fade-2: rgb(251 244 233 / 20%);
+  --swatch--brand: var(--wow-gold);
+  --theme--text: var(--wow-cream);
+  --theme--border: var(--wow-cream);
+  --theme--background: var(--wow-cream);
+}
+
+/*
+ * The remaining colours are written as literals in the export and so never
+ * looked at a token. Each is repointed to its palette equivalent.
+ */
+
+/* Menu rows: a descending grey ramp becomes a descending wine ramp. */
+.nav_drop_link.nl2 { background-image: linear-gradient(#4a181d, #4a181d); }
+.nav_drop_link.nl3 { background-image: linear-gradient(#421619, #421619); }
+.nav_drop_link.nl4 { background-image: linear-gradient(#3a1316, #3a1316); }
+.nav_drop_link.bl5 { background-image: linear-gradient(#331012, #331012); }
+.nav_drop_link.nl6 { background-image: linear-gradient(#2b0d0f, #2b0d0f); }
+
+/* Hover panel behind a menu row: flat grey becomes soft gold. */
+.nav_drop_over-text_wrap {
+  background-color: var(--wow-gold-soft);
+  color: var(--wow-wine-deep);
+}
+
+/* Scrims over photography: neutral black becomes wine, so the warm ceremony
+   photography stays warm as it darkens rather than going grey. */
+.cta-marquee_overlay {
+  background-image: linear-gradient(rgb(28 8 9 / 62%), rgb(28 8 9 / 62%));
+}
+
+.sticky-gallery_bg_fade.u-cover-absolute {
+  background-image: linear-gradient(rgb(28 8 9 / 50%), rgb(28 8 9 / 50%));
+}
+
+/* Gallery progress bar. */
+.home-gal_scroll-indicator {
+  background-image: linear-gradient(rgb(201 162 77 / 85%), rgb(201 162 77 / 85%));
+}
+
+/* Primary button: white hairline and white hover text become cream, and the
+   hover fill picks up the gold from --swatch--brand automatically. */
+.btn_main_wrap {
+  border-color: var(--wow-cream);
+}
+
+.btn_main_wrap:hover {
+  color: var(--wow-wine-deep);
+  border-color: var(--wow-gold);
+}

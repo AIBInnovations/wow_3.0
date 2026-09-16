@@ -1,0 +1,113 @@
+/*
+ * The exported Webflow stylesheet, byte-for-byte, as the single source of the
+ * design: :root tokens, fluid clamp() type, every component class and the
+ * `move-text` marquee keyframes. Nothing here is re-authored — the React tree
+ * reproduces the original class names so these rules apply unchanged.
+ */
+@import '../styles/webflow.css';
+
+/* WOW's palette, layered over the export's tokens. Colour only — see palette.css. */
+@import './palette.css';
+
+/* Split-text scaffolding. SplitType builds .line at runtime; the inner span is
+   what actually translates, clipped by the line box the stylesheet already
+   sets to overflow: hidden. */
+.line-inner,
+.p-line-inner {
+  display: block;
+  will-change: transform;
+}
+
+/* Control buttons are real <button>s here rather than the export's <a href="#">,
+   so the browser's default button chrome has to be cleared. */
+.testimonial1_slider_control_btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+/*
+ * Menu row hover. The stylesheet ships `.nav_drop_over-text_wrap` at opacity 0
+ * and defines a transition for it, but nothing that ever raises it — on the
+ * live site Webflow's IX2 interaction engine did that, and IX2 is not part of
+ * the export. Restored declaratively so it also responds to keyboard focus.
+ */
+.nav_drop_over-text_wrap {
+  transition: opacity 0.325s;
+}
+
+.nav_drop_link:hover .nav_drop_over-text_wrap,
+.nav_drop_link:focus-visible .nav_drop_over-text_wrap {
+  opacity: 1;
+}
+
+/*
+ * The export colours the circular CTA's arrow `--swatch--brand` and fills the
+ * disc behind it with the same `--swatch--brand`, so the arrow is invisible.
+ * The live site gets its real colour from the remote Slater stylesheet
+ * (assets.slater.app/slater/6255/11857.css), which the export does not include.
+ * Dark-on-pink is the readable reading of the design. Delete this block if you
+ * ever obtain that stylesheet.
+ */
+.circle-text-btn_arrow {
+  color: var(--swatch--dark);
+}
+
+/* Keyboard focus must stay visible — the export has no focus styling at all. */
+:focus-visible {
+  outline: 2px solid var(--swatch--brand);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kind-words_panel {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/*
+ * The wordmark replaces the export's drawn monogram. That monogram was tall and
+ * gave the top bar its height; a single line of type does not, so the bar needs
+ * the height restored explicitly or the links crowd the viewport edge.
+ */
+.nav_wordmark {
+  font-family: var(--display--font-family);
+  font-size: 1.6rem;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.nav_logo_link {
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+}
+
+@media (max-width: 991px) {
+  .nav_wordmark {
+    font-size: 1.15rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .nav_wordmark {
+    font-size: 0.9rem;
+    letter-spacing: 0.04em;
+  }
+}
+
+/* The closing card gains a note under the heading; the export had no paragraph
+   there, so it needs the body face and the same narrow measure as the heading. */
+.cta24_card_p {
+  opacity: 0.75;
+}
