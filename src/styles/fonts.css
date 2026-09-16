@@ -128,3 +128,16 @@
 .u-text-display.home-hero_title {
   max-width: min(30ch, 100%);
 }
+
+/*
+ * The hero headline is solid, as every heading in the deck is.
+ *
+ * The layout hands this line an outlined treatment — transparent fill with a
+ * hairline stroke. Nothing in the deck is set that way, so the fill and stroke
+ * are restored here rather than by removing the class, which keeps the outlined
+ * treatment available to the headings that still use it.
+ */
+.home-hero_title .outline {
+  color: var(--theme--text);
+  -webkit-text-stroke-width: 0;
+}
