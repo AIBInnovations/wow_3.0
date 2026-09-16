@@ -115,3 +115,15 @@
 .testimonial1_slider_rtb p {
   font-style: italic;
 }
+
+/*
+ * The hero display line is set in the text serif rather than the display one.
+ *
+ * Its width is governed by `max-width: 30ch` and `font-size: 10cqw`, and `ch`
+ * resolves against the face's own zero width — so a wide display face makes the
+ * measure wider than the container it sits in and the line runs off both edges.
+ * EB Garamond is narrow enough that 30ch lands inside the container.
+ */
+.u-text-display.home-hero_title {
+  font-family: var(--font--body);
+}

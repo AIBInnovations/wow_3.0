@@ -21,12 +21,8 @@ export const wordmark = { lead: 'WOW', outline: 'Weddings', tail: '& Events' }
 
 export const hero = {
   kicker: 'Weddings, ceremonies and events',
-  /**
-   * The oversized display line. Empty by choice — the hero currently runs with
-   * the kicker and the paragraph alone. Put a string back and it renders again,
-   * reveal and all; nothing else needs changing.
-   */
-  title: '',
+  /** The oversized display line. */
+  title: 'celebrations artfully composed',
   paragraph:
     'Rather than spectacle, atmosphere; rather than excess, refinement. '
     + 'Nothing is incidental. Everything is intentional.',
