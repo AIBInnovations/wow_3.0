@@ -3,3 +3,7 @@ node_modules
 out
 *.tsbuildinfo
 .DS_Store
+
+# Brand deck — reference material, not a site asset. Anything under public/ is
+# served at a public URL, so this must not ship with the build.
+public/*.pdf

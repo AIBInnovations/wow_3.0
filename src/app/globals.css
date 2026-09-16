@@ -1,3 +1,6 @@
+/* Brand faces and the family tokens they fill. */
+@import '../styles/fonts.css';
+
 /* Layout, type scale and component classes. */
 @import '../styles/site.css';
 

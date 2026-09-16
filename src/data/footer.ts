@@ -24,7 +24,7 @@ export const footerColumns: FooterColumn[] = [
     ],
   },
   {
-    heading: 'COnnect',
+    heading: 'Connect',
     modifier: 'right',
     links: [
       { href: 'mailto:enquiries@woweventsandweddings.com', label: 'Enquiries' },

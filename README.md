@@ -52,15 +52,38 @@ A handful of colours are written as literals in the export and never looked at a
 token — the menu row ramp, the photo scrims, the progress bar, the button
 hairline. Those are repointed individually in the same file.
 
-**Fonts are not touched.** Every font token stays exactly as exported, and the
-faces still load from the original Webflow CDN via `@font-face` rules inside the
-stylesheet. They are not vendored here.
+## Type
 
-| Token | Value |
-| --- | --- |
-| `--font--primary-family` | `Love` (display) |
-| `--font--body` | `Cutivemono` |
-| `--font--inherit` | `Gt eesti text` |
+`src/styles/fonts.css` carries the brand faces and the family tokens they fill.
+They are taken from the brand deck in `public/`, and are the same files the main
+site ships.
+
+| Token | Face | Used for |
+| --- | --- | --- |
+| `--font--primary-family` | Playfair Display | headings, buttons, wordmark |
+| `--font--body` | EB Garamond | statement copy, labels, links |
+| `--font--inherit` | EB Garamond | small labels |
+| `--font--initial` | Italianno | the opening letter of a heading |
+
+Every size, weight, line-height and letter-spacing in `site.css` is untouched —
+only the families changed.
+
+The deck opens each statement with an ornate script capital and sets the rest of
+the line in the display serif. `components/Initial.tsx` reproduces that: it
+wraps the first character rather than using `::first-letter`, because the
+headings are split into lines and words at runtime and `::first-letter` no
+longer addresses the right character once a splitter has rewrapped the text. The
+initial is always rendered as a capital — a lowercase script letter beside
+upright text reads as a stray swash. Statement paragraphs are italic, as every
+statement block in the deck is.
+
+The deck shows no sans anywhere, so none is loaded. The brand stack names Lexend
+Zetta for labels, but nothing in the deck sets a label in it.
+
+All faces are SIL Open Font Licence, self-hosted under `public/fonts` with their
+notices beside them. Each is a latin subset covering basic Latin — verify with
+fontTools before swapping a file, because a subset missing the ASCII range fails
+silently, one letter at a time.
 
 ## Structure
 

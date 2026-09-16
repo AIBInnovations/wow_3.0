@@ -7,6 +7,7 @@ import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useLineReveal } from '@/hooks/useSplitText'
 import { heroMarquee } from '@/data/media'
+import Initial from './Initial'
 import { hero } from '@/data/content'
 
 /**
@@ -103,7 +104,9 @@ export default function HeroMarquee() {
           </div>
 
           <h2 ref={titleRef} className="u-text-display home-hero_title" js-line-animation="">
-            <span className="outline until-mobile">{hero.title}</span>
+            <span className="outline until-mobile">
+              <Initial>{hero.title}</Initial>
+            </span>
           </h2>
 
           <p ref={paraRef} className="home-hero_p" js-line-animation="">

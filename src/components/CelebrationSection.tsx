@@ -7,6 +7,7 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useWordReveal } from '@/hooks/useSplitText'
 import { MainButton } from './HeroMarquee'
 import { GRID } from '@/data/gridNodes'
+import Initial from './Initial'
 import { celebration } from '@/data/content'
 import { celebrationImages } from '@/data/media'
 
@@ -57,9 +58,11 @@ export default function CelebrationSection() {
         <div className="content-lo1_heading_wrap">
           <div className="content-lo1_heading_contain">
             <h2 ref={headingRef} className="content-lo1_heading_txt" js-letter-animation="">
-              {celebration.headingLead}
+              <Initial>{celebration.headingLead}</Initial>
               <br />
-              <span className="outline">{celebration.headingOutline}</span>
+              <span className="outline">
+                <Initial>{celebration.headingOutline}</Initial>
+              </span>
             </h2>
           </div>
         </div>

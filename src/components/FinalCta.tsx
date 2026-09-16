@@ -3,6 +3,7 @@
 import { useRef } from 'react'
 import { useLineReveal } from '@/hooks/useSplitText'
 import CircleTextButton from './CircleTextButton'
+import Initial from './Initial'
 import { closing } from '@/data/content'
 import { closing as closingImages } from '@/data/media'
 
@@ -23,7 +24,7 @@ export default function FinalCta() {
             <div className="cta24_card_content">
               <div className="div-hide">
                 <h2 ref={headingRef} className="cta24_card_h2 u-text-h2" js-line-animation="">
-                  {closing.heading}
+                  <Initial>{closing.heading}</Initial>
                 </h2>
               </div>
 

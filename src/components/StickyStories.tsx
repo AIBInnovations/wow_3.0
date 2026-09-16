@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRef, useState } from 'react'
 import { ScrollTrigger, registerGsap, gsap } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
+import Initial from './Initial'
 import { stories } from '@/data/stories'
 
 /**
@@ -76,7 +77,9 @@ export default function StickyStories() {
                 className="sticky-gallery_title_wrap text-align-center w-inline-block"
                 tabIndex={i === active ? 0 : -1}
               >
-                <h2 className="sticky-gallery_title_name u-text-h1">{story.title}</h2>
+                <h2 className="sticky-gallery_title_name u-text-h1">
+                  <Initial>{story.title}</Initial>
+                </h2>
                 <div className="sticky-gallery_title_name date kicker">{story.location}</div>
               </Link>
             </div>

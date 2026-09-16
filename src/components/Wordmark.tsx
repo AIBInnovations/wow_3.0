@@ -1,3 +1,4 @@
+import Initial from './Initial'
 import { wordmark } from '@/data/content'
 
 /**
@@ -10,7 +11,8 @@ import { wordmark } from '@/data/content'
 export default function Wordmark({ className = '' }: { className?: string }) {
   return (
     <span className={className}>
-      {wordmark.lead} <span className="outline">{wordmark.outline}</span> {wordmark.tail}
+      {wordmark.lead} <span className="outline"><Initial>{wordmark.outline}</Initial></span>{' '}
+      {wordmark.tail}
     </span>
   )
 }
