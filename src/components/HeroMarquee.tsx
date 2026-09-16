@@ -103,11 +103,13 @@ export default function HeroMarquee() {
             <h1 className="kicker hk">{hero.kicker}</h1>
           </div>
 
-          <h2 ref={titleRef} className="u-text-display home-hero_title" js-line-animation="">
-            <span className="outline until-mobile">
-              <Initial>{hero.title}</Initial>
-            </span>
-          </h2>
+          {hero.title ? (
+            <h2 ref={titleRef} className="u-text-display home-hero_title" js-line-animation="">
+              <span className="outline until-mobile">
+                <Initial>{hero.title}</Initial>
+              </span>
+            </h2>
+          ) : null}
 
           <p ref={paraRef} className="home-hero_p" js-line-animation="">
             {hero.paragraph}
