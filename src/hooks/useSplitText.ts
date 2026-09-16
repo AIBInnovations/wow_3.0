@@ -20,6 +20,30 @@ function wrapInner(pieces: HTMLElement[], className: string) {
 }
 
 /**
+ * Returns a heading's script initials to plain text and lifts them out of any
+ * word or character wrapper the splitter put them in.
+ *
+ * A script capital's loops reach well past a normal letter's box — above, below
+ * and sideways. Left inside a character or word clip they are cut at rest, and
+ * mid-reveal they show as a sliver of loop before the letter arrives. Outside the
+ * clips they are whole, and they fade in with their heading instead of rising
+ * through a mask. Everything else in the heading keeps its exact reveal.
+ */
+export function unwrapInitials(root: HTMLElement) {
+  const initials = [...root.querySelectorAll<HTMLElement>('.initial')]
+  for (const initial of initials) {
+    initial.textContent = initial.dataset.letter ?? initial.textContent ?? ''
+    let wrapper = initial.parentElement
+    while (wrapper && wrapper !== root && wrapper.matches('.char, .char-inner, .word')) {
+      wrapper.parentElement?.insertBefore(initial, wrapper)
+      if (!wrapper.textContent?.trim()) wrapper.remove()
+      wrapper = initial.parentElement
+    }
+  }
+  return initials
+}
+
+/**
  * Re-runs `build` whenever the viewport width changes, tearing down the previous
  * split first. Height-only resizes (mobile URL bars) are ignored, because
  * re-splitting mid-scroll would visibly restart the animation.
@@ -72,6 +96,7 @@ export function useLineAnimation(ref: RefObject<HTMLElement | null>) {
         gsap.set(el, { autoAlpha: 1 })
         const split = new SplitType(el, { types: 'lines', tagName: 'span', lineClass: 'line' })
         const inners = wrapInner((split.lines ?? []) as HTMLElement[], 'line-inner')
+        const initials = unwrapInitials(el)
 
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -86,6 +111,14 @@ export function useLineAnimation(ref: RefObject<HTMLElement | null>) {
           { yPercent: 100 },
           { yPercent: 0, duration: 2, delay: 0.1, ease: 'power3.out', stagger: 0.2 }
         )
+        if (initials.length) {
+          tl.fromTo(
+            initials,
+            { opacity: 0, yPercent: 12 },
+            { opacity: 1, yPercent: 0, duration: 2, delay: 0.1, ease: 'power3.out' },
+            0
+          )
+        }
 
         return () => {
           tl.scrollTrigger?.kill()
@@ -129,7 +162,8 @@ export function useLetterAnimation(ref: RefObject<HTMLElement | null>) {
           wordClass: 'word',
           charClass: 'char',
         })
-        const inners = wrapInner((split.chars ?? []) as HTMLElement[], 'char-inner')
+        const initials = unwrapInitials(el)
+        const inners = wrapInner([...el.querySelectorAll<HTMLElement>('.char')], 'char-inner')
 
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -144,6 +178,14 @@ export function useLetterAnimation(ref: RefObject<HTMLElement | null>) {
           { yPercent: 100, rotateX: 180 },
           { yPercent: 0, rotateX: 0, duration: 1.05, ease: 'power3.out', stagger: 0.04 }
         )
+        if (initials.length) {
+          tl.fromTo(
+            initials,
+            { opacity: 0, yPercent: 12 },
+            { opacity: 1, yPercent: 0, duration: 1.05, ease: 'power3.out' },
+            0
+          )
+        }
 
         return () => {
           tl.scrollTrigger?.kill()

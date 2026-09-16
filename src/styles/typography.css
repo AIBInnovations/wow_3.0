@@ -1,0 +1,491 @@
+/*
+ * Type system — one fluid modular scale, after the brand deck.
+ *
+ * Every piece of text on the page is assigned to exactly one role, and every
+ * role takes exactly one step of the scale. Nothing sets a one-off size.
+ *
+ * The scale runs from a 16px base with a 1.15 ratio at 390px wide to an 18px
+ * base with a 1.25 ratio (major third) at 1440px, so contrast between steps grows
+ * with the screen. The mobile ratio is deliberately gentle: "CELEBRATIONS" is one
+ * twelve-letter word in wide uppercase serif, and a steeper ratio would push it
+ * past a phone's width, where it cannot wrap.
+ *
+ *   step  role       used for
+ *   ────  ─────────  ──────────────────────────────────────────────────────
+ *     7   marquee    the running headline — decorative, deliberately oversized
+ *     6   display    hero headline, Four Days heading, footer wordmark, menu rows
+ *     5   h1         atelier statement, destination names
+ *     4   h2         closing heading
+ *     2   h3         footer column heads, statement attributions
+ *     1   lead       hero statement
+ *     0   body       quotes, paragraphs, notes, destination lines
+ *    -1   label      kickers, regions, buttons, navigation, footer links
+ *
+ * Why uppercase headings: site.css was tuned for a display face with a tiny
+ * x-height and short ascenders and descenders, so its headings sit at line-height
+ * .9–1 with negative tracking. Playfair Display's tall ascenders and deep
+ * descenders collide at those values. The deck sets headings as uppercase serif
+ * with open tracking; capitals carry no descenders, so the collisions go away at
+ * the source rather than being padded around.
+ *
+ * Selectors deliberately match site.css's own specificity where it uses compound
+ * classes — a single-class rule here cannot override a two-class rule there.
+ */
+
+:root {
+  --step-n1: clamp(0.8696rem, 0.8583rem + 0.0464vw, 0.9000rem); /*  13.9px →  14.4px */
+  --step-0: clamp(1.0000rem, 0.9536rem + 0.1905vw, 1.1250rem); /*  16.0px →  18.0px */
+  --step-1: clamp(1.1500rem, 1.0548rem + 0.3905vw, 1.4062rem); /*  18.4px →  22.5px */
+  --step-2: clamp(1.3225rem, 1.1608rem + 0.6633vw, 1.7578rem); /*  21.2px →  28.1px */
+  --step-3: clamp(1.5209rem, 1.2696rem + 1.0307vw, 2.1973rem); /*  24.3px →  35.2px */
+  --step-4: clamp(1.7490rem, 1.3785rem + 1.5201vw, 2.7466rem); /*  28.0px →  43.9px */
+  --step-5: clamp(2.0114rem, 1.4832rem + 2.1667vw, 3.4332rem); /*  32.2px →  54.9px */
+  --step-6: clamp(2.3131rem, 1.5782rem + 3.0148vw, 4.2915rem); /*  37.0px →  68.7px */
+  --step-7: clamp(2.6600rem, 1.6555rem + 4.1210vw, 5.3644rem); /*  42.6px →  85.8px */
+
+  --leading-heading: 1.12;
+  --leading-h3: 1.25;
+  --leading-lead: 1.5;
+  --leading-body: 1.6;
+  --leading-label: 1.4;
+
+  --tracking-heading: 0.03em;
+  --tracking-name: 0.06em;
+  --tracking-h3: 0.08em;
+  --tracking-label: 0.16em;
+
+  /* Vertical rhythm between stacked text blocks. */
+  --rhythm-xs: 0.75rem;
+  --rhythm-sm: 1.25rem;
+  --rhythm-md: 2rem;
+  --rhythm-lg: 3rem;
+}
+
+/* ═══ Headings: shared voice ═════════════════════════════════════════════ */
+
+.u-text-display.home-hero_title,
+.content-lo1_heading_txt,
+.footernn_logo,
+.u-text-h2.scrub-txt,
+.sticky-gallery_title_name.u-text-h1,
+.cta24_card_h2.u-text-h2,
+.testimonial1_slider_left_text {
+  font-family: var(--font--primary-family);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-heading);
+  line-height: var(--leading-heading);
+}
+
+/* Multi-line headings break into balanced lines. `text-wrap: balance` also turns
+   wrapping on, so it must never reach a running line that has to stay single. */
+.u-text-display.home-hero_title,
+.content-lo1_heading_txt,
+.footernn_logo,
+.u-text-h2.scrub-txt,
+.sticky-gallery_title_name.u-text-h1,
+.cta24_card_h2.u-text-h2 {
+  text-wrap: balance;
+}
+
+/* ═══ Step 7 — marquee ═══════════════════════════════════════════════════ */
+
+.testimonial1_slider_left_text {
+  font-size: var(--step-7);
+  line-height: 1;
+  /* A running line: one line, always, scrolling sideways. */
+  white-space: nowrap;
+  text-wrap: nowrap;
+}
+
+/* ═══ Step 6 — display ═══════════════════════════════════════════════════ */
+
+.u-text-display.home-hero_title,
+.content-lo1_heading_txt,
+.footernn_logo {
+  font-size: var(--step-6);
+}
+
+.u-text-display.home-hero_title {
+  max-width: min(18ch, 100%);
+  margin: 0 auto;
+}
+
+/* The menu rows, and the phrase that runs across a row on hover. */
+.nav_drop_link .nav_drop_txt {
+  font-family: var(--font--primary-family);
+  font-size: var(--step-6);
+  font-weight: 400;
+  line-height: var(--leading-heading);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-heading);
+}
+
+/* ═══ Step 5 — h1 ════════════════════════════════════════════════════════ */
+
+.u-text-h2.scrub-txt {
+  font-size: var(--step-5);
+  max-width: 18ch;
+}
+
+.sticky-gallery_title_name.u-text-h1 {
+  font-size: var(--step-5);
+  letter-spacing: var(--tracking-name);
+}
+
+/* ═══ Step 4 — h2 ════════════════════════════════════════════════════════ */
+
+.cta24_card_h2.u-text-h2 {
+  font-size: var(--step-4);
+  max-width: 12ch;
+}
+
+/* ═══ Step 2 — h3 ════════════════════════════════════════════════════════ */
+
+.u-text-h4,
+.testimonial1_slider_name {
+  font-family: var(--font--primary-family);
+  font-size: var(--step-2);
+  font-weight: 400;
+  line-height: var(--leading-h3);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-h3);
+}
+
+/* ═══ Step 1 — lead ══════════════════════════════════════════════════════ */
+
+.home-hero_p {
+  font-size: var(--step-1);
+  line-height: var(--leading-lead);
+  max-width: 42ch;
+}
+
+/* ═══ Step 0 — body ══════════════════════════════════════════════════════ */
+
+.testimonial1_slider_rtb p,
+.content-lo1_content_right_text.u-text-main,
+.cta24_card_p,
+.sticky-gallery_title_name.sticky-gallery_line {
+  font-family: var(--font--body);
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  letter-spacing: 0;
+}
+
+/* Statement copy is italic, as the deck sets it. */
+.home-hero_p,
+.testimonial1_slider_rtb p,
+.content-lo1_content_right_text.u-text-main,
+.cta24_card_p,
+.sticky-gallery_title_name.sticky-gallery_line {
+  font-style: italic;
+}
+
+.testimonial1_slider_rtb p {
+  max-width: 38ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sticky-gallery_title_name.sticky-gallery_line {
+  max-width: 36ch;
+  margin: var(--rhythm-xs) auto 0;
+  text-transform: none;
+}
+
+/* ═══ Step −1 — label ════════════════════════════════════════════════════ */
+
+.kicker.hk,
+.kicker.home-meet-kicker,
+.sticky-gallery_title_name.date.kicker,
+.btn_main_wrap .btn_main_text,
+.nav_flex .nav-txt,
+.footernn_link_text,
+.text-block-3,
+.footernn_credits_link {
+  font-family: var(--font--inherit);
+  font-size: var(--step-n1);
+  line-height: var(--leading-label);
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+}
+
+/* ═══ Rhythm between blocks ══════════════════════════════════════════════ */
+
+.home-hero_content.u-vflex-center-center {
+  row-gap: 0;
+}
+
+.div-block-30 {
+  margin-bottom: var(--rhythm-sm);
+}
+
+.home-hero_p {
+  margin-top: var(--rhythm-md);
+}
+
+.home-hero_btn_wrap {
+  margin-top: var(--rhythm-md);
+}
+
+.sticky-gallery_title_name.date.kicker {
+  /* Half the title's size, so the gap scales with it. Script capitals with a
+     descending loop reach below the title's line — J furthest, about 0.49em past
+     the box — and this clears the deepest of them with room to spare. */
+  margin-top: calc(var(--step-5) * 0.5);
+}
+
+.content-lo1_heading_wrap {
+  margin-bottom: var(--rhythm-lg);
+}
+
+.cta24_card_content {
+  row-gap: var(--rhythm-sm);
+}
+
+.logo-footer-wrap {
+  margin-bottom: var(--rhythm-lg);
+}
+
+/* ═══ Animation clips ════════════════════════════════════════════════════ */
+
+.home-hero_title .line {
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.scrub-txt .line {
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+
+/* Inline-block characters with overflow hidden take their baseline from the
+   box's bottom edge, which lifts every box into the line above. */
+.scrub-txt .char,
+[js-letter-animation] .char {
+  vertical-align: top;
+}
+
+/*
+ * A line that carries a script initial is clipped for its reveal, and the
+ * initial's upper loop rises above the line box. The clip is widened upward to
+ * hold it; the negative margin hands the space back so the layout does not move.
+ * The initial itself sits outside every word and character mask and fades in,
+ * so this widening can never expose a sliver of it mid-reveal.
+ */
+.home-hero_title .line:has(.initial),
+[js-line-animation] .line:has(.initial) {
+  padding-top: 0.45em;
+  margin-top: -0.45em;
+}
+
+/* ═══ The script initial ═════════════════════════════════════════════════ */
+
+/*
+ * A heading's opening capital in the brand script, at 1.7 times the heading's
+ * size — the formal copperplate initial the deck opens its statements with.
+ *
+ * Its line-height is the heading's own leading divided by the same factor, so
+ * its box is exactly one heading line tall: the larger letter never pushes its
+ * line away from the next one. The loops simply rise and fall outside that box,
+ * and nothing around them clips — see the animation clips above.
+ */
+:root {
+  --initial-scale: 1.7;
+}
+
+/* The capital never parts from the rest of its word at a line break. */
+.initial-word {
+  white-space: nowrap;
+}
+
+.initial {
+  display: inline-block;
+  font-family: var(--font--initial);
+  font-style: normal;
+  font-weight: 400;
+  font-size: calc(var(--initial-scale) * 1em);
+  line-height: calc(var(--leading-heading) / var(--initial-scale));
+  letter-spacing: 0;
+  text-transform: none;
+  vertical-align: baseline;
+}
+
+/* Per-letter clearance, measured from Parisienne's own outlines — but only
+   within the band the neighbouring capitals occupy (baseline to their cap
+   height), plus a hairline. A script capital's top swash often reaches far past
+   its advance, yet it rides above the next letter and can never touch it;
+   reserving room for it would push the rest of the word away ('F OUR'). */
+.initial[data-letter="A"] { margin-left: 0.02em; margin-right: 0.015em; }
+.initial[data-letter="B"] { margin-right: 0.015em; }
+.initial[data-letter="C"] { margin-right: 0.041em; }
+.initial[data-letter="D"] { margin-right: 0.015em; }
+.initial[data-letter="E"] { margin-left: 0.01em; margin-right: 0.032em; }
+.initial[data-letter="F"] { margin-left: 0.02em; margin-right: 0.015em; }
+.initial[data-letter="G"] { margin-left: 0.078em; margin-right: 0.069em; }
+.initial[data-letter="H"] { margin-left: 0.028em; margin-right: 0.015em; }
+.initial[data-letter="I"] { margin-left: 0.03em; margin-right: 0.02em; }
+.initial[data-letter="J"] { margin-left: 0.099em; margin-right: 0.015em; }
+.initial[data-letter="K"] { margin-left: 0.039em; margin-right: 0.015em; }
+.initial[data-letter="L"] { margin-right: 0.052em; }
+.initial[data-letter="M"] { margin-left: 0.039em; margin-right: 0.015em; }
+.initial[data-letter="N"] { margin-left: 0.03em; margin-right: 0.015em; }
+.initial[data-letter="O"] { margin-right: 0.015em; }
+.initial[data-letter="P"] { margin-right: 0.084em; }
+.initial[data-letter="Q"] { margin-right: 0.015em; }
+.initial[data-letter="R"] { margin-right: 0.032em; }
+.initial[data-letter="S"] { margin-left: 0.03em; margin-right: 0.108em; }
+.initial[data-letter="T"] { margin-left: 0.02em; margin-right: 0.015em; }
+.initial[data-letter="U"] { margin-right: 0.032em; }
+.initial[data-letter="V"] { margin-right: 0.027em; }
+.initial[data-letter="W"] { margin-right: 0.015em; }
+.initial[data-letter="X"] { margin-left: 0.039em; margin-right: 0.015em; }
+.initial[data-letter="Y"] { margin-left: 0.03em; margin-right: 0.029em; }
+.initial[data-letter="Z"] { margin-right: 0.032em; }
+
+/* ═══ Drop cap ═══════════════════════════════════════════════════════════ */
+
+/* Floated across two lines. Left inline it was taller than its own line and its
+   ink ran down into the line beneath. */
+.drop-cap {
+  float: left;
+  font-family: var(--font--primary-family);
+  font-style: italic;
+  font-size: 3.1em;
+  line-height: 0.82;
+  margin: 0.06em 0.12em 0 -0.02em;
+}
+
+/* ═══ Wordmark and the menu-open mark ════════════════════════════════════ */
+
+.nav_wordmark {
+  font-family: var(--font--primary-family);
+  font-size: var(--step-1);
+  letter-spacing: 0.14em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/*
+ * With the menu open the mark replaces the wordmark in the same spot. It is
+ * positioned out of flow so the bar never changes height, and painted from a
+ * mask so it takes the palette's text colour instead of the coral it was drawn in.
+ */
+.nav_logo_link {
+  position: relative;
+}
+
+.nav_wordmark,
+.nav_logo_mark {
+  transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav_logo_mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: clamp(2.75rem, 4.2vw, 3.75rem);
+  aspect-ratio: 479 / 640;
+  background-color: currentColor;
+  -webkit-mask: url('/images/wow-mark.png') center / contain no-repeat;
+  mask: url('/images/wow-mark.png') center / contain no-repeat;
+  opacity: 0;
+  /* The sparkle rays add height above the ring, so centring the whole mark sets
+     the ring — the part the eye reads — 12.34% of the mark's height too low.
+     Measured from the artwork: the ring's centre sits at 62.34% of its height. */
+  transform: translate(-50%, -62.34%) scale(0.85);
+  pointer-events: none;
+}
+
+.nav_logo_link.is-menu-open .nav_wordmark {
+  opacity: 0;
+}
+
+.nav_logo_link.is-menu-open .nav_logo_mark {
+  opacity: 1;
+  transform: translate(-50%, -62.34%) scale(1);
+}
+
+/*
+ * Header items are centred as boxes, but a line box does not put its capitals at
+ * its own centre — where they land depends on the face's ascent, descent and cap
+ * height. From those metrics: EB Garamond's capitals sit 0.0295em below centre at
+ * the labels' 1.4 leading, and Playfair's 0.0615em below at the wordmark's 1.1.
+ * Each is lifted by exactly that, so all three sets of capitals share one centre.
+ */
+.nav_flex .nav-txt {
+  transform: translateY(-0.0295em);
+}
+
+.nav_wordmark {
+  transform: translateY(-0.0615em);
+}
+
+/* ═══ Hero band ══════════════════════════════════════════════════════════ */
+
+/*
+ * One gutter everywhere. Photographs inside a panel sit 4px apart, but each panel
+ * also carried 1.3rem of right padding, so where one panel met the next the gap
+ * jumped to about 21px — the single wide gutter visible in the band. The padding
+ * now matches the gap. The loop still lands exactly: it moves each panel by its
+ * full width, padding included.
+ */
+.cta-marquee_panel.top {
+  padding-right: var(--grid-gap-tiny);
+}
+
+/* Colour and black-and-white, alternating. */
+
+.cta-marquee_bg_img.is-mono {
+  filter: grayscale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav_wordmark,
+  .nav_logo_mark {
+    transition: none;
+  }
+}
+
+/* ═══ Statements band: one viewport tall ═════════════════════════════════ */
+
+/*
+ * The slide column was `height: 100vh` but also `min-height: 55vw`. On any screen
+ * that is short for its width — most laptops with a browser toolbar — the width
+ * floor won and the band ran taller than the viewport. It is now held to the
+ * viewport, with its padding eased so the content always has room.
+ */
+.testimonial1_slider_left_contain.u-container {
+  height: 100svh;
+  min-height: 0;
+  max-height: 100vh;
+  padding-top: clamp(4.5rem, 9vh, 7rem);
+  padding-bottom: clamp(5rem, 11vh, 8rem);
+}
+
+.testimonial1_slider_left_content_layout.u-gap-main {
+  row-gap: clamp(1rem, 2.6vh, 1.75rem);
+}
+
+/*
+ * The arch portrait, sized from the viewport's height rather than its width so
+ * it grows on tall screens but can never push the band past one screen. About a
+ * third larger than before at typical desktop sizes.
+ */
+.testimonial1_slider_img_wrap {
+  width: auto;
+  height: clamp(13rem, 36vh, 22rem);
+}
+
+@media (max-width: 767px) {
+  .testimonial1_slider_left_contain.u-container {
+    padding-top: clamp(5rem, 14vh, 7rem);
+    padding-bottom: clamp(5rem, 14vh, 7rem);
+  }
+
+  .testimonial1_slider_img_wrap {
+    height: clamp(11rem, 30vh, 16rem);
+  }
+}

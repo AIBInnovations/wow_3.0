@@ -7,6 +7,10 @@
 /* Brand colour, layered over the tokens site.css declares. */
 @import './palette.css';
 
+/* Editorial type and text spacing, after the brand deck. */
+@import '../styles/typography.css';
+
+
 /* Split-text scaffolding. SplitType builds .line at runtime; the inner span is
    what actually translates, clipped by the line box the stylesheet already
    sets to overflow: hidden. */

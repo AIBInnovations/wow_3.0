@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { gsap, ScrollTrigger, registerGsap } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import Initial from './Initial'
@@ -18,7 +18,10 @@ import { stories } from '@/data/stories'
  *   entering an item from either direction   → that item, alone
  *   leaving downward                          → cleared, unless it is the last
  *   leaving upward                            → the one before it
- *   scrolling back above the first            → the first, always
+ *   scrolling back above the first            → cleared
+ *
+ * Nothing starts active, so the first item lights up on reaching the centre
+ * exactly as every later one does.
  *
  * Hovering the active title turns it brand-coloured and drains the photograph
  * behind it to half-brightness greyscale. The whole section fades out once its
@@ -26,7 +29,18 @@ import { stories } from '@/data/stories'
  */
 export default function StickyStories() {
   const wrapRef = useRef<HTMLElement>(null)
-  const [active, setActive] = useState<number | null>(0)
+  const [active, setActive] = useState<number | null>(null)
+
+  // Fetch and decode every photograph up front. Lazily loaded, a photo only arrived
+  // once its item was reached, so it appeared late — faded in by the opacity
+  // transition rather than simply being there.
+  useEffect(() => {
+    for (const story of stories) {
+      const img = new Image()
+      img.src = story.img
+      img.decode?.().catch(() => {})
+    }
+  }, [])
 
   useIsomorphicLayoutEffect(() => {
     const wrap = wrapRef.current
@@ -51,7 +65,7 @@ export default function StickyStories() {
             if (i < last) setActive((cur) => (cur === i ? null : cur))
           },
           onLeaveBack: () => {
-            if (i > 0) setActive(i - 1)
+            setActive(i > 0 ? i - 1 : null)
           },
         })
 
@@ -74,15 +88,6 @@ export default function StickyStories() {
           })
         }
       })
-
-      if (items[0]) {
-        ScrollTrigger.create({
-          trigger: items[0],
-          start: 'top top',
-          end: 'bottom center',
-          onLeaveBack: () => setActive(0),
-        })
-      }
 
       ScrollTrigger.create({
         trigger: wrap,
@@ -117,16 +122,12 @@ export default function StickyStories() {
                     <img
                       src={story.img}
                       alt={story.alt}
-                      loading={i === 0 ? 'eager' : 'lazy'}
+                      loading="eager"
+                      decoding="async"
+                      fetchPriority={i === 0 ? 'high' : 'auto'}
                       className="sticky-gallery_bg_img"
                     />
                   </div>
-                  {/* The destination photographs are bright daylight exteriors;
-                      at 0.7 opacity alone the titles wash out over them. The
-                      stylesheet's own overlay restores contrast. Active item
-                      only — six stacked overlays would black the section out.
-                      This is a legibility layer and changes no timing. */}
-                  {i === active && <div className="sticky-gallery_bg_overlay" />}
                 </div>
               </div>
 
@@ -139,6 +140,7 @@ export default function StickyStories() {
                   <Initial>{story.title}</Initial>
                 </h2>
                 <div className="sticky-gallery_title_name date kicker">{story.location}</div>
+                <p className="sticky-gallery_title_name sticky-gallery_line">{story.line}</p>
               </Link>
             </div>
           ))}

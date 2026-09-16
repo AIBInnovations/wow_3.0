@@ -121,8 +121,14 @@ export default function Navigation() {
           <div className="nav-txt">ENQUIRIES</div>
         </a>
 
-        <Link href="/" aria-label={`${site.name} — home`} className="nav_logo_link w-inline-block w--current">
+        <Link
+          href="/"
+          aria-label={`${site.name} — home`}
+          className={`nav_logo_link w-inline-block w--current${open ? ' is-menu-open' : ''}`}
+        >
           <Wordmark className="nav_wordmark" />
+          {/* With the menu open the wordmark gives way to the mark itself. */}
+          <span className="nav_logo_mark" aria-hidden="true" />
         </Link>
 
         <div id="nav-btn" className={`nav_link_wrap right ${GRID.navRight}${open ? ' active' : ''}`}>

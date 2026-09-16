@@ -26,9 +26,7 @@ export default function CelebrationSection() {
             <h2 ref={headingRef} className="content-lo1_heading_txt" js-letter-animation="">
               <Initial>{celebration.headingLead}</Initial>
               <br />
-              <span className="outline">
-                <Initial>{celebration.headingOutline}</Initial>
-              </span>
+              {celebration.headingOutline}
             </h2>
           </div>
         </div>

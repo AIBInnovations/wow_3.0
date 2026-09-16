@@ -1,26 +1,13 @@
 /*
  * Brand faces, taken from the WOW brand deck and self-hosted.
  *
- * Playfair Display sets the headings, Italianno the ornate initial that opens
- * them, and EB Garamond both the statement copy and the small labels — the
- * three the deck uses, and the same files the main site ships.
- *
- * The deck shows no sans anywhere, so none is loaded. The brand stack names
- * Lexend Zetta for labels, but nothing in the deck sets a label in it.
- *
- * All are SIL Open Font Licence; the notices sit beside the files in
- * public/fonts and must stay there. Each is a latin subset covering basic Latin
- * — verify with fontTools before ever swapping a file, because a subset missing
- * the ASCII range fails silently, one letter at a time.
+ * Playfair Display sets headings; EB Garamond sets statement copy and small
+ * labels; Parisienne sets the script capital that opens a heading — the formal
+ * copperplate initial the deck uses. All three are SIL Open Font Licence, with
+ * their notices beside the files in public/fonts. Each is a latin subset covering basic Latin — verify with
+ * fontTools before swapping a file, because a subset missing the ASCII range
+ * fails silently, one letter at a time.
  */
-
-@font-face {
-  font-family: 'Italianno';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/italianno-latin.woff2') format('woff2');
-}
 
 @font-face {
   font-family: 'Playfair Display';
@@ -54,90 +41,18 @@
   src: url('/fonts/ebgaramond-italic-latin.woff2') format('woff2');
 }
 
-/*
- * The family tokens site.css declares, repointed at the brand faces. Only the
- * families change here — every size, weight, line-height and letter-spacing in
- * site.css is left exactly as it was.
- */
+@font-face {
+  font-family: 'Parisienne';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/parisienne-latin.woff2') format('woff2');
+}
+
+/* The family tokens site.css declares, repointed at the brand faces. */
 :root {
   --font--primary-family: 'Playfair Display', Georgia, serif;
   --font--body: 'EB Garamond', Georgia, serif;
   --font--inherit: 'EB Garamond', Georgia, serif;
-  --font--initial: 'Italianno', 'Playfair Display', cursive;
-}
-
-/*
- * The opening letter of a statement heading, in the script face.
- *
- * Italianno has a much smaller effective cap height than Playfair, so matching
- * the deck means setting it well above 1em and pulling the following letter back
- * in — otherwise the initial reads as a smaller word rather than a larger
- * letter. Both values are in em, so the treatment scales with whatever fluid
- * size the heading already resolves to; no size in site.css is touched.
- */
-.initial {
-  font-family: var(--font--initial);
-  /* Always a capital. Every initial in the deck is one, and a lowercase script
-     letter beside upright text reads as a stray swash rather than a letter. */
-  text-transform: uppercase;
-  font-size: 1.62em;
-  line-height: 0;
-  /* Script faces carry their own side bearing; close the gap it opens. */
-  margin-right: -0.06em;
-  /* Sits on the same baseline rather than riding up off it. */
-  vertical-align: -0.04em;
-  /* The outlined treatment is drawn for the display serif; the script's thin
-     strokes disappear under it, so the initial always stays solid. */
-  -webkit-text-stroke-width: 0;
-}
-
-/* Inside an outlined heading the text colour is transparent, so the initial has
-   to restore a real fill or it vanishes along with the stroke. */
-.outline > .initial,
-.outline .initial {
-  color: var(--theme--text);
-}
-
-/* The wordmark is small and sits in a tight bar; it needs less lift. */
-.nav_wordmark .initial,
-.footernn_logo .initial {
-  font-size: 1.45em;
-  margin-right: -0.04em;
-}
-
-/*
- * Statement copy is italic, as every statement block in the deck is set. Only
- * the running paragraphs take it — labels, links and headings stay upright.
- */
-.home-hero_p,
-.content-lo1_content_right_text,
-.cta24_card_p,
-.testimonial1_slider_rtb p {
-  font-style: italic;
-}
-
-/*
- * The hero display line, in the deck's face.
- *
- * Its measure is written as `max-width: 30ch`, and `ch` resolves against the
- * face's own zero width — in a display face that wide, 30ch came out wider than
- * the container and the line ran off both edges. Capping the measure at the
- * container makes it a limit rather than a width, so the face no longer decides
- * whether the line fits.
- */
-.u-text-display.home-hero_title {
-  max-width: min(30ch, 100%);
-}
-
-/*
- * The hero headline is solid, as every heading in the deck is.
- *
- * The layout hands this line an outlined treatment — transparent fill with a
- * hairline stroke. Nothing in the deck is set that way, so the fill and stroke
- * are restored here rather than by removing the class, which keeps the outlined
- * treatment available to the headings that still use it.
- */
-.home-hero_title .outline {
-  color: var(--theme--text);
-  -webkit-text-stroke-width: 0;
+  --font--initial: 'Parisienne', 'Playfair Display', cursive;
 }

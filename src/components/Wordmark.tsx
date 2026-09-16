@@ -2,17 +2,14 @@ import Initial from './Initial'
 import { wordmark } from '@/data/content'
 
 /**
- * The studio wordmark, set in the display face.
- *
- * WOW's identity is typographic rather than a drawn mark, so the name is set as
- * text and the middle word takes the outlined treatment site.css already
- * defines for display type.
+ * The studio wordmark in solid display capitals, with the W of "Weddings" set in
+ * the display italic — the same lockup the deck uses for its own
+ * "Not Just Weddings" mark.
  */
 export default function Wordmark({ className = '' }: { className?: string }) {
   return (
     <span className={className}>
-      {wordmark.lead} <span className="outline"><Initial>{wordmark.outline}</Initial></span>{' '}
-      {wordmark.tail}
+      {wordmark.lead} <Initial>{wordmark.middle}</Initial> {wordmark.tail}
     </span>
   )
 }

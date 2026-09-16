@@ -16,8 +16,8 @@ export const site = {
   email: 'enquiries@woweventsandweddings.com',
 }
 
-/** Wordmark, split so the middle word can take the outlined treatment. */
-export const wordmark = { lead: 'WOW', outline: 'Weddings', tail: '& Events' }
+/** The studio name as the wordmark sets it. */
+export const wordmark = { lead: 'WOW', middle: 'Weddings', tail: '& Events' }
 
 export const hero = {
   kicker: 'Weddings, ceremonies and events',

@@ -1,6 +1,12 @@
 export type Media = { src: string; alt: string }
 
-/** Hero marquee track — one panel; the component renders it twice for a seamless loop. */
+/**
+ * Hero marquee track — one panel, rendered twice for a seamless loop.
+ *
+ * Photos alternate colour and black-and-white. The count must stay even: the loop
+ * slides the second panel into the first one's place, so an odd count would put
+ * two frames of the same kind side by side at the seam.
+ */
 export const heroMarquee: Media[] = [
   {
     "src": "/images/hero-0.jpg",
@@ -28,6 +34,10 @@ export const heroMarquee: Media[] = [
   },
   {
     "src": "/images/hero-6.jpg",
+    "alt": "WOW Weddings & Events celebration"
+  },
+  {
+    "src": "/images/hero-7.jpg",
     "alt": "WOW Weddings & Events celebration"
   }
 ]

@@ -7,6 +7,7 @@ import { gsap, registerGsap } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useFontsReady } from '@/hooks/useFontsReady'
+import { unwrapInitials } from '@/hooks/useSplitText'
 import { heroMarquee } from '@/data/media'
 import Initial from './Initial'
 import { hero } from '@/data/content'
@@ -18,7 +19,8 @@ import { hero } from '@/data/content'
  *
  *   0.00s  content container becomes visible; every photo fades in (0.5s) and the
  *          first panel's photos wipe upward out of a bottom clip, 0.07s apart
- *   1.00s  headline rises word by word from beneath each line's clip
+ *   1.00s  headline rises word by word from beneath each line's clip, while its
+ *          script initial fades up in place
  *   2.00s  paragraph rises line by line, fading in as it goes
  *   2.50s  kicker fades in
  *   2.60s  button fades in
@@ -64,6 +66,9 @@ export default function HeroMarquee() {
       line.appendChild(inner)
     }
 
+    // The script initial leaves the word masks; it fades in with the headline.
+    if (title) unwrapInitials(title)
+
     // Deep descenders would otherwise be cut by the line clip mid-rise.
     for (const word of (titleSplit?.words ?? []) as HTMLElement[]) {
       word.style.paddingBottom = '3vw'
@@ -83,6 +88,8 @@ export default function HeroMarquee() {
       )
       tl.to('.dim', { opacity: 1 }, 0)
       tl.from('.home-hero_title .word', { yPercent: 100, stagger: 0.1, ease: 'power3.out', duration: 2 }, '<1')
+      // Same start as the words, so the paragraph's '<1' below still counts from them.
+      tl.from('.home-hero_title .initial', { opacity: 0, yPercent: 12, ease: 'power3.out', duration: 2 }, '<')
       tl.from('.p-line-inner', { yPercent: 100, stagger: 0.1, opacity: 0, ease: 'power3.out', duration: 2 }, '<1')
       tl.from('.hk', { opacity: 0, stagger: 0.1, ease: 'power3.out', duration: 1.5 }, '<.5')
       tl.from('.home-hero_btn_wrap', { opacity: 0, ease: 'power3.out', duration: 1.5 }, '<.1')
@@ -119,7 +126,7 @@ export default function HeroMarquee() {
                     src={img.src}
                     alt={panel === 0 ? img.alt : ''}
                     loading={panel === 0 && i < 3 ? 'eager' : 'lazy'}
-                    className="cta-marquee_bg_img"
+                    className={`cta-marquee_bg_img${i % 2 === 1 ? ' is-mono' : ''}`}
                   />
                 </div>
               ))}
@@ -137,9 +144,7 @@ export default function HeroMarquee() {
 
           {hero.title ? (
             <h2 className="u-text-display home-hero_title">
-              <span className="outline until-mobile">
-                <Initial>{hero.title}</Initial>
-              </span>
+              <Initial>{hero.title}</Initial>
             </h2>
           ) : null}
 
