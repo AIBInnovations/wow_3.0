@@ -117,13 +117,14 @@
 }
 
 /*
- * The hero display line is set in the text serif rather than the display one.
+ * The hero display line, in the deck's face.
  *
- * Its width is governed by `max-width: 30ch` and `font-size: 10cqw`, and `ch`
- * resolves against the face's own zero width — so a wide display face makes the
- * measure wider than the container it sits in and the line runs off both edges.
- * EB Garamond is narrow enough that 30ch lands inside the container.
+ * Its measure is written as `max-width: 30ch`, and `ch` resolves against the
+ * face's own zero width — in a display face that wide, 30ch came out wider than
+ * the container and the line ran off both edges. Capping the measure at the
+ * container makes it a limit rather than a width, so the face no longer decides
+ * whether the line fits.
  */
 .u-text-display.home-hero_title {
-  font-family: var(--font--body);
+  max-width: min(30ch, 100%);
 }
