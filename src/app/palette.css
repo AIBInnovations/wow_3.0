@@ -1,14 +1,13 @@
 /*
  * WOW Weddings & Events palette.
  *
- * Colour only — every font token in webflow.css is left exactly as it was, so
- * the typography of the clone is untouched. The values come from the main
- * site's own brand layer (`../../../wow/src/styles/brand.scss`): a wine-black
- * ground, cream text and a single gold accent in place of the export's
- * near-black / white / pink.
+ * Colour only — every font token is left untouched, so the typography is not
+ * affected by anything in this file. Values come from the studio's brand layer
+ * (`../../../wow/src/styles/brand.scss`): a wine-black ground, cream text and a
+ * single gold accent.
  *
- * Applied as an override on :root rather than by editing webflow.css, so the
- * exported stylesheet stays a faithful copy and the rebrand is one file.
+ * Applied as an override on :root rather than by editing site.css, so colour
+ * stays in one file and the layer underneath is left alone.
  */
 
 :root {
@@ -20,7 +19,7 @@
   --wow-gold: #c9a24d;
   --wow-gold-soft: #c6a96e;
 
-  /* The export's tokens, repointed. Names kept so every rule still resolves. */
+  /* The stylesheet's tokens, repointed. Names kept so every rule still resolves. */
   --swatch--dark: var(--wow-wine-deep);
   --swatch--dark2: rgb(59 18 21 / 87%);
   --swatch--dark-fade: rgb(43 13 15 / 13%);
@@ -34,8 +33,8 @@
 }
 
 /*
- * The remaining colours are written as literals in the export and so never
- * looked at a token. Each is repointed to its palette equivalent.
+ * The remaining colours are written as literals in site.css and so never looked
+ * at a token. Each is repointed to its palette equivalent.
  */
 
 /* Menu rows: a descending grey ramp becomes a descending wine ramp. */
@@ -66,8 +65,8 @@
   background-image: linear-gradient(rgb(201 162 77 / 85%), rgb(201 162 77 / 85%));
 }
 
-/* Primary button: white hairline and white hover text become cream, and the
-   hover fill picks up the gold from --swatch--brand automatically. */
+/* Primary button: the hairline and hover text become cream, and the hover fill
+   picks up the gold from --swatch--brand automatically. */
 .btn_main_wrap {
   border-color: var(--wow-cream);
 }

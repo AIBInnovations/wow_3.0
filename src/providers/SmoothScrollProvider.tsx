@@ -40,7 +40,8 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
       return
     }
 
-    // Values taken verbatim from the export's inline Lenis config.
+    // Deliberately heavy: a slow lerp and a wheel multiplier below 1 give the
+    // page its cinematic weight. Changing these changes the whole feel.
     const lenis = new Lenis({
       lerp: 0.1,
       wheelMultiplier: 0.7,
@@ -51,9 +52,8 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     lenisRef.current = lenis
 
     // Drive Lenis from GSAP's ticker so ScrollTrigger and Lenis share one clock.
-    // The export ships this wiring commented out, which leaves ScrollTrigger
-    // reading stale positions; enabling it is what keeps the scroll-driven
-    // sections in sync with the smoothed scroll position.
+    // Without this ScrollTrigger reads the native scroll position while the page
+    // paints the smoothed one, and every scroll-driven section lags behind.
     lenis.on('scroll', ScrollTrigger.update)
     const raf = (time: number) => lenis.raf(time * 1000)
     gsap.ticker.add(raf)

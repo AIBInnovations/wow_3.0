@@ -11,8 +11,9 @@ import { hero } from '@/data/content'
 
 /**
  * Full-viewport hero: a continuously drifting horizontal band of photographs
- * behind the display headline. The export gives `.cta-marquee_panel.top` a
- * `will-change: transform` but no CSS animation — the movement is JS-driven.
+ * behind the display headline. `.cta-marquee_panel.top` is marked
+ * `will-change: transform` but carries no CSS animation — the drift is driven
+ * here, so it can be paused for reduced motion.
  */
 export default function HeroMarquee() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -26,9 +27,8 @@ export default function HeroMarquee() {
   useLineReveal(titleRef, { immediate: true, delay: 0.75 })
   useLineReveal(paraRef, { immediate: true, delay: 1.1, innerClass: 'p-line-inner' })
 
-  // The stylesheet parks `.dim` and `.hw` at opacity 0 — in the original a
-  // separate runtime faded them in once the page was ready. Without that the
-  // hero simply never appears, so the opening reveal is rebuilt here.
+  // site.css parks `.dim` and `.hw` at opacity 0 and never raises them, so the
+  // hero depends on this timeline to appear at all.
   useIsomorphicLayoutEffect(() => {
     const dim = dimRef.current
     const content = contentRef.current
@@ -119,7 +119,7 @@ export default function HeroMarquee() {
   )
 }
 
-/** The export's `.btn_main_wrap` pattern: a styled shell with a full-bleed link on top. */
+/** A styled shell with a full-bleed link laid over it, so the whole pill is a target. */
 export function MainButton({ href, label }: { href: string; label: string }) {
   const external = href.startsWith('mailto:') || href.startsWith('http')
 

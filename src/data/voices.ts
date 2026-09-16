@@ -10,10 +10,10 @@ export type Voice = {
 /**
  * The studio's own statements, not client quotes.
  *
- * The original clone carried five client testimonials here. WOW's site has no
- * testimonials anywhere, so rather than invent them this band runs the copy the
- * studio already writes about its own work, attributed to the discipline it
- * belongs to. Swap in real client quotes by replacing `quote`/`name`.
+ * This band is shaped for client testimonials, and there are none on record
+ * yet. Rather than invent them it runs the copy the studio already writes about
+ * its own work, attributed to the discipline it belongs to. Swap in real client
+ * quotes by replacing `quote`/`name`.
  */
 export const voices: Voice[] = [
   {

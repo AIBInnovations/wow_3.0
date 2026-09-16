@@ -8,8 +8,8 @@ import { CustomEase } from 'gsap/CustomEase'
 let registered = false
 
 /**
- * The export loads gsap, ScrollTrigger, Flip and CustomEase from CDNs and relies on
- * them being global. Here they are registered once, lazily, on the client only.
+ * Registered once, lazily, and on the client only — these plugins touch window
+ * on import, so they must never run during a server render.
  */
 export function registerGsap() {
   if (registered || typeof window === 'undefined') return

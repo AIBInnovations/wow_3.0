@@ -57,7 +57,7 @@ export default function Voices() {
                     aria-label={`${i + 1} of ${count}`}
                     aria-hidden={!current}
                     style={{
-                      // Fade between slides, matching the export's `data-animation="fade"`.
+                      // Cross-fade rather than slide; the band is editorial, not a carousel.
                       opacity: current ? 1 : 0,
                       visibility: current ? 'visible' : 'hidden',
                       transition: 'opacity 0.7s ease',

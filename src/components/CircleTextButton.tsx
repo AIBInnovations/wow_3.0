@@ -39,7 +39,7 @@ export default function CircleTextButton({ href, text, label }: Props) {
     <>
       <div className="circle-text-btn_bg" />
       <div ref={circleRef} className="circle-text-btn-circle-wrap">
-        <div className="meet-nicole-circle w-embed">
+        <div className="circle-text-btn_ring w-embed">
           <CircleText text={text} />
         </div>
       </div>

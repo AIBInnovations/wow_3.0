@@ -10,7 +10,7 @@ import { useFontsReady } from './useFontsReady'
 /**
  * Wraps the contents of each SplitType line in an inner span so the line box
  * can clip (`overflow: hidden`) while the inner span translates. This is the
- * `.line > .line-inner` structure the exported CSS already styles.
+ * `.line > .line-inner` structure site.css already styles.
  */
 function wrapLines(lines: HTMLElement[], innerClass: string) {
   return lines.map((line) => {
@@ -149,7 +149,7 @@ export function useCharScrub(
 
 /**
  * Word-by-word rise for the oversized display headings that carry a
- * `js-letter-animation` attribute in the export.
+ * `js-letter-animation` attribute.
  */
 export function useWordReveal(ref: RefObject<HTMLElement | null>) {
   const reduced = useReducedMotion()

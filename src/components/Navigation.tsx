@@ -34,8 +34,8 @@ export default function Navigation() {
         return
       }
 
-      // The stylesheet parks each row at translateY(-100vh) — a full viewport,
-      // not the row's own height — so the offset is resolved against the window.
+      // Rows are parked at translateY(-100vh) — a full viewport, not the row's
+      // own height — so the offset is resolved against the window.
       gsap.set(rows, { y: () => -window.innerHeight })
 
       timelineRef.current = gsap.timeline({ paused: true }).to(rows, {
@@ -82,7 +82,7 @@ export default function Navigation() {
   return (
     <div className="nav_wrap">
       <div ref={dropRef} className={`nav_drop_wrap${open ? ' active' : ''}`}>
-        {/* Spacer row that sits behind the top bar, as in the export. */}
+        {/* Spacer row that sits behind the top bar. */}
         <div className="nav_drop_link first" />
 
         {navItems.map((item, i) => {

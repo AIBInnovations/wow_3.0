@@ -1,5 +1,4 @@
-// Generated from the Webflow export (arrow-circle.svg). Paths use currentColor so
-// the mark inherits whatever theme color its container sets.
+// Paths use currentColor, so the mark inherits whatever colour its container sets.
 export default function ArrowCircle() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 22 21" fill="none" preserveAspectRatio="xMidYMid meet" aria-hidden="true" role="img">

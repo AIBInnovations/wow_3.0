@@ -5,10 +5,9 @@ import { useId } from 'react'
 /**
  * Text set around a circle.
  *
- * The export baked its two circular lockups into vector outlines, so their
- * wording could not be changed. This draws the ring live from a string instead,
- * which is what lets the studio's own words sit in the CTA. `repeat` tiles the
- * phrase so it closes the ring without a gap.
+ * Drawn from a string rather than from baked outlines, so the wording is data
+ * and can be changed without touching vectors. `repeat` tiles the phrase so it
+ * closes the ring without a gap.
  */
 export default function CircleText({
   text,
