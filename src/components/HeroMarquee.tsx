@@ -1,80 +1,112 @@
 'use client'
 
 import Link from 'next/link'
+import SplitType from 'split-type'
 import { useRef } from 'react'
 import { gsap, registerGsap } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import { useLineReveal } from '@/hooks/useSplitText'
+import { useFontsReady } from '@/hooks/useFontsReady'
 import { heroMarquee } from '@/data/media'
 import Initial from './Initial'
 import { hero } from '@/data/content'
 
 /**
- * Full-viewport hero: a continuously drifting horizontal band of photographs
- * behind the display headline. `.cta-marquee_panel.top` is marked
- * `will-change: transform` but carries no CSS animation — the drift is driven
- * here, so it can be paused for reduced motion.
+ * Full-viewport hero: a drifting band of photographs behind the headline.
+ *
+ * The load sequence, all on one timeline:
+ *
+ *   0.00s  content container becomes visible; every photo fades in (0.5s) and the
+ *          first panel's photos wipe upward out of a bottom clip, 0.07s apart
+ *   1.00s  headline rises word by word from beneath each line's clip
+ *   2.00s  paragraph rises line by line, fading in as it goes
+ *   2.50s  kicker fades in
+ *   2.60s  button fades in
+ *
+ * The band drifts one full panel width every 60s, forever, independent of all of
+ * the above.
  */
 export default function HeroMarquee() {
   const sectionRef = useRef<HTMLElement>(null)
-  const trackRef = useRef<HTMLDivElement>(null)
-  const dimRef = useRef<HTMLDivElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
-  const titleRef = useRef<HTMLHeadingElement>(null)
-  const paraRef = useRef<HTMLParagraphElement>(null)
   const reduced = useReducedMotion()
+  const fontsReady = useFontsReady()
 
-  useLineReveal(titleRef, { immediate: true, delay: 0.75 })
-  useLineReveal(paraRef, { immediate: true, delay: 1.1, innerClass: 'p-line-inner' })
-
-  // site.css parks `.dim` and `.hw` at opacity 0 and never raises them, so the
-  // hero depends on this timeline to appear at all.
   useIsomorphicLayoutEffect(() => {
-    const dim = dimRef.current
-    const content = contentRef.current
-    if (!dim || !content) return
+    const section = sectionRef.current
+    if (!section) return
     registerGsap()
 
+    const q = gsap.utils.selector(section)
+
     if (reduced) {
-      gsap.set([dim, content], { opacity: 1 })
+      gsap.set(q('.hw, .dim'), { autoAlpha: 1 })
       return
+    }
+    // Lines are measured, so the split has to wait for the real faces.
+    if (!fontsReady) return
+
+    const title = q('.home-hero_title')[0] as HTMLElement | undefined
+    const para = q('.home-hero_p')[0] as HTMLElement | undefined
+
+    const titleSplit = title
+      ? new SplitType(title, { types: 'lines,words', tagName: 'span', lineClass: 'line', wordClass: 'word' })
+      : null
+    const paraSplit = para
+      ? new SplitType(para, { types: 'lines', tagName: 'span', lineClass: 'line' })
+      : null
+
+    // Each paragraph line gets an inner block that does the moving.
+    for (const line of (paraSplit?.lines ?? []) as HTMLElement[]) {
+      const inner = document.createElement('span')
+      inner.className = 'p-line-inner'
+      inner.style.display = 'block'
+      while (line.firstChild) inner.appendChild(line.firstChild)
+      line.appendChild(inner)
+    }
+
+    // Deep descenders would otherwise be cut by the line clip mid-rise.
+    for (const word of (titleSplit?.words ?? []) as HTMLElement[]) {
+      word.style.paddingBottom = '3vw'
+      word.style.marginBottom = '-3vw'
     }
 
     const ctx = gsap.context(() => {
-      gsap
-        .timeline()
-        .fromTo(dim, { opacity: 0, scale: 1.06 }, { opacity: 1, scale: 1, duration: 1.8, ease: 'composedOut' })
-        .fromTo(content, { opacity: 0 }, { opacity: 1, duration: 1.1, ease: 'composedOut' }, 0.45)
-    })
+      gsap.set('.first-bg .cta-marquee_bg_img', { clipPath: 'inset(100% 0 0 0)' })
 
-    return () => ctx.revert()
-  }, [reduced])
+      const tl = gsap.timeline()
+      tl.set('.hw', { autoAlpha: 1 })
+      tl.from('.cta-marquee_bg_img', { opacity: 0, duration: 0.5, ease: 'power3.inOut' }, '<')
+      tl.to(
+        gsap.utils.toArray('.first-bg .cta-marquee_bg_img'),
+        { clipPath: 'inset(0% 0 0 0)', duration: 1.5, stagger: { each: 0.07 }, ease: 'power3.inOut' },
+        '<'
+      )
+      tl.to('.dim', { opacity: 1 }, 0)
+      tl.from('.home-hero_title .word', { yPercent: 100, stagger: 0.1, ease: 'power3.out', duration: 2 }, '<1')
+      tl.from('.p-line-inner', { yPercent: 100, stagger: 0.1, opacity: 0, ease: 'power3.out', duration: 2 }, '<1')
+      tl.from('.hk', { opacity: 0, stagger: 0.1, ease: 'power3.out', duration: 1.5 }, '<.5')
+      tl.from('.home-hero_btn_wrap', { opacity: 0, ease: 'power3.out', duration: 1.5 }, '<.1')
 
-  useIsomorphicLayoutEffect(() => {
-    const track = trackRef.current
-    if (!track || reduced) return
-    registerGsap()
-
-    const ctx = gsap.context(() => {
-      // Two identical panels sit side by side; shifting the pair by exactly one
-      // panel width and looping lands the second panel where the first began,
-      // so the seam never shows.
       gsap.to('.cta-marquee_panel', {
         xPercent: -100,
-        duration: 60,
         ease: 'none',
+        duration: 60,
         repeat: -1,
+        modifiers: { xPercent: gsap.utils.wrap(-100, 0) },
       })
-    }, track)
+    }, section)
 
-    return () => ctx.revert()
-  }, [reduced])
+    return () => {
+      ctx.revert()
+      paraSplit?.revert()
+      titleSplit?.revert()
+    }
+  }, [reduced, fontsReady])
 
   return (
     <section ref={sectionRef} data-theme="inherit" className="home-marquee_wrap">
-      <div ref={dimRef} className="cta-marquee_contain dim">
-        <div ref={trackRef} className="cta-marquee_componenet">
+      <div className="cta-marquee_contain dim">
+        <div className="cta-marquee_componenet">
           {[0, 1].map((panel) => (
             <div
               key={panel}
@@ -97,23 +129,21 @@ export default function HeroMarquee() {
         <div className="cta-marquee_overlay" />
       </div>
 
-      <div ref={contentRef} className="u-container hw home" data-padding-top="main" data-padding-bottom="main">
+      <div className="u-container hw home" data-padding-top="main" data-padding-bottom="main">
         <div className="home-hero_content u-vflex-center-center">
           <div className="div-block-30">
             <h1 className="kicker hk">{hero.kicker}</h1>
           </div>
 
           {hero.title ? (
-            <h2 ref={titleRef} className="u-text-display home-hero_title" js-line-animation="">
+            <h2 className="u-text-display home-hero_title">
               <span className="outline until-mobile">
                 <Initial>{hero.title}</Initial>
               </span>
             </h2>
           ) : null}
 
-          <p ref={paraRef} className="home-hero_p" js-line-animation="">
-            {hero.paragraph}
-          </p>
+          <p className="home-hero_p">{hero.paragraph}</p>
 
           <div className="home-hero_btn_wrap">
             <MainButton href={hero.cta.href} label={hero.cta.label} />

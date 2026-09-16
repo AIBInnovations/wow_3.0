@@ -2,14 +2,14 @@
 
 import Link from 'next/link'
 import { useRef } from 'react'
-import { useWordReveal } from '@/hooks/useSplitText'
+import { useLetterAnimation } from '@/hooks/useSplitText'
 import { footerColumns, copyright, credit } from '@/data/footer'
 import Wordmark from './Wordmark'
 import { GRID } from '@/data/gridNodes'
 
 export default function Footer() {
   const logoRef = useRef<HTMLDivElement>(null)
-  useWordReveal(logoRef)
+  useLetterAnimation(logoRef)
 
   return (
     <section data-theme="inherit" className="footernn_wrap">

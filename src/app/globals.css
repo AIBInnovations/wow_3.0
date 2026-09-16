@@ -27,29 +27,6 @@
   cursor: pointer;
 }
 
-/*
- * Menu row hover. site.css parks `.nav_drop_over-text_wrap` at opacity 0 and
- * defines a transition for it, but declares nothing that ever raises it.
- * Written here declaratively, so it answers keyboard focus as well as hover.
- */
-.nav_drop_over-text_wrap {
-  transition: opacity 0.325s;
-}
-
-.nav_drop_link:hover .nav_drop_over-text_wrap,
-.nav_drop_link:focus-visible .nav_drop_over-text_wrap {
-  opacity: 1;
-}
-
-/*
- * site.css paints the circular CTA's arrow `--swatch--brand` and fills the disc
- * behind it with that same value, which leaves the arrow invisible. Dark on
- * gold is the readable reading of the design.
- */
-.circle-text-btn_arrow {
-  color: var(--swatch--dark);
-}
-
 /* Keyboard focus must stay visible — site.css carries no focus styling. */
 :focus-visible {
   outline: 2px solid var(--swatch--brand);

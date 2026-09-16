@@ -2,49 +2,51 @@
 
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { gsap, registerGsap, DUR } from '@/lib/gsap'
+import { gsap, registerGsap, EASE, MQ } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import { useSmoothScroll } from '@/providers/SmoothScrollProvider'
 import { navItems, HOVER_REPEAT } from '@/data/nav'
 import { GRID } from '@/data/gridNodes'
 import Wordmark from './Wordmark'
 import { site } from '@/data/content'
 
+/**
+ * Top bar and fullscreen menu.
+ *
+ * Every row — the spacer included — is parked a full viewport above the screen.
+ * MENU drops them into place over 1.5s, 0.05s apart, and pressing it again runs
+ * the same timeline backwards. The page underneath is not locked; it keeps
+ * scrolling, as the menu is a fixed layer over it.
+ *
+ * Hovering a row (tablet and up) swaps its label for a panel of repeated text,
+ * shown instantly and faded out over 0.5s. On desktop that panel also creeps
+ * left, a full width every 60s, and eases home when the pointer leaves.
+ */
 export default function Navigation() {
   const [open, setOpen] = useState(false)
-  const dropRef = useRef<HTMLDivElement>(null)
-  const rowsRef = useRef<HTMLAnchorElement[]>([])
+  const rootRef = useRef<HTMLDivElement>(null)
   const timelineRef = useRef<gsap.core.Timeline | null>(null)
-  const { start, stop } = useSmoothScroll()
   const reduced = useReducedMotion()
 
-  // Build the open/close timeline once; play it forward or in reverse on toggle.
   useIsomorphicLayoutEffect(() => {
+    const root = rootRef.current
+    if (!root) return
     registerGsap()
-    const rows = rowsRef.current.filter(Boolean)
-    if (!rows.length) return
 
     const ctx = gsap.context(() => {
       if (reduced) {
-        gsap.set(rows, { y: 0, autoAlpha: 0 })
-        timelineRef.current = gsap
-          .timeline({ paused: true })
-          .to(rows, { autoAlpha: 1, duration: 0.2 })
+        gsap.set('.nav_drop_link', { y: 0, autoAlpha: 0 })
+        timelineRef.current = gsap.timeline({ paused: true }).to('.nav_drop_link', { autoAlpha: 1, duration: 0.2 })
         return
       }
 
-      // Rows are parked at translateY(-100vh) — a full viewport, not the row's
-      // own height — so the offset is resolved against the window.
-      gsap.set(rows, { y: () => -window.innerHeight })
-
-      timelineRef.current = gsap.timeline({ paused: true }).to(rows, {
-        y: 0,
-        duration: DUR.base,
-        ease: 'composed',
-        stagger: 0.07,
-      })
-    })
+      gsap.set('.nav_drop_link', { y: '-100vh' })
+      timelineRef.current = gsap.timeline({ paused: true }).to(
+        '.nav_drop_link',
+        { y: '0vh', duration: 1.5, stagger: { each: 0.05, from: 'start' }, ease: 'power3.out' },
+        0
+      )
+    }, root)
 
     return () => {
       ctx.revert()
@@ -52,53 +54,53 @@ export default function Navigation() {
     }
   }, [reduced])
 
-  useEffect(() => {
-    const tl = timelineRef.current
-    if (!tl) return
-    if (open) {
-      stop()
-      tl.play()
-    } else {
-      tl.reverse()
-      start()
-    }
-  }, [open, start, stop])
-
-  // ESC closes the menu.
-  useEffect(() => {
-    if (!open) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false)
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [open])
-
   const toggle = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
-    setOpen((v) => !v)
+    const tl = timelineRef.current
+    if (!tl) return
+    // Play when closed or mid-close; otherwise run it back.
+    if (tl.reversed() || tl.progress() === 0) {
+      tl.play()
+      setOpen(true)
+    } else {
+      tl.reverse()
+      setOpen(false)
+    }
   }, [])
 
+  const close = useCallback(() => {
+    const tl = timelineRef.current
+    if (!tl || tl.progress() === 0) return
+    tl.reverse()
+    setOpen(false)
+  }, [])
+
+  // ESC closes it — a keyboard affordance only; nothing changes for the pointer.
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close()
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [open, close])
+
   return (
-    <div className="nav_wrap">
-      <div ref={dropRef} className={`nav_drop_wrap${open ? ' active' : ''}`}>
-        {/* Spacer row that sits behind the top bar. */}
+    <div ref={rootRef} className="nav_wrap">
+      <div className={`nav_drop_wrap${open ? ' active' : ''}`}>
         <div className="nav_drop_link first" />
 
-        {navItems.map((item, i) => {
+        {navItems.map((item) => {
           const body = (
             <>
               <div className="nav_drop_txt">{item.label}</div>
-              <HoverMarquee text={item.hover} />
+              <HoverPanel text={item.hover} />
             </>
           )
           const shared = {
-            ref: (el: HTMLAnchorElement | null) => {
-              if (el) rowsRef.current[i] = el
-            },
             className: `nav_drop_link ${item.className} w-inline-block`,
             tabIndex: open ? 0 : -1,
-            onClick: () => setOpen(false),
+            onClick: close,
+            onMouseEnter: (e: React.MouseEvent<HTMLAnchorElement>) => hoverIn(e.currentTarget, reduced),
+            onMouseLeave: (e: React.MouseEvent<HTMLAnchorElement>) => hoverOut(e.currentTarget, reduced),
           }
 
           // Enquiries is a mailto, which next/link must not own.
@@ -115,19 +117,11 @@ export default function Navigation() {
       </div>
 
       <div className="nav_flex nl1">
-        <a
-          href={`mailto:${site.email}`}
-          id={GRID.navLeft}
-          className="nav_link_wrap left w-inline-block"
-        >
+        <a href={`mailto:${site.email}`} id={GRID.navLeft} className="nav_link_wrap left w-inline-block">
           <div className="nav-txt">ENQUIRIES</div>
         </a>
 
-        <Link
-          href="/"
-          aria-label={`${site.name} — home`}
-          className="nav_logo_link w-inline-block w--current"
-        >
+        <Link href="/" aria-label={`${site.name} — home`} className="nav_logo_link w-inline-block w--current">
           <Wordmark className="nav_wordmark" />
         </Link>
 
@@ -140,7 +134,7 @@ export default function Navigation() {
             className="nav_btn_wrap w-inline-block"
           >
             <div className="nav-txt">
-              <div className="right">{open ? 'CLOSE' : 'MENU'}</div>
+              <div className="right">MENU</div>
             </div>
           </a>
         </div>
@@ -149,33 +143,38 @@ export default function Navigation() {
   )
 }
 
-/**
- * Two identical tracks side by side. On row hover the wrap fades in (CSS) and
- * the tracks slide one full width, so the repeated phrase reads as endless.
- */
-function HoverMarquee({ text }: { text: string }) {
-  const wrapRef = useRef<HTMLDivElement>(null)
-  const reduced = useReducedMotion()
+function hoverIn(row: HTMLElement, reduced: boolean) {
+  if (reduced || !window.matchMedia(MQ.tabletUp).matches) return
+  const wrap = row.querySelector('.nav_drop_over-text_wrap')
+  const panels = row.querySelectorAll('.nav_drop_over-text_panel')
 
-  useIsomorphicLayoutEffect(() => {
-    const wrap = wrapRef.current
-    if (!wrap || reduced) return
-    registerGsap()
+  gsap.set(wrap, { opacity: 1 })
 
-    const ctx = gsap.context(() => {
-      gsap.to('.nav_drop_over-text_panel', {
-        xPercent: -100,
-        duration: 12,
-        ease: 'none',
-        repeat: -1,
-      })
-    }, wrap)
+  if (window.matchMedia(MQ.desktop).matches) {
+    // A single 60s creep, then home — not a loop.
+    gsap.fromTo(
+      panels,
+      { xPercent: 0 },
+      { xPercent: -100, duration: 60, ease: 'none', overwrite: 'auto', onComplete: () => gsap.set(panels, { xPercent: 0 }) }
+    )
+  }
+}
 
-    return () => ctx.revert()
-  }, [reduced])
+function hoverOut(row: HTMLElement, reduced: boolean) {
+  if (reduced || !window.matchMedia(MQ.tabletUp).matches) return
+  const wrap = row.querySelector('.nav_drop_over-text_wrap')
+  const panels = row.querySelectorAll('.nav_drop_over-text_panel')
 
+  gsap.to(wrap, { opacity: 0, duration: 0.5, ease: EASE.ease, overwrite: 'auto' })
+
+  if (window.matchMedia(MQ.desktop).matches) {
+    gsap.to(panels, { xPercent: 0, duration: 0.5, ease: EASE.ease, overwrite: 'auto' })
+  }
+}
+
+function HoverPanel({ text }: { text: string }) {
   return (
-    <div ref={wrapRef} className="nav_drop_over-text_wrap" aria-hidden="true">
+    <div className="nav_drop_over-text_wrap" aria-hidden="true">
       {[0, 1].map((panel) => (
         <div key={panel} className="nav_drop_over-text_panel u-hflex-left-stretch">
           {Array.from({ length: HOVER_REPEAT }, (_, i) => (

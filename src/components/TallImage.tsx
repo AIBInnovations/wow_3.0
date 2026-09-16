@@ -1,37 +1,53 @@
 'use client'
 
 import { useRef } from 'react'
-import { gsap, registerGsap } from '@/lib/gsap'
+import { gsap, registerGsap, scrubFor } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import { useCharScrub } from '@/hooks/useSplitText'
+import { useScrubText } from '@/hooks/useSplitText'
 import CircleTextButton from './CircleTextButton'
 import { atelier } from '@/data/content'
 import { atelierBackground } from '@/data/media'
 
 /**
- * The atelier statement — a full-bleed ceremony frame that drifts behind copy
- * whose characters brighten as the section scrolls past. The background image is
- * styled at 110% height precisely so it has room to move.
+ * The atelier statement over a full-bleed photograph.
+ *
+ * The photograph drifts from -20em to +11em as the section passes through the
+ * viewport, measured in the image's own em so the travel scales with type. It is
+ * styled at 110% height precisely so it has room to move without showing an edge.
  */
 export default function TallImage() {
   const sectionRef = useRef<HTMLElement>(null)
-  const bgRef = useRef<HTMLImageElement>(null)
-  const triggerRef = useRef<HTMLDivElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
   const reduced = useReducedMotion()
 
-  useCharScrub(headingRef, triggerRef)
+  useScrubText(headingRef)
 
   useIsomorphicLayoutEffect(() => {
     const section = sectionRef.current
-    const bg = bgRef.current
-    if (!section || !bg || reduced) return
+    if (!section || reduced) return
     registerGsap()
 
-    // Disabled below 768px — the original drops this parallax on small screens.
     const ctx = gsap.context(() => {
-      ScrollTriggerMatchMedia(section, bg)
+      const img = section.querySelector<HTMLElement>('.tall-img_bg_img')
+      if (!img) return
+      const em = () => parseFloat(getComputedStyle(img).fontSize)
+
+      gsap.fromTo(
+        img,
+        { y: () => -20 * em() },
+        {
+          y: () => 11 * em(),
+          ease: 'none',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: scrubFor(50),
+            invalidateOnRefresh: true,
+          },
+        }
+      )
     }, section)
 
     return () => ctx.revert()
@@ -40,13 +56,7 @@ export default function TallImage() {
   return (
     <section ref={sectionRef} data-theme="dark" className="tall-img_wrap">
       <div className="tall-img_bg_wrap">
-        <img
-          ref={bgRef}
-          src={atelierBackground}
-          alt=""
-          loading="lazy"
-          className="tall-img_bg_img"
-        />
+        <img src={atelierBackground} alt="" loading="lazy" className="tall-img_bg_img" />
         <div className="tall-img_bg_overlay" />
       </div>
 
@@ -57,7 +67,7 @@ export default function TallImage() {
 
         <div className="tall-img_title_flex">
           <div className="tall-img_title_wrap">
-            <div ref={triggerRef} className="trigger">
+            <div className="trigger">
               <h2 ref={headingRef} className="u-text-h2 scrub-txt">
                 {atelier.statement}
               </h2>
@@ -73,24 +83,4 @@ export default function TallImage() {
       </div>
     </section>
   )
-}
-
-/** Parallax drift on the portrait, desktop only. */
-function ScrollTriggerMatchMedia(section: HTMLElement, bg: HTMLElement) {
-  gsap.matchMedia().add('(min-width: 768px)', () => {
-    gsap.fromTo(
-      bg,
-      { yPercent: 0 },
-      {
-        yPercent: -9,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: true,
-        },
-      }
-    )
-  })
 }

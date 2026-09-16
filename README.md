@@ -110,30 +110,36 @@ the markup reads as intent.
 
 ## Motion
 
-| Behaviour | Where | Notes |
-| --- | --- | --- |
-| Smooth scroll | `providers/SmoothScrollProvider` | Lenis, `lerp: 0.1`, `wheelMultiplier: 0.7` — the export's own values |
-| Hero intro | `HeroMarquee` | Fades `.dim` and `.hw` up from 0; see below |
-| Hero image band | `HeroMarquee` | Two identical panels shifted one full width, looped |
-| Scroll gallery | `GalleryScroll` | 200vh section, sticky frame, columns at different rates + progress bar |
-| Line reveals | `hooks/useSplitText` | SplitType lines, inner span rises from `translateY(110%)` |
-| Character scrub | `TallImage` | Characters brighten on scrub across the section |
-| Circular CTA | `svg/CircleText` | Type set live on a `textPath`, so the wording is data |
-| Destinations | `StickyStories` | ScrollTrigger toggles `.active`; the stylesheet does the fade/scale |
-| Statements marquee | stylesheet | Pure CSS, `move-text` 20s linear |
-| Statements slider | `Voices` | Manual, fade, wraps, arrow-key navigable |
+Every effect is a port of the reference site's own animation code — its GSAP
+modules and its Webflow interaction definitions — with the timings, trigger
+ranges, distances and eases carried over exactly. Each was verified in a real
+browser by sampling values at points along its range, not by eye.
 
-GSAP drives Lenis through a single ticker so ScrollTrigger and the smoothed scroll
-position share one clock. The export ships that wiring commented out, which leaves
-ScrollTrigger reading stale positions; it is enabled here.
+| Section | Behaviour |
+| --- | --- |
+| Hero, on load | 0s: photos fade in (0.5s) and the first panel wipes upward out of a bottom clip, 0.07s apart · 1s: headline rises word by word · 2s: paragraph rises line by line · 2.5s: kicker · 2.6s: button |
+| Hero band | drifts one panel width every 60s, forever |
+| Gallery | scroll-driven only, `top bottom → bottom top`: outer columns `-190vw → 70vw` linear, middle `0 → -170vw` sine; fixed progress bar shown only in range; frame fades out as it ends |
+| Atelier photo | `-20em → +11em` across the viewport, smoothing 50 |
+| Atelier statement | characters light up one at a time (`steps(1)`), `top 90% → bottom 80%` |
+| Circle buttons | ring turns every 30s; **no disc at rest** — on hover the disc blooms to 1.1 (back-out) and the arrow swells to 1.5 and turns light |
+| Statements band | headline runs on CSS; slides change **instantly** and the incoming slide makes its own entrance; first photo wipes in from the right at mid-viewport; quote mark drifts `-20% → +10%` |
+| Destinations | active item follows the viewport centre in both directions; hovering the active title turns it brand-coloured and drains the photo to 50% greyscale; section fades out past its end |
+| Four Days heading, footer wordmark | every character flips up 180° on X; replays when scrolled back to |
+| Closing heading | lines rise; replays when scrolled back to |
+| Closing background | `-27% → 0`, smoothing 81 |
+| Menu | rows drop from −100vh over 1.5s, 0.05s apart; MENU again reverses it; the page is **not** scroll-locked; hover shows a text panel instantly (tablet up), which creeps left over 60s on desktop |
 
-Every animated component checks `prefers-reduced-motion` and degrades to a static,
-fully readable page. Every GSAP setup runs inside a `gsap.context()` that is
-reverted on unmount, and SplitType splits are reverted with it.
+Two deliberate differences from the reference, both legibility rather than motion:
 
-Split-text waits on `document.fonts.ready` (`hooks/useFontsReady`). Splitting
-before the display face arrives measures the fallback and bakes in the wrong line
-breaks, which the split boxes then keep.
+- **Destinations scrim.** The reference's photographs are dark ceremony frames,
+  where its 0.7 opacity is enough. These are bright daylight exteriors, so the
+  stylesheet's own overlay is rendered on the active item.
+- **Reduced motion.** Everything above is skipped under
+  `prefers-reduced-motion`, leaving a fully readable static page.
+
+Lenis runs with `lerp: 0.1` and `wheelMultiplier: 0.7`, and GSAP drives it from
+its own ticker so ScrollTrigger and the smoothed position share one clock.
 
 ## Gaps in the export, and what was done about them
 

@@ -1,21 +1,28 @@
 'use client'
 
 import { useRef } from 'react'
-import { gsap, ScrollTrigger, registerGsap } from '@/lib/gsap'
+import { gsap, registerGsap } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { galleryColumns } from '@/data/media'
 
 /**
- * A 200vh section whose inner frame is sticky for its full height. While it is
- * pinned the three photo columns travel vertically at different rates — the
- * outer pair rise, the middle column falls — and a progress bar tracks how far
- * through the section the viewer is.
+ * A 200vh section with a sticky 100vh frame holding three photo columns.
+ *
+ * Nothing here moves on its own. The columns are driven entirely by scroll,
+ * across the whole time the section is on screen — from its top entering at the
+ * bottom of the viewport to its bottom leaving at the top:
+ *
+ *   outer columns   -190vw → 70vw    linear       (they travel down)
+ *   middle column      0vw → -170vw  sine.inOut   (it travels up)
+ *   progress bar        0% → 120%    linear
+ *
+ * Travelling in opposite directions at different rates is what makes the grid
+ * read as depth. The bar is fixed to the viewport and only shown while the
+ * section is in range, and the whole frame fades out as the section ends.
  */
 export default function GalleryScroll() {
   const wrapRef = useRef<HTMLElement>(null)
-  const barRef = useRef<HTMLDivElement>(null)
-  const indicatorRef = useRef<HTMLDivElement>(null)
   const reduced = useReducedMotion()
 
   useIsomorphicLayoutEffect(() => {
@@ -24,40 +31,32 @@ export default function GalleryScroll() {
     registerGsap()
 
     const ctx = gsap.context(() => {
-      const columns = gsap.utils.toArray<HTMLElement>('._3-col-wrapper')
+      const bar = wrap.querySelector('.home-gal_scroll-bar')
+      const show = (on: boolean) => bar?.classList.toggle('show', on)
 
-      // Each column overflows its 100vh frame; this is how far it can travel.
-      const travel = (col: HTMLElement) => Math.max(col.scrollHeight - window.innerHeight, 0)
-
-      columns.forEach((col, i) => {
-        const middle = i === 1
-        gsap.fromTo(
-          col,
-          { y: middle ? () => -travel(col) : 0 },
-          {
-            y: middle ? 0 : () => -travel(col),
-            ease: 'none',
-            scrollTrigger: {
-              trigger: wrap,
-              start: 'top top',
-              end: 'bottom bottom',
-              scrub: true,
-              invalidateOnRefresh: true,
-            },
-          }
-        )
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: wrap,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+          onEnter: () => show(true),
+          onLeave: () => show(false),
+          onEnterBack: () => show(true),
+          onLeaveBack: () => show(false),
+        },
       })
+      tl.fromTo('.col-1-s', { y: '-190vw' }, { y: '70vw', ease: 'none' }, 0)
+      tl.fromTo('.col-s-2', { y: '0vw' }, { y: '-170vw', ease: 'sine.inOut' }, 0)
+      tl.fromTo('.home-gal_scroll-indicator', { width: '0%' }, { width: '120%', ease: 'none' }, 0)
 
-      // Progress bar: visible only while the section is on screen.
-      ScrollTrigger.create({
-        trigger: wrap,
-        start: 'top top',
-        end: 'bottom bottom',
-        onToggle: ({ isActive }) => barRef.current?.classList.toggle('show', isActive),
-        onUpdate: ({ progress }) => {
-          if (indicatorRef.current) {
-            indicatorRef.current.style.width = `${progress * 100}%`
-          }
+      gsap.to('.home-gal_fade-trigger', {
+        opacity: 0,
+        scrollTrigger: {
+          trigger: '.home-gal_fade-trigger',
+          start: 'bottom 80%',
+          end: 'bottom 30%',
+          scrub: true,
         },
       })
     }, wrap)
@@ -85,9 +84,9 @@ export default function GalleryScroll() {
         </div>
       </div>
 
-      <div ref={barRef} className="home-gal_scroll-bar" aria-hidden="true">
+      <div className="home-gal_scroll-bar" aria-hidden="true">
         <div className="home-gal_scroll-progress-wrap">
-          <div ref={indicatorRef} className="home-gal_scroll-indicator" />
+          <div className="home-gal_scroll-indicator" />
         </div>
       </div>
     </section>

@@ -2,189 +2,210 @@
 
 import SplitType from 'split-type'
 import type { RefObject } from 'react'
-import { gsap, ScrollTrigger, registerGsap, DUR } from '@/lib/gsap'
+import { gsap, ScrollTrigger, registerGsap } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect'
 import { useReducedMotion } from './useReducedMotion'
 import { useFontsReady } from './useFontsReady'
 
-/**
- * Wraps the contents of each SplitType line in an inner span so the line box
- * can clip (`overflow: hidden`) while the inner span translates. This is the
- * `.line > .line-inner` structure site.css already styles.
- */
-function wrapLines(lines: HTMLElement[], innerClass: string) {
-  return lines.map((line) => {
+/** Wraps each split piece's contents in a block span that does the moving. */
+function wrapInner(pieces: HTMLElement[], className: string) {
+  return pieces.map((piece) => {
     const inner = document.createElement('span')
-    inner.className = innerClass
+    inner.className = className
     inner.style.display = 'block'
-    inner.style.willChange = 'transform'
-    while (line.firstChild) inner.appendChild(line.firstChild)
-    line.appendChild(inner)
+    while (piece.firstChild) inner.appendChild(piece.firstChild)
+    piece.appendChild(inner)
     return inner
   })
 }
 
-type LineRevealOptions = {
-  /** Element that triggers the reveal. Defaults to the text element itself. */
-  trigger?: RefObject<HTMLElement | null>
-  /** Delay before the first line moves, in seconds. */
-  delay?: number
-  /** Play as soon as it mounts rather than waiting for scroll. */
-  immediate?: boolean
-  innerClass?: string
+/**
+ * Re-runs `build` whenever the viewport width changes, tearing down the previous
+ * split first. Height-only resizes (mobile URL bars) are ignored, because
+ * re-splitting mid-scroll would visibly restart the animation.
+ */
+function rebuildOnWidthChange(build: () => () => void) {
+  let teardown = build()
+  let width = window.innerWidth
+  const onResize = () => {
+    if (window.innerWidth === width) return
+    width = window.innerWidth
+    teardown()
+    teardown = build()
+    ScrollTrigger.refresh()
+  }
+  window.addEventListener('resize', onResize)
+  return () => {
+    window.removeEventListener('resize', onResize)
+    teardown()
+  }
 }
 
+/** Both reveal types start a beat after load, once layout and images settle. */
+const SETTLE_MS = 1000
+
 /**
- * Line-by-line rise. Each line starts at translateY(110%) inside a clipped box
- * and settles to 0 — the reveal used for every major headline in the original.
+ * Line reveal for elements carrying `js-line-animation`.
+ *
+ * Each line rises from beneath its own clip. It plays on the way in, reverses
+ * when the element scrolls back out, and plays again on return — so the reveal
+ * is repeatable in both directions rather than a one-off.
  */
-export function useLineReveal(
-  ref: RefObject<HTMLElement | null>,
-  { trigger, delay = 0, immediate = false, innerClass = 'line-inner' }: LineRevealOptions = {}
-) {
+export function useLineAnimation(ref: RefObject<HTMLElement | null>) {
   const reduced = useReducedMotion()
   const fontsReady = useFontsReady()
 
   useIsomorphicLayoutEffect(() => {
     const el = ref.current
     if (!el) return
-
     registerGsap()
 
     if (reduced) {
       el.style.visibility = 'visible'
       return
     }
-
-    // Measuring lines before the webfont lands bakes in the fallback's breaks.
     if (!fontsReady) return
 
-    const split = new SplitType(el, { types: 'lines', lineClass: 'line' })
-    const inners = wrapLines((split.lines ?? []) as HTMLElement[], innerClass)
-    el.style.visibility = 'visible'
+    let teardown: (() => void) | null = null
+    const timer = window.setTimeout(() => {
+      teardown = rebuildOnWidthChange(() => {
+        gsap.set(el, { autoAlpha: 1 })
+        const split = new SplitType(el, { types: 'lines', tagName: 'span', lineClass: 'line' })
+        const inners = wrapInner((split.lines ?? []) as HTMLElement[], 'line-inner')
 
-    const ctx = gsap.context(() => {
-      gsap.set(inners, { yPercent: 110 })
-      const tween = gsap.to(inners, {
-        yPercent: 0,
-        duration: DUR.slow,
-        ease: 'composed',
-        stagger: 0.09,
-        delay,
-        paused: !immediate,
-      })
-
-      if (!immediate) {
-        ScrollTrigger.create({
-          trigger: trigger?.current ?? el,
-          start: 'top 85%',
-          once: true,
-          onEnter: () => tween.play(),
-        })
-      }
-    }, el)
-
-    return () => {
-      ctx.revert()
-      split.revert()
-    }
-  }, [ref, trigger, delay, immediate, innerClass, reduced, fontsReady])
-}
-
-/**
- * Per-character brightening tied to scroll position — the `.scrub-txt` block in
- * the atelier statement, where characters light up as the section passes.
- */
-export function useCharScrub(
-  ref: RefObject<HTMLElement | null>,
-  trigger: RefObject<HTMLElement | null>
-) {
-  const reduced = useReducedMotion()
-  const fontsReady = useFontsReady()
-
-  useIsomorphicLayoutEffect(() => {
-    const el = ref.current
-    if (!el) return
-
-    registerGsap()
-
-    if (reduced) {
-      el.style.color = 'var(--theme--text)'
-      return
-    }
-
-    if (!fontsReady) return
-
-    const split = new SplitType(el, {
-      types: 'lines,words,chars',
-      lineClass: 'line',
-      wordClass: 'word',
-      charClass: 'char',
-    })
-
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        split.chars,
-        { color: 'var(--light-fade-2)' },
-        {
-          color: 'var(--theme--text)',
-          ease: 'none',
-          stagger: 1,
+        const tl = gsap.timeline({
           scrollTrigger: {
-            trigger: trigger.current ?? el,
-            start: 'top 75%',
-            end: 'bottom 55%',
-            scrub: true,
+            trigger: el,
+            start: 'top 80%',
+            end: 'bottom top',
+            toggleActions: 'play reverse play reverse',
           },
+        })
+        tl.fromTo(
+          inners,
+          { yPercent: 100 },
+          { yPercent: 0, duration: 2, delay: 0.1, ease: 'power3.out', stagger: 0.2 }
+        )
+
+        return () => {
+          tl.scrollTrigger?.kill()
+          tl.kill()
+          split.revert()
         }
-      )
-    }, el)
+      })
+    }, SETTLE_MS)
 
     return () => {
-      ctx.revert()
-      split.revert()
+      window.clearTimeout(timer)
+      teardown?.()
     }
-  }, [ref, trigger, reduced, fontsReady])
+  }, [ref, reduced, fontsReady])
 }
 
 /**
- * Word-by-word rise for the oversized display headings that carry a
- * `js-letter-animation` attribute.
+ * Letter flip for elements carrying `js-letter-animation`.
+ *
+ * Every character turns up from beneath its clip, rotating 180° on X as it
+ * rises. Like the line reveal it replays in both directions.
  */
-export function useWordReveal(ref: RefObject<HTMLElement | null>) {
+export function useLetterAnimation(ref: RefObject<HTMLElement | null>) {
   const reduced = useReducedMotion()
   const fontsReady = useFontsReady()
 
   useIsomorphicLayoutEffect(() => {
     const el = ref.current
     if (!el) return
-
     registerGsap()
+
     if (reduced || !fontsReady) return
 
-    const split = new SplitType(el, {
-      types: 'lines,words',
-      lineClass: 'line',
-      wordClass: 'word',
-    })
+    let teardown: (() => void) | null = null
+    const timer = window.setTimeout(() => {
+      teardown = rebuildOnWidthChange(() => {
+        gsap.set(el, { autoAlpha: 1 })
+        const split = new SplitType(el, {
+          types: 'words,chars',
+          tagName: 'span',
+          wordClass: 'word',
+          charClass: 'char',
+        })
+        const inners = wrapInner((split.chars ?? []) as HTMLElement[], 'char-inner')
 
-    const ctx = gsap.context(() => {
-      // The line box clips; words ride up inside it.
-      ;(split.lines ?? []).forEach((line) => {
-        ;(line as HTMLElement).style.overflow = 'hidden'
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: el,
+            start: 'top bottom',
+            end: 'bottom top',
+            toggleActions: 'play reverse play reverse',
+          },
+        })
+        tl.fromTo(
+          inners,
+          { yPercent: 100, rotateX: 180 },
+          { yPercent: 0, rotateX: 0, duration: 1.05, ease: 'power3.out', stagger: 0.04 }
+        )
+
+        return () => {
+          tl.scrollTrigger?.kill()
+          tl.kill()
+          split.revert()
+        }
       })
-      gsap.from(split.words, {
-        yPercent: 110,
-        duration: DUR.slow,
-        ease: 'composed',
-        stagger: 0.06,
-        scrollTrigger: { trigger: el, start: 'top 85%', once: true },
-      })
-    }, el)
+    }, SETTLE_MS)
 
     return () => {
-      ctx.revert()
-      split.revert()
+      window.clearTimeout(timer)
+      teardown?.()
     }
+  }, [ref, reduced, fontsReady])
+}
+
+/**
+ * Character-by-character brightening for `.scrub-txt`, tied to scroll.
+ *
+ * Each character snaps (steps(1)) rather than fades, one after another, so the
+ * statement appears to be typed out as the section passes.
+ */
+export function useScrubText(ref: RefObject<HTMLElement | null>) {
+  const reduced = useReducedMotion()
+  const fontsReady = useFontsReady()
+
+  useIsomorphicLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return
+    registerGsap()
+
+    const lit = getComputedStyle(document.documentElement)
+      .getPropertyValue('--theme--text')
+      .trim()
+
+    if (reduced) {
+      el.style.color = lit
+      return
+    }
+    if (!fontsReady) return
+
+    return rebuildOnWidthChange(() => {
+      const split = new SplitType(el, {
+        types: 'lines,words,chars',
+        tagName: 'span',
+        lineClass: 'line',
+        wordClass: 'word',
+        charClass: 'char',
+      })
+
+      const tl = gsap.timeline({
+        scrollTrigger: { trigger: el, start: 'top 90%', end: 'bottom 80%', scrub: true },
+      })
+      for (const char of (split.chars ?? []) as HTMLElement[]) {
+        tl.to(char, { color: lit, ease: 'steps(1)' })
+      }
+
+      return () => {
+        tl.scrollTrigger?.kill()
+        tl.kill()
+        split.revert()
+      }
+    })
   }, [ref, reduced, fontsReady])
 }
