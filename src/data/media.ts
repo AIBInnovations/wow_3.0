@@ -6,40 +6,22 @@ export type Media = { src: string; alt: string }
  * Photos alternate colour and black-and-white. The count must stay even: the loop
  * slides the second panel into the first one's place, so an odd count would put
  * two frames of the same kind side by side at the seam.
+ *
+ * Order matters for that alternation: even positions render in colour, odd ones
+ * in black-and-white, so fireworks and lit palaces sit on even positions where
+ * their colour carries, and portraits on odd ones where monochrome suits them.
+ * All eight are free of studio watermarks — several frames in the source
+ * library carry one in a corner, which the tall crop would put on show.
  */
 export const heroMarquee: Media[] = [
-  {
-    "src": "/images/hero-0.jpg",
-    "alt": "WOW Weddings & Events celebration"
-  },
-  {
-    "src": "/images/hero-1.jpg",
-    "alt": "WOW Weddings & Events celebration"
-  },
-  {
-    "src": "/images/hero-2.jpg",
-    "alt": "WOW Weddings & Events celebration"
-  },
-  {
-    "src": "/images/hero-3.jpg",
-    "alt": "WOW Weddings & Events celebration"
-  },
-  {
-    "src": "/images/hero-4.jpg",
-    "alt": "WOW Weddings & Events celebration"
-  },
-  {
-    "src": "/images/hero-5.jpg",
-    "alt": "WOW Weddings & Events celebration"
-  },
-  {
-    "src": "/images/hero-6.jpg",
-    "alt": "WOW Weddings & Events celebration"
-  },
-  {
-    "src": "/images/hero-7.jpg",
-    "alt": "WOW Weddings & Events celebration"
-  }
+  { src: '/images/hero-fireworks-mandap.jpg', alt: 'Fireworks and cold pyro over a floral mandap as the couple meet beneath it' },
+  { src: '/images/hero-couple-sparklers.jpg', alt: 'The bride marks the groom’s forehead under a sky of sparklers' },
+  { src: '/images/hero-couple-pyro.jpg', alt: 'The couple at the mandap between pyro fountains, fireworks above' },
+  { src: '/images/hero-couple-arches.jpg', alt: 'The couple walking hand in hand beneath palace arches' },
+  { src: '/images/hero-palace-day.jpg', alt: 'A lakeside palace and its gardens by day' },
+  { src: '/images/hero-couple-aisle.jpg', alt: 'The couple in a chandelier-lit floral aisle' },
+  { src: '/images/hero-palace-night.jpg', alt: 'A palace illuminated at night, guests arriving below' },
+  { src: '/images/hero-couple-haldi.jpg', alt: 'The couple laughing through the haldi, petals in the air' },
 ]
 
 /** Three scroll-gallery columns; className preserves the original column modifiers. */

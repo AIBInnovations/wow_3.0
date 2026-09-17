@@ -280,6 +280,16 @@
   margin-top: -0.45em;
 }
 
+/*
+ * The closing heading also sits inside `.div-hide`, a second wrapper that clips.
+ * It sliced the top off the script S even with the line mask widened. The lines
+ * mask their own reveal and the initial fades in, so this outer clip hides
+ * nothing that needs hiding; it is released only where an initial lives.
+ */
+.div-hide:has(.initial) {
+  overflow: visible;
+}
+
 /* ═══ The script initial ═════════════════════════════════════════════════ */
 
 /*
