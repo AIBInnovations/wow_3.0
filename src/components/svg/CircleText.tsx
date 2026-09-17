@@ -2,20 +2,26 @@
 
 import { useId } from 'react'
 
+/** The ring's radius in viewBox units, and the exact length of text it holds. */
+const RADIUS = 74
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS
+
 /**
  * Text set around a circle.
  *
  * Drawn from a string rather than from baked outlines, so the wording is data
- * and can be changed without touching vectors. `repeat` tiles the phrase so it
- * closes the ring without a gap.
+ * and can be changed without touching vectors.
+ *
+ * The phrase is set once and fitted to the full circumference with `textLength`,
+ * which spreads any spare length evenly into the letter spacing. The ring then
+ * closes exactly on the phrase's own trailing separator. Tiling it instead ran
+ * past one lap, and everything beyond the lap was dropped — so the seam fell in
+ * the middle of a phrase with no separator ("…ENQUIRY START AN…"), and because
+ * the ring turns, that seam was always somewhere in view.
+ *
+ * End `text` with a separator, e.g. "START AN ENQUIRY · MAKE AN ENQUIRY · ".
  */
-export default function CircleText({
-  text,
-  repeat = 2,
-}: {
-  text: string
-  repeat?: number
-}) {
+export default function CircleText({ text }: { text: string }) {
   const id = useId().replace(/:/g, '')
   const ring = `ring-${id}`
 
@@ -34,17 +40,24 @@ export default function CircleText({
         <path
           id={ring}
           fill="none"
-          d="M 100,100 m -74,0 a 74,74 0 1,1 148,0 a 74,74 0 1,1 -148,0"
+          d={`M 100,100 m -${RADIUS},0 a ${RADIUS},${RADIUS} 0 1,1 ${RADIUS * 2},0 a ${RADIUS},${RADIUS} 0 1,1 -${RADIUS * 2},0`}
         />
       </defs>
       <text
         fill="currentColor"
-        fontSize="13"
+        fontSize="15"
         letterSpacing="1.6"
-        style={{ fontFamily: 'var(--font--inherit)', textTransform: 'uppercase' }}
+        // SVG strips trailing spaces by default, which would close the seam up to
+        // "·THE" while every other separator reads " · ".
+        style={{ fontFamily: 'var(--font--inherit)', textTransform: 'uppercase', whiteSpace: 'pre' }}
       >
-        <textPath href={`#${ring}`} startOffset="0">
-          {text.repeat(repeat)}
+        <textPath
+          href={`#${ring}`}
+          startOffset="0"
+          textLength={CIRCUMFERENCE}
+          lengthAdjust="spacing"
+        >
+          {text}
         </textPath>
       </text>
     </svg>
