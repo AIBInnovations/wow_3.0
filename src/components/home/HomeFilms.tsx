@@ -34,10 +34,23 @@ export default function HomeFilms() {
   const [index, setIndex] = useState(0)
   /** The film currently playing, if any — cleared whenever the frame changes. */
   const [playing, setPlaying] = useState<string | null>(null)
+  /**
+   * Whether the reader has handed the pointer to the player.
+   *
+   * A film plays in a cross-origin iframe, and an iframe owns every wheel event
+   * over it — they never reach the window, so Lenis never sees them and the page
+   * simply stops scrolling at this band. While this is false a transparent
+   * shield sits over the player and takes those events instead, so the page
+   * scrolls normally with a film running underneath. Clicking the shield hands
+   * the pointer to the player for its own controls; leaving the frame puts it
+   * back.
+   */
+  const [engaged, setEngaged] = useState(false)
 
   const go = useCallback(
     (delta: number) => {
       setPlaying(null)
+      setEngaged(false)
       setIndex((i) => (i + delta + count) % count)
     },
     [count]
@@ -60,8 +73,16 @@ export default function HomeFilms() {
     }
 
     const io = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) video.play().catch(() => {})
-      else video.pause()
+      if (entry.isIntersecting) {
+        video.play().catch(() => {})
+      } else {
+        video.pause()
+        // Scrolling away puts the frame back to its poster. A film left running
+        // in an iframe off screen keeps playing sound and keeps hold of the
+        // wheel if the reader ever comes back to it.
+        setPlaying(null)
+        setEngaged(false)
+      }
     })
     io.observe(section)
 
@@ -170,7 +191,7 @@ export default function HomeFilms() {
           onPointerDown={onPointerDown}
           onPointerUp={onPointerUp}
         >
-          <div className="home-films_frame">
+          <div className="home-films_frame" onMouseLeave={() => setEngaged(false)}>
             <div
               key={film.id}
               className="home-films_slide"
@@ -179,13 +200,24 @@ export default function HomeFilms() {
               aria-label={`${index + 1} of ${count}: ${film.title}`}
             >
               {playing === film.id ? (
-                <iframe
-                  className="home-films_player"
-                  src={film.embed}
-                  title={film.title}
-                  allow={film.allow}
-                  referrerPolicy="strict-origin-when-cross-origin"
-                />
+                <>
+                  <iframe
+                    className="home-films_player"
+                    src={film.embed}
+                    title={film.title}
+                    allow={film.allow}
+                    referrerPolicy="strict-origin-when-cross-origin"
+                  />
+                  {/* Takes the wheel so the page still scrolls; see `engaged`. */}
+                  {!engaged ? (
+                    <button
+                      type="button"
+                      className="home-films_shield"
+                      onClick={() => setEngaged(true)}
+                      aria-label={`Use the player controls for ${film.title}`}
+                    />
+                  ) : null}
+                </>
               ) : (
                 <button
                   type="button"

@@ -1,7 +1,8 @@
+import { disciplines } from './disciplines'
+
 /**
  * Every string the three home-only sections show — the atelier band, the stats
- * band and the films. The two atelier cards themselves come from `./about`
- * unchanged (aboutCards[0] and [1]).
+ * band and the films.
  *
  * Nothing here is invented. Each number is one the studio itself states, and
  * the comment beside it names the source it was read from.
@@ -10,8 +11,34 @@
 export const homeAtelier = {
   kicker: 'Our Approach',
   heading: 'Composed With Intention',
-  cta: { label: 'About the Atelier', href: '/about' },
+  cta: { label: 'Explore the Disciplines', href: '/disciplines' },
 }
+
+export type AtelierCard = {
+  number: string
+  title: string
+  body: string
+  image: string
+  alt: string
+  href: string
+}
+
+/**
+ * The five disciplines, as the staircase of cards.
+ *
+ * Read from `./disciplines` rather than copied, so the band and the Disciplines
+ * page can never drift: each card takes a discipline's number, its name, the
+ * paragraph that opens its chapter and its index photograph, and links to that
+ * chapter's anchor.
+ */
+export const homeAtelierCards: AtelierCard[] = disciplines.map((discipline) => ({
+  number: discipline.number,
+  title: discipline.name,
+  body: discipline.intro,
+  image: discipline.photos.index.src,
+  alt: discipline.photos.index.alt,
+  href: `/disciplines#${discipline.slug}`,
+}))
 
 export type Stat = {
   value: number
@@ -22,6 +49,11 @@ export type Stat = {
 
 export const homeStats = {
   kicker: 'In numbers',
+  /**
+   * Broken as the celebration band breaks it, and set the same way — the last of
+   * the four figures below is this heading counted out.
+   */
+  heading: { lead: 'Four Days', tail: 'One Celebration' },
   /**
    * The caption under the main site's "200+ weddings" pill, word for word —
    * ../../../wow/src/components/sections/Destinations/Destinations.tsx.

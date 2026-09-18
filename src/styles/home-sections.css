@@ -422,3 +422,112 @@
     border-top: 1px solid var(--light-fade-2);
   }
 }
+/* ═══ Atelier staircase: the five disciplines ════════════════════════════ */
+
+/*
+ * About stacks three cards at 7, 11 and 15rem. Five need their own ramp, and it
+ * is kept across the same span so the staircase reads at the same depth as the
+ * one on /about — 2rem a step instead of 4rem. The offsets are computed from
+ * `--i` rather than written out, so the band follows src/data/disciplines.ts if
+ * a discipline is ever added or dropped.
+ */
+.home-atelier_cards > .home-atelier_card {
+  position: sticky;
+  top: calc(7rem + var(--i) * 2rem);
+  /* The wine ramp the About cards descend, over five steps rather than three. */
+  background-image: linear-gradient(
+    hsl(354 49% calc(23.5% - var(--i) * 2.6%)),
+    hsl(354 49% calc(23.5% - var(--i) * 2.6%))
+  );
+}
+
+/* The number above the name, as the Disciplines page sets it. */
+.home-atelier_card_num.kicker {
+  opacity: 0.6;
+}
+
+/*
+ * Two-word names where About had one. "Guest Experience" and "Food & Beverage"
+ * cannot hold the display size a single word did, so the title is sized to its
+ * own box here and allowed to break between words.
+ *
+ * The floor is set by "Entertainment": thirteen characters with nowhere to
+ * break, which at 2.2rem measured 322px and dragged the card's column — and so
+ * the whole page — wider than a 320px screen. `min-width: 0` stops a long word
+ * stretching the column at any size; the floor keeps it inside the gutters.
+ */
+.home-atelier_card_title.u-text-display {
+  font-size: clamp(1.65rem, 7cqw, 5.5rem);
+  text-wrap: balance;
+}
+
+.home-atelier_card .deets_card_text-wrap {
+  min-width: 0;
+}
+
+.home-atelier_card_link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.home-atelier_card_link:hover {
+  color: var(--swatch--brand);
+}
+
+/* The band the stack comes to rest under, carrying the button. */
+.press_wrap.home-atelier_close {
+  background-color: var(--swatch--dark);
+}
+
+@media (max-width: 991px) {
+  .home-atelier_cards > .home-atelier_card {
+    top: calc(15.5vw + var(--i) * 6.325vw);
+  }
+}
+
+/*
+ * The shield over a playing film.
+ *
+ * Transparent and on top of the player: wheel events over it reach the window,
+ * so Lenis keeps scrolling the page while a film runs. Clicking it stands it
+ * down and hands the pointer to the player's own controls; leaving the frame
+ * puts it back. Without it the iframe swallows every wheel event and the page
+ * cannot be scrolled past this band at all.
+ */
+.home-films_shield {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.home-films_shield:focus-visible {
+  outline: 2px solid var(--swatch--brand);
+  outline-offset: -4px;
+}
+
+/*
+ * The stats band leads with its heading now, the figures ranked underneath it
+ * rather than beside the statement. Two columns left the heading sharing a row
+ * with four numerals, which gave neither room.
+ */
+.home-stats_layout {
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--rhythm-lg);
+  align-items: start;
+}
+
+.home-stats_title {
+  font-family: var(--font--primary-family);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-heading);
+  font-size: var(--step-4);
+  line-height: var(--leading-heading);
+  margin: 0;
+}

@@ -5,6 +5,7 @@ import { gsap, registerGsap } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useLineAnimation } from '@/hooks/useSplitText'
+import Initial from '@/components/Initial'
 import { homeStats } from '@/data/home'
 
 /** How long a numeral takes to rise and to count to its value. */
@@ -22,9 +23,11 @@ const COUNT_S = 1.6
  */
 export default function HomeStats() {
   const sectionRef = useRef<HTMLElement>(null)
+  const headingRef = useRef<HTMLHeadingElement>(null)
   const statementRef = useRef<HTMLParagraphElement>(null)
   const reduced = useReducedMotion()
 
+  useLineAnimation(headingRef)
   useLineAnimation(statementRef)
 
   useIsomorphicLayoutEffect(() => {
@@ -86,6 +89,11 @@ export default function HomeStats() {
             <div>
               <div className="kicker home-stats_kicker">{homeStats.kicker}</div>
             </div>
+            <h2 ref={headingRef} className="home-stats_title" js-line-animation="">
+              <Initial>{homeStats.heading.lead}</Initial>
+              <br />
+              {homeStats.heading.tail}
+            </h2>
             <p ref={statementRef} className="home-stats_statement" js-line-animation="">
               {homeStats.statement}
             </p>
