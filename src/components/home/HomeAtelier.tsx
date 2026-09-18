@@ -16,9 +16,16 @@ import { homeAtelier, homeAtelierCards } from '@/data/home'
  * About stacks three cards at 7, 11 and 15rem, and five need their own ramp
  * across the same span, so `.home-atelier_cards` sets its own from `--i`.
  *
- * A sticky card only stays pinned while its parent still has content beneath it.
- * That is what the closing band under the stack is for — a solid layer carrying
- * the button, which scrolls up over all five and releases them in turn.
+ * A sticky card only stays pinned while its parent still has content beneath it,
+ * which is what keeps the first four pinned while the ones after them climb past.
+ *
+ * The closing band sits outside that container, not in it. Inside, it was the
+ * content beneath the fifth card — so the fifth card stayed pinned, hanging as
+ * far below its own place in the flow as the band was tall, and the band (which
+ * paints above the cards) covered exactly that much of it. 114px of a 437px
+ * card, permanently: the last lines of "Entertainment" were cut off and stayed
+ * cut off however far you scrolled. Out here the fifth card is never displaced,
+ * so nothing overlaps it, and the four above it still stack as they did.
  */
 export default function HomeAtelier() {
   const headingRef = useRef<HTMLHeadingElement>(null)
@@ -61,12 +68,13 @@ export default function HomeAtelier() {
               </div>
             </div>
           ))}
+        </div>
 
-          {/* Solid, on its own layer: what the stack rests under, and releases against. */}
-          <div data-theme="inherit" className="press_wrap home-atelier_close">
-            <div className="btn-wrap home-atelier_cta">
-              <MainButton href={homeAtelier.cta.href} label={homeAtelier.cta.label} />
-            </div>
+        {/* Solid, on its own layer: what the stack comes to rest under. Outside
+            the stack on purpose — see the note above the component. */}
+        <div data-theme="inherit" className="press_wrap home-atelier_close">
+          <div className="btn-wrap home-atelier_cta">
+            <MainButton href={homeAtelier.cta.href} label={homeAtelier.cta.label} />
           </div>
         </div>
       </div>
