@@ -14,16 +14,16 @@ import { stories } from '@/data/stories'
  * shows the active photograph at 0.7 opacity, still at its resting 1.1 scale,
  * and lifts that item's title from 0.3 to full.
  *
- * Which item is active, as the page scrolls:
- *   the band coming into view                → the first, so its photograph is
- *                                              already there on arrival
- *   entering an item from either direction   → that item, alone
- *   leaving downward                          → cleared, unless it is the last
+ * There is always exactly one photograph on show. The first is active from the
+ * moment the page renders, so it is already there when the band scrolls up —
+ * nothing fades in under the reader. After that:
+ *   entering an item from either direction   → that item
  *   leaving upward                            → the one before it
- *   scrolling back above the first            → cleared
+ * and nothing ever clears it. Clearing on the way out used to leave the frame
+ * empty between two destinations, and blank again above the first.
  *
- * Nothing starts active, so the first item lights up on reaching the centre
- * exactly as every later one does.
+ * The change is a cut, not a fade: the stylesheet takes the photographs' opacity
+ * transition away, so one destination simply replaces the next.
  *
  * Hovering the active title turns it brand-coloured and drains the photograph
  * behind it to half-brightness greyscale. The band itself holds full opacity
@@ -31,7 +31,7 @@ import { stories } from '@/data/stories'
  */
 export default function StickyStories() {
   const wrapRef = useRef<HTMLElement>(null)
-  const [active, setActive] = useState<number | null>(null)
+  const [active, setActive] = useState(0)
 
   // Fetch and decode every photograph up front. Lazily loaded, a photo only arrived
   // once its item was reached, so it appeared late — faded in by the opacity
@@ -54,16 +54,6 @@ export default function StickyStories() {
 
     const ctx = gsap.context(() => {
       const items = gsap.utils.toArray<HTMLElement>('.sticky-gallery_item')
-      const last = items.length - 1
-
-      // The first photograph is lit as the band comes into view, so it is
-      // already there on arrival rather than appearing under the reader.
-      ScrollTrigger.create({
-        trigger: wrap,
-        start: 'top 85%',
-        onEnter: () => setActive((cur) => (cur === null ? 0 : cur)),
-        onLeaveBack: () => setActive(null),
-      })
 
       items.forEach((item, i) => {
         ScrollTrigger.create({
@@ -72,12 +62,8 @@ export default function StickyStories() {
           end: 'bottom center',
           onEnter: () => setActive(i),
           onEnterBack: () => setActive(i),
-          onLeave: () => {
-            if (i < last) setActive((cur) => (cur === i ? null : cur))
-          },
-          onLeaveBack: () => {
-            setActive(i > 0 ? i - 1 : null)
-          },
+          // Back past the top of the first, the first simply stays.
+          onLeaveBack: () => setActive(Math.max(0, i - 1)),
         })
 
         const title = item.querySelector<HTMLElement>('.sticky-gallery_title_wrap')
