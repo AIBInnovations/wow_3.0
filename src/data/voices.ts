@@ -30,7 +30,9 @@ export const voices: Voice[] = [
     right: '/images/wow-haldi-stage.jpg',
   },
   {
-    credit: null,
+    // Named by the client for this photograph; set with "&" as the two above
+    // are, and as the trailer in ./home titles the same couple's film.
+    credit: 'Rajvi & Karan',
     portrait: '/images/wow-green-couple-800.jpg',
     right: '/images/wow-sangeet-floor.jpg',
   },

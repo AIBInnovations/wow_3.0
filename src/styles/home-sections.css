@@ -450,3 +450,92 @@
     transition: none;
   }
 }
+
+/* Restored: these rules were dropped when the films band was rebuilt.
+   Without them the five cards lose position:sticky and scroll past in one
+   run instead of stacking, and the title floor and min-width that keep
+   "Entertainment" inside a 320px screen go with them. */
+/* ═══ Atelier staircase: the five disciplines ════════════════════════════ */
+
+/*
+ * About stacks three cards at 7, 11 and 15rem. Five need their own ramp, and it
+ * is kept across the same span so the staircase reads at the same depth as the
+ * one on /about — 2rem a step instead of 4rem. The offsets are computed from
+ * `--i` rather than written out, so the band follows src/data/disciplines.ts if
+ * a discipline is ever added or dropped.
+ */
+.home-atelier_cards > .home-atelier_card {
+  position: sticky;
+  top: calc(7rem + var(--i) * 2rem);
+  /* The wine ramp the About cards descend, over five steps rather than three. */
+  background-image: linear-gradient(
+    hsl(354 49% calc(23.5% - var(--i) * 2.6%)),
+    hsl(354 49% calc(23.5% - var(--i) * 2.6%))
+  );
+}
+
+/* The number above the name, as the Disciplines page sets it. */
+.home-atelier_card_num.kicker {
+  opacity: 0.6;
+}
+
+/*
+ * Two-word names where About had one. "Guest Experience" and "Food & Beverage"
+ * cannot hold the display size a single word did, so the title is sized to its
+ * own box here and allowed to break between words.
+ *
+ * The floor is set by "Entertainment": thirteen characters with nowhere to
+ * break, which at 2.2rem measured 322px and dragged the card's column — and so
+ * the whole page — wider than a 320px screen. `min-width: 0` stops a long word
+ * stretching the column at any size; the floor keeps it inside the gutters.
+ */
+.home-atelier_card_title.u-text-display {
+  font-size: clamp(1.65rem, 7cqw, 5.5rem);
+  text-wrap: balance;
+}
+
+.home-atelier_card .deets_card_text-wrap {
+  min-width: 0;
+}
+
+.home-atelier_card_link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.home-atelier_card_link:hover {
+  color: var(--swatch--brand);
+}
+
+/* The band the stack comes to rest under, carrying the button. */
+.press_wrap.home-atelier_close {
+  background-color: var(--swatch--dark);
+}
+
+@media (max-width: 991px) {
+  .home-atelier_cards > .home-atelier_card {
+    top: calc(15.5vw + var(--i) * 6.325vw);
+  }
+}
+
+
+
+/*
+ * The stats band leads with its heading now, the figures ranked underneath it
+ * rather than beside the statement. Two columns left the heading sharing a row
+ * with four numerals, which gave neither room.
+ */
+/*
+ * The figures sit inside the "Four Days / One Celebration" section rather than
+ * in a band of their own, so they bring no background or container of their own
+ * — only the space that separates them from the frames above.
+ */
+.home-stats_block {
+  margin-top: var(--rhythm-lg);
+}
+
+.home-stats_layout {
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--rhythm-md);
+  align-items: start;
+}
