@@ -1,0 +1,191 @@
+/*
+ * Legal pages: privacy policy and legal notice.
+ *
+ * One quiet layout on the page ground: a title block, a hairline, then a
+ * numbered index that stays put beside the sections. Type takes the site's
+ * scale (styles/typography.css); nothing here sets a one-off size.
+ */
+
+.legal_wrap {
+  background-color: var(--swatch--dark);
+  color: var(--wow-cream);
+}
+
+.u-container.legal_contain {
+  display: block;
+  max-width: 79.7rem;
+  margin-left: auto;
+  margin-right: auto;
+  /* Clears the fixed navigation bar. */
+  padding-top: clamp(8rem, 18vh, 12rem);
+}
+
+/* ═══ Title block ════════════════════════════════════════════════════════ */
+
+.legal_head {
+  max-width: 42ch;
+}
+
+.legal_kicker {
+  flex: none;
+  margin-bottom: var(--rhythm-sm);
+}
+
+.legal_title {
+  font-family: var(--font--primary-family);
+  font-size: var(--step-6);
+  font-weight: 400;
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-heading);
+  text-transform: uppercase;
+  text-wrap: balance;
+  margin: 0;
+}
+
+.legal_standfirst {
+  font-family: var(--font--body);
+  font-style: italic;
+  font-size: var(--step-1);
+  line-height: var(--leading-lead);
+  margin: var(--rhythm-md) 0 0;
+}
+
+.legal_meta {
+  font-family: var(--font--inherit);
+  font-size: var(--step-n1);
+  line-height: var(--leading-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  opacity: 0.55;
+  margin: var(--rhythm-sm) 0 0;
+}
+
+.legal_rule {
+  height: 1px;
+  background-color: var(--wow-cream);
+  opacity: 0.2;
+  margin: var(--rhythm-lg) 0;
+}
+
+/* ═══ Index and sections ═════════════════════════════════════════════════ */
+
+.legal_layout {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+  column-gap: var(--space--large);
+  align-items: start;
+}
+
+.legal_index {
+  position: sticky;
+  top: clamp(6rem, 14vh, 8rem);
+}
+
+.legal_index_list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--rhythm-xs);
+}
+
+.legal_index_link {
+  display: flex;
+  column-gap: var(--rhythm-sm);
+  align-items: baseline;
+  color: inherit;
+  text-decoration: none;
+  font-family: var(--font--inherit);
+  font-size: var(--step-n1);
+  line-height: var(--leading-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  opacity: 0.45;
+  transition: opacity 0.3s ease, color 0.3s ease;
+}
+
+.legal_index_link:hover,
+.legal_index_link.is-active {
+  opacity: 1;
+}
+
+.legal_index_link.is-active {
+  color: var(--swatch--brand);
+}
+
+.legal_index_num {
+  flex: none;
+  width: 2.2em;
+}
+
+.legal_body {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--rhythm-lg);
+}
+
+.legal_notice {
+  font-family: var(--font--body);
+  font-style: italic;
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  max-width: 46ch;
+  margin: 0;
+  padding-left: var(--rhythm-sm);
+  border-left: 1px solid var(--swatch--brand);
+}
+
+.legal_section {
+  scroll-margin-top: clamp(6rem, 14vh, 8rem);
+  padding-top: var(--rhythm-md);
+  border-top: 1px solid rgb(251 244 233 / 20%);
+}
+
+.legal_section_num {
+  font-family: var(--font--inherit);
+  font-size: var(--step-n1);
+  line-height: var(--leading-label);
+  letter-spacing: var(--tracking-label);
+  opacity: 0.55;
+  margin-bottom: var(--rhythm-xs);
+}
+
+.legal_section_heading {
+  margin: 0 0 var(--rhythm-sm);
+}
+
+.legal_p {
+  font-family: var(--font--body);
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  max-width: 46ch;
+  margin: 0;
+}
+
+.legal_p + .legal_p {
+  margin-top: var(--rhythm-sm);
+}
+
+/* ═══ Narrow screens ═════════════════════════════════════════════════════ */
+
+@media screen and (max-width: 767px) {
+  .legal_layout {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--rhythm-lg);
+  }
+
+  .legal_index {
+    position: static;
+  }
+
+  .legal_index_list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: var(--rhythm-md);
+  }
+
+  .legal_index_num {
+    width: auto;
+  }
+}

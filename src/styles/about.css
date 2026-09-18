@@ -1,0 +1,591 @@
+/*
+ * About page.
+ *
+ * The first block is the reference layout carried over value for value — grid
+ * placement, sticky offsets, image oversizing, card rotations and the three
+ * responsive steps. Webflow's generated grid-node ids are replaced by the class
+ * each one belonged to.
+ *
+ * Everything after "WOW layer" adapts it to the home page: every piece of text
+ * takes one role from the type scale in typography.css, and the neutral greys
+ * are repointed to the wine ramp.
+ */
+
+.u-container.about-hero_contain{grid-column-gap:5vw;grid-row-gap:5vw;flex-flow:column;justify-content:space-between;align-items:stretch;height:100%;padding-top:9vw;padding-bottom:7vw;display:flex}
+.u-container.deets_contain{padding:0}
+.marquee_grid_card_content_btn_wrap{margin-top:var(--space--small);grid-column-gap:24px;grid-row-gap:24px;justify-content:center;align-self:flex-start;align-items:center;display:flex}
+.marquee_grid_card_content_venue{letter-spacing:.2em;text-transform:uppercase;margin-top:0;display:inline-block}
+.marquee_grid_card_content_venue.arrow{margin-left:5px;font-family:Voyage;font-weight:700}
+.marquee_grid_card_content_venue.arrow.fs5{justify-content:space-between;align-self:stretch;align-items:flex-start;margin-bottom:10px;margin-left:-20px;display:flex}
+.u-text-large{letter-spacing:0;line-height:1.3em;font-weight:var(--text-large--font-weight);text-transform:var(--text-large--text-transform);font-size:max(1.25rem,1.5vw)}
+.u-grid-custom{grid-column-gap:var(--grid-gap--main);grid-row-gap:var(--grid-gap--main);grid-template-rows:auto;grid-template-columns:repeat(1,minmax(0,1fr));grid-auto-columns:minmax(0,1fr);display:grid}
+.u-column{grid-area:auto/auto/span 1/span 1}
+.u-gap-large{grid-column-gap:var(--space--large);grid-row-gap:var(--space--large)}
+.marquee_grid_wrap{background-image:linear-gradient(#fff7f736,#fff7f736),url(https://cdn.prod.website-files.com/66227d978698da4b605dd52a/6626679a7937fe169b661eab_Light%20Texture.webp);background-position:0 0,50%;background-size:auto,cover;flex-direction:column;justify-content:center;min-height:100vh;display:flex}
+.marquee_grid_wrap.dark{background-image:linear-gradient(#00000029,#00000029),url(https://cdn.prod.website-files.com/66227d978698da4b605dd52a/6626679b7937fe169b661f86_dark-woods-bg.webp);background-position:0 0,50%;background-size:auto,cover}
+.marquee_grid_marquee_wrapper{z-index:0;flex-direction:column;justify-content:center;align-self:stretch;align-items:center;width:100%;padding-top:6rem;padding-bottom:6rem;display:flex;position:absolute;inset:0%}
+.marquee-text_component{width:100%;padding-top:var(--space--small);padding-bottom:var(--space--small);border:1px none var(--theme--border);flex-direction:column;font-size:1.2vw}
+.marquee-text_wrapper{white-space:nowrap;flex:none;justify-content:flex-start;align-items:center;width:100%;display:flex;overflow:hidden}
+.marquee-text_wrapper.is-2{justify-content:flex-end;align-items:center}
+.marquee-text_panel{flex:none;justify-content:flex-start;align-items:center;line-height:1;display:flex;transform:translate(0%)}
+.marquee-text_text{opacity:.32;font-family:var(--font--primary-family);letter-spacing:-.04em;padding-top:.13em;font-size:5.1em;line-height:.75}
+.marquee-text_icon{opacity:.13;flex:none;width:auto;margin-left:.78em;margin-right:.78em;font-size:5.8em}
+.marquee_grid_layout{text-align:center}
+.marquee_grid_wrapper{margin-top:4.6rem;padding-left:5vw;padding-right:5vw}
+.marquee_grid_list--gd1-ct3{grid-column-gap:var(--space--large);grid-row-gap:var(--space--large);grid-template-rows:auto;grid-template-columns:1fr 1fr 1fr;grid-auto-columns:1fr;padding-left:0;padding-right:0;display:grid}
+.marquee_grid_card_img_wrap{aspect-ratio:2/2.6;padding:0;position:relative;overflow:hidden;box-shadow:0 2px 112px 9px #000000ab}
+.marquee_grid_card_img{height:110%;padding:0;position:relative}
+.marquee_grid_card_content_wrap{padding-top:var(--space--extra-small)}
+.container-large{width:100%;max-width:none;margin-left:auto;margin-right:auto}
+.layout417_card{color:#131313;background-image:linear-gradient(#fff,#fff);border:1px #000;flex-direction:column;justify-content:space-between;padding:3.9rem 2rem 2rem;display:flex;position:absolute;box-shadow:0 2px 20px #000000ba}
+.layout417_card.card-2{z-index:2;transform:rotate(3deg)}
+.layout417_card.card-3{z-index:1;transform:rotate(6deg)}
+.layout417_card.card-4{transform:rotate(9deg)}
+.layout417_card.card-1{z-index:3;background-image:linear-gradient(#fff,#fff)}
+.layout417_component{grid-template-rows:auto;grid-template-columns:1fr 1fr;grid-auto-columns:1fr;height:300vh;position:relative}
+.layout417_content{grid-template-rows:auto auto;grid-template-columns:1fr 1fr;grid-auto-columns:1fr;justify-content:center;align-items:center;height:100vh;display:flex;position:sticky;top:0}
+.layout417_title-wrapper{justify-content:center;width:100%;display:flex;position:absolute;overflow:visible}
+.layout417_title{color:#fff0;-webkit-text-stroke-width:1px;-webkit-text-stroke-color:white;white-space:nowrap;font-size:18vw}
+.layout417_title.edit{position:relative;top:-32px}
+.layout417_list{flex-direction:column;justify-content:center;align-items:center;width:100%;max-width:30rem;display:flex;position:relative}
+.layout417_card-content{margin-bottom:var(--space--medium);padding-top:0;padding-bottom:0}
+.layout417_ix-trigger{z-index:-1;margin-top:100vh;position:absolute;inset:0%}
+.about-hero_wrap{aspect-ratio:1564/1007;overflow:hidden}
+.u-text-balance{text-wrap:balance}
+.about-hero_layout{grid-column-gap:3vw;grid-row-gap:.1rem;grid-template-rows:auto auto auto;grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;grid-auto-columns:1fr;margin-top:5vw;display:grid}
+.about-hero_layout.margin-bottom{grid-template-rows:auto;margin-bottom:5vw}
+.about-hero_layout.top{grid-row-gap:0rem;font-family:var(--font--primary-family);margin-top:2vw;font-weight:400}
+.about-hero_top-row_text{font-family:var(--display--font-family);will-change:transform;font-size:9.1cqw;font-weight:400;line-height:.9}
+.about-hero_top-row_text.row-one{text-align:right}
+.about-hero_bottom-row_wrap.left-side{padding-right:2vw}
+.about-hero_bg_wrap{position:absolute;inset:0%}
+.about-hero_bg_img{object-fit:cover;object-position:57% 50%;width:110%;height:120%;position:relative}
+.about-hero_kicker_txt.kicker{letter-spacing:.1em;will-change:transform}
+.about-hero_p-wrap{padding-right:2vw}
+.about-hero_p{text-align:justify;will-change:transform;font-size:1cqw;line-height:1.5}
+.about-hero_bg_overlay{background-color:#0000007d;position:absolute;inset:0%}
+.about-hero_bg_mobile{height:100%;display:none}
+.about-hero_trigger{pointer-events:none;height:100vh;position:absolute;inset:0%}
+.layout417_space{margin-bottom:var(--space--medium)}
+.featured-in_layout.u-vflex-center-center.u-gap-main{height:100%}
+.featured-in_svg_wrap{height:2rem}
+.deets_card_wrap.u-grid-custom{grid-template-columns:repeat(12,minmax(0,1fr));padding:2vw 2vw 3vw}
+.deets_card_text-wrap.u-column.u-vflex-left-top.u-gap-large{grid-column:auto/span 7;justify-content:space-between;align-items:flex-start}
+.deets_card_img_wrap{position:relative}
+.deets_card_img_wrap.u-column{grid-column:auto/span 5}
+.deets_card_title.u-text-display{margin-top:0;font-size:10.2rem}
+.deets_card_p.u-text-large{max-width:52ch}
+.deets_card_img{height:22.8rem}
+.deets_card_sticky-first{background-image:linear-gradient(#535353,#535353);position:sticky;top:7rem}
+.deets_card_sticky-second{background-image:linear-gradient(#3b3b3b,#3b3b3b);position:sticky;top:11rem}
+.deets_card_sticky-third{background-image:linear-gradient(#2e2e2e,#2e2e2e);position:sticky;top:15rem}
+.deets_marquee_wrap{white-space:nowrap;display:flex}
+.deets_marquee_txt{font-size:10.5cqw;line-height:1em}
+.deets_marquee_panel{flex:none;width:100vw}
+.deets_press-_layout{grid-column-gap:0px;grid-row-gap:0px;flex:1;grid-template-rows:auto;grid-template-columns:1fr .75fr 1fr;grid-auto-columns:1fr;align-self:stretch;display:grid}
+.deets_press-_img_wrap{height:40rem;min-height:40vw}
+.deets_press-_img{height:100%}
+.press_wrap{z-index:9;background-color:var(--swatch--dark);position:relative}
+.about-hero_top-row_wrap{grid-area:1/4/2/13}
+.about-hero_row-two_wrap.first{grid-area:2/3/3/8;justify-self:start}
+.about-hero_row-two_wrap.second{grid-area:2/9/3/13;justify-self:end}
+.about-hero_bottom-row_wrap.left-side{grid-area:3/3/4/8;justify-self:end}
+.about-hero_bottom-row_wrap.right-side{grid-area:3/9/4/13;justify-self:end}
+.about-hero_kicker_wrap{grid-area:span 1/span 2/span 1/span 2}
+.about-hero_p-wrap{grid-area:span 1/span 3/span 1/span 3}
+
+@media screen and (max-width:991px){
+  .u-text-large{font-size:var(--text-large--font-size)}
+  .marquee-text_component{font-size:1.5vw}
+  .layout417_component{grid-column-gap:3rem;grid-template-columns:1fr 1fr;grid-auto-flow:row;min-height:auto}
+  .layout417_content{height:100svh}
+  .layout417_title{font-size:7.5rem}
+  .about-hero_layout.margin-bottom{grid-template-rows:auto auto}
+  .about-hero_p{font-size:1.5vw}
+  .about-hero_bg_overlay{background-image:linear-gradient(0deg,var(--swatch--dark),#17161600);height:50%;position:absolute;inset:auto 0% 0%}
+  .featured-in_svg_wrap{max-width:90%}
+  .deets_card_text-wrap.u-column.u-vflex-left-top.u-gap-large{grid-column-gap:0rem;grid-row-gap:0rem}
+  .deets_card_title.u-text-display{font-size:8.9rem}
+  .deets_card_p.u-text-large{font-size:.9rem}
+  .deets_card_img{height:15.4rem;min-height:100%}
+  .deets_card_sticky-first{top:15.5vw}
+  .deets_card_sticky-second{top:28.1vw}
+  .deets_card_sticky-third{top:40.8vw}
+  .about-hero_kicker_wrap{grid-area:1/1/2/13}
+  .about-hero_p-wrap{grid-column:span 6/span 6}
+}
+
+@media screen and (max-width:767px){
+  .marquee-text_component{font-size:2vw}
+  .marquee_grid_list--gd1-ct3{grid-template-columns:1fr}
+  .marquee_grid_card_img_wrap{aspect-ratio:2/2}
+  .layout417_card{margin-left:1.5rem;margin-right:1.5rem}
+  .layout417_component{grid-row-gap:3rem;grid-template-columns:1fr}
+  .layout417_content{grid-template-rows:auto;grid-template-columns:30rem;grid-auto-columns:1fr;align-content:center;display:grid}
+  .layout417_title-wrapper{padding-top:5rem;inset:0% 0% auto}
+  .layout417_title{font-size:5.5rem}
+  .layout417_list{min-height:24.5rem;margin-top:6rem;margin-left:auto;margin-right:auto;position:sticky;top:0}
+  .about-hero_wrap{aspect-ratio:1564/1114}
+  .about-hero_p{font-size:2.25vw}
+  .about-hero_bg_overlay,.about-hero_bg_mobile{display:none}
+  .featured-in_layout.u-vflex-center-center.u-gap-main{padding-top:29px;padding-bottom:29px}
+  .deets_card_wrap.u-grid-custom{padding:4vw}
+  .deets_card_img{height:21vw}
+  .deets_press-_layout{grid-template-columns:1fr}
+  .deets_press-_img_wrap{height:22.5rem}
+}
+
+@media screen and (max-width:479px){
+  .u-container.about-hero_contain{padding-bottom:var(--padding-vertical--main);background-image:linear-gradient(4deg,#000,#fff0 39%)}
+  .layout417_card.card-1{padding-top:2rem}
+  .layout417_component{grid-template-columns:1fr}
+  .layout417_content{grid-template-columns:1fr;padding-left:5%;padding-right:5%}
+  .layout417_title-wrapper{padding-top:9.2rem}
+  .layout417_title{font-size:3.25rem}
+  .layout417_list{margin-top:3rem}
+  .about-hero_wrap{aspect-ratio:auto}
+  .about-hero_layout.margin-bottom{flex-flow:column;margin-top:46vw;display:flex}
+  .about-hero_layout.top{grid-row-gap:.4rem;margin-top:38vw}
+  .about-hero_top-row_text{font-size:11.5cqw}
+  .about-hero_top-row_text.tight{letter-spacing:-2px}
+  .about-hero_bg_wrap{height:auto}
+  .about-hero_bg_img{display:none}
+  .about-hero_p-wrap{margin-bottom:4vw}
+  .about-hero_p{font-size:var(--text-small--font-size)}
+  .about-hero_bg_overlay{background-image:none;height:24em}
+  .about-hero_bg_mobile{width:105%;height:auto;display:block}
+  .deets_card_wrap.u-grid-custom{flex-flow:column;display:flex}
+  .deets_card_img{height:56vw}
+  .press_wrap{z-index:5;position:relative}
+  .about-hero_row-two_wrap.first{grid-column:1/6}
+  .about-hero_row-two_wrap.second{justify-self:start}
+  .about-hero_bottom-row_wrap.left-side{grid-column:1/6;justify-self:start}
+}
+
+/* ─── Reference page scripts, carried as CSS ─────────────────────────────── */
+
+/* Headline lines clip their words as they rise. */
+.about-hero_top-row_text .line {
+  padding-bottom: 2vw;
+  margin-bottom: -1.7vw;
+  overflow: hidden;
+}
+
+.about-hero_p .line {
+  overflow: hidden;
+}
+
+/* The marquee runs on its own clock: 20s, linear, forever, never restarted. */
+.deets_marquee_panel {
+  animation: about-marquee 20s linear infinite;
+}
+
+@keyframes about-marquee {
+  from { transform: translateX(0%); }
+  to { transform: translateX(-100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deets_marquee_panel {
+    animation: none;
+  }
+}
+
+/* Destination cards: the photograph drains to greyscale on hover and the
+   link text turns brand-coloured. No scaling. */
+.marquee_grid_card_img_wrap {
+  filter: saturate(100%);
+  transition: filter 0.3s ease;
+}
+
+.marquee_grid_item:hover .marquee_grid_card_img_wrap {
+  filter: saturate(0%);
+}
+
+.marquee_grid_item:hover .hov-text {
+  color: var(--swatch--brand);
+  transition: color 0.3s ease;
+}
+
+.marquee_grid_item {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ─── WOW layer ──────────────────────────────────────────────────────────── */
+
+/*
+ * Type follows the home page's scale exactly (styles/typography.css). Each piece
+ * of text on this page takes one role and that role's step, never a one-off size:
+ *
+ *   step  role     here
+ *   ────  ───────  ─────────────────────────────────────────────────────────
+ *     7   marquee  "Get To Know The Atelier", the destinations band
+ *     6   display  hero headline, card titles (Ideology · Influence · Journey),
+ *                  "In Our Words"
+ *     5   h1       "Destinations & Scale"
+ *     2   h3       portfolio lines, statement attributions, destination names
+ *     1   lead     the founder's statement under the hero headline
+ *     0   body     card paragraphs, statements, portfolio note
+ *    -1   label    kickers, "Explore"
+ */
+
+/* ═══ Headings: shared voice ═════════════════════════════════════════════ */
+
+.about-hero_top-row_text,
+.deets_marquee_txt,
+.deets_card_title.u-text-display,
+.layout417_title,
+.marquee-text_text,
+.marquee_grid_layout .u-text-h2 {
+  font-family: var(--font--primary-family);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-heading);
+  line-height: var(--leading-heading);
+}
+
+/* ═══ Step 7 — marquee ═══════════════════════════════════════════════════ */
+
+.deets_marquee_txt,
+.marquee-text_text {
+  font-size: var(--step-7);
+  line-height: 1;
+  white-space: nowrap;
+  text-wrap: nowrap;
+}
+
+.deets_marquee_txt {
+  padding-top: var(--rhythm-sm);
+  padding-bottom: var(--rhythm-sm);
+}
+
+.marquee-text_icon {
+  font-family: var(--font--primary-family);
+  font-size: var(--step-7);
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+/* ═══ Step 6 — display ═══════════════════════════════════════════════════ */
+
+.about-hero_top-row_text,
+.deets_card_title.u-text-display,
+.layout417_title {
+  font-size: var(--step-6);
+}
+
+.about-hero_top-row_text {
+  /* Each phrase holds its grid cell on one line; the grid does the arranging. */
+  white-space: nowrap;
+}
+
+.deets_card_title.u-text-display {
+  display: block;
+  margin-top: 0;
+}
+
+/* ═══ Step 5 — h1 ════════════════════════════════════════════════════════ */
+
+.marquee_grid_layout .u-text-h2 {
+  font-size: var(--step-5);
+  max-width: 18ch;
+  text-wrap: balance;
+}
+
+/* ═══ Step 2 — h3 ════════════════════════════════════════════════════════ */
+
+/* Destination names already take .u-text-h4's h3 role from typography.css. */
+.featured-in_line,
+.layout417_card .heading {
+  font-family: var(--font--primary-family);
+  font-size: var(--step-2);
+  font-weight: 400;
+  line-height: var(--leading-h3);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-h3);
+}
+
+/* ═══ Step 1 — lead ══════════════════════════════════════════════════════ */
+
+.about-hero_p {
+  font-family: var(--font--body);
+  font-size: var(--step-1);
+  line-height: var(--leading-lead);
+  /* Ragged right, as the home statement sets. Justified narrow columns open
+     rivers of space between words. */
+  text-align: left;
+  max-width: 42ch;
+}
+
+/* ═══ Step 0 — body ══════════════════════════════════════════════════════ */
+
+.deets_card_p.u-text-large,
+.layout417_card p,
+.featured-in_note {
+  font-family: var(--font--body);
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  letter-spacing: 0;
+}
+
+.deets_card_p.u-text-large {
+  max-width: 46ch;
+}
+
+.featured-in_note {
+  max-width: 28ch;
+  opacity: 0.75;
+}
+
+/* Statement copy is italic, as the deck sets it. */
+.about-hero_p,
+.deets_card_p.u-text-large,
+.layout417_card p,
+.featured-in_note {
+  font-style: italic;
+}
+
+/* ═══ Step −1 — label ════════════════════════════════════════════════════ */
+
+.about-hero_kicker_txt.kicker,
+.featured-in_layout .kicker,
+.marquee_grid_card_content_venue {
+  font-family: var(--font--inherit);
+  font-size: var(--step-n1);
+  line-height: var(--leading-label);
+  font-style: normal;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+}
+
+.marquee_grid_card_content_venue.arrow {
+  letter-spacing: 0;
+}
+
+/* ═══ Rhythm between blocks ══════════════════════════════════════════════ */
+
+.deets_card_text-wrap.u-column.u-vflex-left-top.u-gap-large {
+  row-gap: var(--rhythm-md);
+}
+
+.featured-in_layout.u-vflex-center-center.u-gap-main {
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--rhythm-sm);
+  margin: 0;
+  padding: var(--rhythm-lg) var(--rhythm-md);
+  text-align: center;
+}
+
+.layout417_card .heading {
+  margin-top: var(--rhythm-sm);
+}
+
+.marquee_grid_wrapper {
+  margin-top: var(--rhythm-lg);
+}
+
+.marquee_grid_card_content_wrap .u-text-h4 {
+  margin-top: var(--rhythm-sm);
+}
+
+.marquee_grid_card_content_btn_wrap {
+  margin-top: var(--rhythm-xs);
+  column-gap: var(--rhythm-xs);
+}
+
+/* ═══ Animation clips ════════════════════════════════════════════════════ */
+
+/* Sized to the brand capitals, as on the home hero, not the reference's vw. */
+.about-hero_top-row_text .line {
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+/* The script initial's upper loop rises above its line; widen the clip for it
+   and hand the space back, exactly as the home headings do. */
+.about-hero_top-row_text .line:has(.initial) {
+  padding-top: 0.45em;
+  margin-top: -0.45em;
+}
+
+/* ═══ Hero ═══════════════════════════════════════════════════════════════ */
+
+/* One screen tall, like the home hero, rather than the reference's fixed
+   aspect ratio — at the home scale that ratio left a tall empty band. */
+.about-hero_wrap {
+  aspect-ratio: auto;
+  min-height: 100svh;
+  position: relative;
+}
+
+.u-container.about-hero_contain {
+  min-height: 100svh;
+  padding-top: clamp(6rem, 14vh, 9rem);
+  padding-bottom: var(--rhythm-lg);
+}
+
+.about-hero_layout.top {
+  row-gap: var(--rhythm-xs);
+}
+
+.about-hero_layout.margin-bottom {
+  margin-bottom: 0;
+}
+
+/* A neutral scrim, as on the home hero — no wine cast over the photograph. */
+.about-hero_bg_overlay {
+  background-color: rgb(0 0 0 / 49%);
+}
+
+.about-hero_bg_img {
+  will-change: transform;
+}
+
+/* ═══ Marquee ════════════════════════════════════════════════════════════ */
+
+.deets_marquee_wrap {
+  /* Clip here, not on the section: an overflow ancestor would break the
+     sticky cards below. */
+  overflow: hidden;
+}
+
+.deets_marquee_panel {
+  width: auto;
+  padding-right: 0.6em;
+  font-size: var(--step-7);
+}
+
+/* ═══ Sticky cards ═══════════════════════════════════════════════════════ */
+
+/* The neutral greys become a descending wine ramp. */
+.deets_card_sticky-first { background-image: linear-gradient(#5a1f24, #5a1f24); }
+.deets_card_sticky-second { background-image: linear-gradient(#4a181d, #4a181d); }
+.deets_card_sticky-third { background-image: linear-gradient(#3b1215, #3b1215); }
+
+/* ═══ Card stack ═════════════════════════════════════════════════════════ */
+
+/* Cream paper with oxblood type, a hairline cream title behind. */
+.loveletters_wrap {
+  background-color: var(--swatch--dark);
+  /* Tilted cards reach past the edge on narrow screens. clip, not hidden:
+     hidden would turn this into a scroll container and break the sticky frame. */
+  overflow-x: clip;
+}
+
+.layout417_title {
+  /* A solid heading like the home page's, not the reference's hairline outline. */
+  color: var(--wow-cream);
+  -webkit-text-stroke-width: 0;
+  white-space: normal;
+  text-wrap: balance;
+  text-align: center;
+  margin: 0;
+}
+
+.layout417_title.edit {
+  top: 0;
+}
+
+/* The title sits above the stack, still in the pinned frame; the lifted cards
+   pass over it. */
+.layout417_content {
+  flex-direction: column;
+  row-gap: var(--rhythm-lg);
+}
+
+.layout417_title-wrapper {
+  position: relative;
+  inset: auto;
+  padding-top: 0;
+}
+
+.layout417_list {
+  min-height: 22rem;
+  opacity: 0;
+  /* Cards share one grid cell rather than sitting absolutely, so every card
+     takes the tallest one's height and none shows text beneath the front. */
+  display: grid;
+  align-items: stretch;
+}
+
+.layout417_card {
+  position: relative;
+  grid-area: 1 / 1;
+  width: 100%;
+  padding: var(--rhythm-lg) var(--rhythm-md) var(--rhythm-md);
+  color: var(--wow-black);
+  background-image: linear-gradient(var(--wow-cream), var(--wow-cream));
+  will-change: transform;
+}
+
+.layout417_card.card-1 {
+  background-image: linear-gradient(var(--wow-cream), var(--wow-cream));
+}
+
+.layout417_card-content,
+.layout417_space {
+  margin-bottom: 0;
+}
+
+.layout417_card blockquote {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* ═══ Destinations ═══════════════════════════════════════════════════════ */
+
+/* The reference's narrower container for the destination grid. */
+.u-container.smaller {
+  max-width: 79.7rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* The reference's dark woodland becomes palms under a deep forest-green scrim —
+   the palette's one contrasting section colour. */
+.marquee_grid_wrap.dark {
+  background-image:
+    linear-gradient(rgb(23 31 22 / 72%), rgb(23 31 22 / 72%)),
+    url('/images/wow-palm-tents.jpg');
+  position: relative;
+  overflow: hidden;
+}
+
+.marquee_grid_layout .u-text-h2 {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.marquee_grid_card_img {
+  object-fit: cover;
+  width: 100%;
+  will-change: transform;
+}
+
+/* ═══ Narrow screens ═════════════════════════════════════════════════════ */
+
+@media screen and (max-width: 767px) {
+  .layout417_card { width: auto; }
+  /* The reference's small-screen grid and sticky list would undo the stacking
+     above; one centred column instead. */
+  .layout417_content { display: flex; }
+  .layout417_list { position: relative; margin-top: 0; width: 100%; }
+}
+
+@media screen and (max-width: 479px) {
+  /* Two phrases no longer fit side by side, so each takes its own line and the
+     headline keeps its stagger by alternating right and left. */
+  .about-hero_layout.top { grid-template-rows: repeat(5, auto); }
+  .about-hero_top-row_wrap { grid-area: 1 / 1 / 2 / 13; justify-self: end; }
+  .about-hero_row-two_wrap.first { grid-area: 2 / 1 / 3 / 13; justify-self: start; }
+  .about-hero_row-two_wrap.second { grid-area: 3 / 1 / 4 / 13; justify-self: end; }
+  .about-hero_bottom-row_wrap.left-side { grid-area: 4 / 1 / 5 / 13; justify-self: start; padding-right: 0; }
+  .about-hero_bottom-row_wrap.right-side { grid-area: 5 / 1 / 6 / 13; justify-self: end; }
+  .about-hero_layout.top { margin-top: 38vw; }
+  .layout417_card { padding: var(--rhythm-md) var(--rhythm-sm) var(--rhythm-sm); }
+}

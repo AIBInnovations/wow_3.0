@@ -1,0 +1,18 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "redirects": [
+    { "source": "/atelier", "destination": "/about", "permanent": true },
+    { "source": "/atelier/:path*", "destination": "/about", "permanent": true },
+    { "source": "/home", "destination": "/", "permanent": true },
+    { "source": "/index.html", "destination": "/", "permanent": true }
+  ],
+  "headers": [
+    {
+      "source": "/(images|fonts|gallery|celebrations|disciplines)/:path*",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    }
+  ]
+}

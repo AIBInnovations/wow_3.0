@@ -6,7 +6,7 @@ export const footerColumns: FooterColumn[] = [
     heading: 'Explore',
     modifier: '',
     links: [
-      { href: '/atelier', label: 'The Atelier' },
+      { href: '/about', label: 'About' },
       { href: '/celebrations', label: 'Celebrations' },
       { href: '/disciplines', label: 'Disciplines' },
       { href: '/gallery', label: 'Gallery' },

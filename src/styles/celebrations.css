@@ -1,0 +1,619 @@
+/*
+ * Celebrations page — the celebration in the order it happens.
+ *
+ * Type follows the home page's scale exactly (typography.css). Each piece of
+ * text here takes one role and that role's step, never a one-off size:
+ *
+ *   step  role     here
+ *   ────  ───────  ─────────────────────────────────────────────────────────
+ *     6   display  hero headline, chapter names, rail numerals
+ *     5   h1       "We also compose"
+ *     4   h2       the three-line chapter statement
+ *     2   h3       the line between the photographs, card titles, rail names,
+ *                  chapter numerals
+ *     1   lead     the hero statement, each chapter's closing line
+ *     0   body     paragraphs, list items, card text
+ *    -1   label    caption, pretitles, list heads, the rail's day lines
+ *
+ * Grounds alternate down the page between the wine ramp's #3b1215 and the
+ * page's own --swatch--dark. Scrims over photography are neutral black.
+ */
+
+.cel-hero,
+.cel-rail,
+.cel-chapter,
+.cel-also {
+  --cel-gutter: 3vw;
+  --cel-block: var(--space--large);
+}
+
+/* ═══ Shared pieces ══════════════════════════════════════════════════════ */
+
+.cel-label {
+  font-family: var(--font--inherit);
+  font-size: var(--step-n1);
+  font-style: normal;
+  font-weight: 400;
+  line-height: var(--leading-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.cel-p {
+  font-family: var(--font--body);
+  font-size: var(--step-0);
+  font-style: italic;
+  line-height: var(--leading-body);
+  letter-spacing: 0;
+  max-width: 46ch;
+  margin: 0;
+}
+
+.cel-p + .cel-p {
+  margin-top: var(--rhythm-sm);
+}
+
+/* A frame is shaped before its file arrives; the image covers it. */
+.cel-frame {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.cel-frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Oversized so the drift never shows an edge: ±7% inside a 116% image. */
+.cel-frame.is-parallax img {
+  top: -8%;
+  height: 116%;
+  will-change: transform;
+}
+
+.cel-list_title {
+  margin-bottom: var(--rhythm-sm);
+}
+
+.cel-list_items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cel-list_item {
+  font-family: var(--font--body);
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  letter-spacing: 0;
+}
+
+.cel-list_item + .cel-list_item {
+  margin-top: var(--rhythm-xs);
+}
+
+/* ═══ Hero ═══════════════════════════════════════════════════════════════ */
+
+.cel-hero {
+  position: relative;
+  height: 100svh;
+  min-height: 34rem;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  background-color: var(--swatch--dark);
+}
+
+.cel-hero_bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.cel-hero_bg_img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 120%;
+  object-fit: cover;
+  object-position: 50% 45%;
+  will-change: transform;
+}
+
+.cel-hero_scrim {
+  position: absolute;
+  inset: 0;
+  background-color: rgb(0 0 0 / 35%);
+}
+
+.u-container.cel-hero_contain {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: calc(var(--cel-gutter) * 1.5);
+}
+
+.cel-hero_layout {
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  column-gap: 5vw;
+  align-items: end;
+}
+
+.cel-hero_label {
+  overflow: hidden;
+  margin-bottom: var(--rhythm-md);
+}
+
+.cel-hero_label-inner {
+  display: block;
+}
+
+.cel-hero_title {
+  font-family: var(--font--primary-family);
+  font-size: var(--step-6);
+  font-weight: 400;
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-heading);
+  text-transform: uppercase;
+  text-wrap: balance;
+  margin: 0;
+}
+
+.cel-hero_row {
+  display: block;
+}
+
+/* Each row clips its rising line; the clip is widened upward where the script
+   initial's loop rises above the line box, and the space handed back. */
+.cel-hero_row .line {
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+.cel-hero_row .line:has(.initial) {
+  padding-top: 0.45em;
+  margin-top: -0.45em;
+}
+
+.cel-hero_p {
+  font-family: var(--font--body);
+  font-size: var(--step-1);
+  font-style: italic;
+  line-height: var(--leading-lead);
+  letter-spacing: 0;
+  max-width: 42ch;
+  margin: 0;
+}
+
+.cel-hero_p .line {
+  overflow: hidden;
+}
+
+/* ═══ The day rail ═══════════════════════════════════════════════════════ */
+
+.cel-rail {
+  position: relative;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background-color: var(--swatch--dark);
+}
+
+.cel-rail_track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  column-gap: 2vw;
+  padding: 0 var(--cel-gutter);
+  will-change: transform;
+}
+
+.cel-rail_day {
+  position: relative;
+  flex: none;
+  height: 70svh;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  color: var(--wow-cream);
+  text-decoration: none;
+}
+
+.cel-rail_frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto !important;
+}
+
+.cel-rail_frame img {
+  transition: filter 0.5s ease;
+}
+
+.cel-rail_day:hover .cel-rail_frame img {
+  filter: saturate(0);
+}
+
+.cel-rail_scrim {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(to top, rgb(0 0 0 / 49%), rgb(0 0 0 / 0) 55%);
+  pointer-events: none;
+}
+
+.cel-rail_caption {
+  position: absolute;
+  left: 2rem;
+  right: 2rem;
+  bottom: 2rem;
+  display: flex;
+  align-items: flex-end;
+  column-gap: 1.5rem;
+}
+
+.cel-rail_num {
+  font-family: var(--font--primary-family);
+  font-size: var(--step-6);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: var(--tracking-heading);
+}
+
+.cel-rail_text {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--rhythm-xs);
+  padding-bottom: 0.1em;
+}
+
+.cel-rail_name {
+  font-family: var(--font--primary-family);
+  font-size: var(--step-2);
+  font-weight: 400;
+  line-height: var(--leading-h3);
+  letter-spacing: var(--tracking-h3);
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+.cel-rail_day:hover .cel-rail_name {
+  color: var(--swatch--brand);
+}
+
+.cel-rail_discover {
+  opacity: 0.8;
+}
+
+/* ═══ Chapters ═══════════════════════════════════════════════════════════ */
+
+.cel-chapter.is-wine {
+  background-color: #3b1215;
+}
+
+.cel-chapter.is-dark {
+  background-color: var(--swatch--dark);
+}
+
+/* The aside stretches to the chapter's full height, which is what gives its
+   sticky block the room to hold while the right column scrolls past. */
+.cel-chapter_grid {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  column-gap: 5vw;
+  align-items: stretch;
+}
+
+.cel-chapter_sticky {
+  position: sticky;
+  top: 7rem;
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--rhythm-md);
+}
+
+.cel-chapter_num {
+  font-family: var(--font--primary-family);
+  font-size: var(--step-2);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: var(--tracking-h3);
+  color: var(--swatch--brand);
+  margin: 0;
+}
+
+.cel-chapter_name {
+  font-family: var(--font--primary-family);
+  font-size: var(--step-6);
+  font-weight: 400;
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-heading);
+  text-transform: uppercase;
+  text-wrap: balance;
+  max-width: 12ch;
+  margin: 0;
+}
+
+/* Hidden until its lines are split and clipped; the script reveals it, and the
+   reduced-motion path simply shows it. */
+.cel-chapter_lines {
+  font-family: var(--font--body);
+  font-size: var(--step-4);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0;
+  max-width: 22ch;
+  margin: 0;
+  visibility: hidden;
+}
+
+/* Italic descenders reach below the line box; the clip is widened to hold them. */
+.cel-chapter_lines .line {
+  overflow: hidden;
+  padding-bottom: 0.15em;
+  margin-bottom: -0.15em;
+}
+
+.cel-chapter_flow {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--cel-block);
+}
+
+.cel-chapter_cols {
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  column-gap: 3vw;
+  align-items: start;
+}
+
+.cel-chapter_pretitle {
+  margin-bottom: var(--rhythm-md);
+}
+
+/* The pair: the wide frame with the middle line beneath it, and the narrow
+   frame seated lower beside them, so the line sits between the two. */
+.cel-chapter_pair {
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  column-gap: 3vw;
+  align-items: start;
+}
+
+.cel-chapter_pair_left {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--rhythm-md);
+}
+
+.cel-chapter_pair_narrow {
+  margin-top: 28%;
+}
+
+.cel-chapter_middle.u-text-h4 {
+  font-family: var(--font--primary-family);
+  font-size: var(--step-2);
+  font-weight: 400;
+  line-height: var(--leading-h3);
+  letter-spacing: var(--tracking-h3);
+  text-transform: uppercase;
+  text-wrap: balance;
+  max-width: 24ch;
+  margin: 0;
+}
+
+.cel-lists {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 3vw;
+  row-gap: var(--rhythm-lg);
+}
+
+.cel-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 3vw;
+  row-gap: var(--rhythm-lg);
+}
+
+.cel-card_title.u-text-h4 {
+  font-family: var(--font--primary-family);
+  font-size: var(--step-2);
+  font-weight: 400;
+  line-height: var(--leading-h3);
+  letter-spacing: var(--tracking-h3);
+  text-transform: uppercase;
+  margin: 0 0 var(--rhythm-sm);
+}
+
+.cel-card_text {
+  font-family: var(--font--body);
+  font-size: var(--step-0);
+  font-style: italic;
+  line-height: var(--leading-body);
+  letter-spacing: 0;
+  max-width: 40ch;
+  margin: 0;
+}
+
+.cel-chapter_close {
+  font-family: var(--font--body);
+  font-size: var(--step-1);
+  font-style: italic;
+  line-height: var(--leading-lead);
+  letter-spacing: 0;
+  text-align: center;
+  text-wrap: balance;
+  max-width: 42ch;
+  margin: var(--rhythm-md) auto 0;
+}
+
+/* ═══ We also compose ════════════════════════════════════════════════════ */
+
+.cel-also {
+  background-color: #4a181d;
+}
+
+.cel-also_grid {
+  display: grid;
+  grid-template-columns: 6fr 3fr 3fr;
+  column-gap: 3vw;
+  row-gap: var(--rhythm-lg);
+  align-items: start;
+}
+
+.cel-also_pretitle {
+  margin-bottom: var(--rhythm-md);
+}
+
+.cel-also_title {
+  font-family: var(--font--primary-family);
+  font-size: var(--step-5);
+  font-weight: 400;
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-heading);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* ═══ Responsive ═════════════════════════════════════════════════════════ */
+
+@media screen and (max-width: 991px) {
+  .cel-hero,
+  .cel-rail,
+  .cel-chapter,
+  .cel-also {
+    --cel-gutter: var(--padding-horizontal--main);
+  }
+
+  .cel-hero_layout {
+    grid-template-columns: 1fr;
+    row-gap: var(--rhythm-lg);
+  }
+
+  .cel-chapter_grid {
+    grid-template-columns: 4fr 8fr;
+    column-gap: 4vw;
+  }
+
+  .cel-chapter_name {
+    max-width: none;
+  }
+
+  .cel-rail_caption {
+    left: 1.5rem;
+    right: 1.5rem;
+    bottom: 1.5rem;
+  }
+
+  .cel-also_grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cel-also_head {
+    grid-column: 1 / -1;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .cel-hero {
+    min-height: 0;
+  }
+
+  .u-container.cel-hero_contain {
+    padding-bottom: var(--padding-vertical--small);
+  }
+
+  /* The rail becomes a plain vertical stack; nothing pins. */
+  .cel-rail {
+    height: auto;
+    display: block;
+    padding: var(--padding-vertical--small) 0;
+  }
+
+  .cel-rail_track {
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: var(--rhythm-md);
+    width: auto;
+    padding: 0 var(--cel-gutter);
+  }
+
+  .cel-rail_day {
+    width: 100%;
+    height: auto;
+  }
+
+  .cel-chapter_grid {
+    grid-template-columns: 1fr;
+    row-gap: var(--cel-block);
+  }
+
+  .cel-chapter_sticky {
+    position: static;
+  }
+
+  .cel-chapter_cols {
+    grid-template-columns: 1fr;
+    row-gap: var(--rhythm-lg);
+  }
+
+  .cel-chapter_cols_frame {
+    width: 70%;
+    margin-left: auto;
+  }
+
+  .cel-chapter_pair {
+    grid-template-columns: 1fr;
+    row-gap: var(--rhythm-lg);
+  }
+
+  .cel-chapter_pair_narrow {
+    width: 70%;
+    margin-top: 0;
+  }
+
+  .cel-cards {
+    grid-template-columns: 1fr;
+    row-gap: var(--rhythm-md);
+  }
+
+  .cel-cards .cel-card_text {
+    max-width: 46ch;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .cel-rail_caption {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    column-gap: 1rem;
+  }
+
+  .cel-lists,
+  .cel-also_grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ═══ Reduced motion ═════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .cel-rail_frame img,
+  .cel-rail_name {
+    transition: none;
+  }
+}

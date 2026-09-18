@@ -40,11 +40,13 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
       return
     }
 
-    // Deliberately heavy: a slow lerp and a wheel multiplier below 1 give the
-    // page its cinematic weight. Changing these changes the whole feel.
+    // Deliberately heavy: a slow lerp and a wheel multiplier well below 1 give
+    // the page its cinematic weight. Each wheel notch travels about half the
+    // native distance and the page glides after it. Changing these changes the
+    // whole feel.
     const lenis = new Lenis({
-      lerp: 0.1,
-      wheelMultiplier: 0.7,
+      lerp: 0.08,
+      wheelMultiplier: 0.5,
       infinite: false,
       gestureOrientation: 'vertical',
       syncTouch: false,

@@ -37,7 +37,7 @@ export const atelier = {
    * form of this line from /disciplines runs well past the fold.
    */
   statement: 'Five disciplines, composed as one — never in isolation.',
-  cta: { href: '/atelier', label: 'The Atelier' },
+  cta: { href: '/about', label: 'The Atelier' },
   circleText: 'THE ATELIER · INTENTION WITHOUT EXCESS · ',
 }
 

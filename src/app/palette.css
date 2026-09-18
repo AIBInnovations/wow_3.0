@@ -52,8 +52,11 @@
 
 /* Scrims over photography: neutral black becomes wine, so the warm ceremony
    photography stays warm as it darkens rather than going grey. */
+
+/* The hero is the exception: a light neutral black, just enough to seat the
+   headline without tinting the photographs. */
 .cta-marquee_overlay {
-  background-image: linear-gradient(rgb(28 8 9 / 62%), rgb(28 8 9 / 62%));
+  background-image: linear-gradient(rgb(0 0 0 / 25%), rgb(0 0 0 / 25%));
 }
 
 .sticky-gallery_bg_fade.u-cover-absolute {

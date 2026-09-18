@@ -12,9 +12,10 @@ import { atelierBackground } from '@/data/media'
 /**
  * The atelier statement over a full-bleed photograph.
  *
- * The photograph drifts from -20em to +11em as the section passes through the
+ * The photograph drifts from -6em to +6em as the section passes through the
  * viewport, measured in the image's own em so the travel scales with type. It is
- * styled at 110% height precisely so it has room to move without showing an edge.
+ * styled at 110% height precisely so it has room to move without showing an edge,
+ * and the travel is kept short so the faces at the top of the frame stay in it.
  */
 export default function TallImage() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -35,9 +36,9 @@ export default function TallImage() {
 
       gsap.fromTo(
         img,
-        { y: () => -20 * em() },
+        { y: () => -6 * em() },
         {
-          y: () => 11 * em(),
+          y: () => 6 * em(),
           ease: 'none',
           scrollTrigger: {
             trigger: section,

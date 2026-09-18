@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { gsap, registerGsap, EASE, MQ } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useSmoothScroll } from '@/providers/SmoothScrollProvider'
 import { navItems, HOVER_REPEAT } from '@/data/nav'
 import { GRID } from '@/data/gridNodes'
 import Wordmark from './Wordmark'
@@ -15,8 +16,8 @@ import { site } from '@/data/content'
  *
  * Every row — the spacer included — is parked a full viewport above the screen.
  * MENU drops them into place over 1.5s, 0.05s apart, and pressing it again runs
- * the same timeline backwards. The page underneath is not locked; it keeps
- * scrolling, as the menu is a fixed layer over it.
+ * the same timeline backwards. Smooth scrolling stops while the menu is open and
+ * resumes once it has fully closed, so the page underneath holds still.
  *
  * Hovering a row (tablet and up) swaps its label for a panel of repeated text,
  * shown instantly and faded out over 0.5s. On desktop that panel also creeps
@@ -27,6 +28,10 @@ export default function Navigation() {
   const rootRef = useRef<HTMLDivElement>(null)
   const timelineRef = useRef<gsap.core.Timeline | null>(null)
   const reduced = useReducedMotion()
+  const { start, stop } = useSmoothScroll()
+  // The timeline is built once; the scroll API can change identity after it.
+  const scrollRef = useRef({ start, stop })
+  scrollRef.current = { start, stop }
 
   useIsomorphicLayoutEffect(() => {
     const root = rootRef.current
@@ -36,7 +41,9 @@ export default function Navigation() {
     const ctx = gsap.context(() => {
       if (reduced) {
         gsap.set('.nav_drop_link', { y: 0, autoAlpha: 0 })
-        timelineRef.current = gsap.timeline({ paused: true }).to('.nav_drop_link', { autoAlpha: 1, duration: 0.2 })
+        timelineRef.current = gsap
+          .timeline({ paused: true, onReverseComplete: () => scrollRef.current.start() })
+          .to('.nav_drop_link', { autoAlpha: 1, duration: 0.2 })
         return
       }
 
@@ -46,11 +53,14 @@ export default function Navigation() {
         { y: '0vh', duration: 1.5, stagger: { each: 0.05, from: 'start' }, ease: 'power3.out' },
         0
       )
+      timelineRef.current.eventCallback('onReverseComplete', () => scrollRef.current.start())
     }, root)
 
     return () => {
       ctx.revert()
       timelineRef.current = null
+      // A route change can unmount the menu mid-close; never leave scroll locked.
+      scrollRef.current.start()
     }
   }, [reduced])
 
@@ -60,6 +70,7 @@ export default function Navigation() {
     if (!tl) return
     // Play when closed or mid-close; otherwise run it back.
     if (tl.reversed() || tl.progress() === 0) {
+      scrollRef.current.stop()
       tl.play()
       setOpen(true)
     } else {

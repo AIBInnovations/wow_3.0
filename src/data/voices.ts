@@ -19,36 +19,36 @@ export const voices: Voice[] = [
   {
     "quote": "Nothing on show. The working parts of a celebration dissolve into it — only what was meant to be seen remains.",
     "name": "The Atelier",
-    "portrait": "/images/voice-0.jpg",
-    "right": "/images/voice-0-wide.jpg",
+    "portrait": "/images/wow-arch-night-800.jpg",
+    "right": "/images/wow-tented-lounge.jpg",
     "extra": null
   },
   {
     "quote": "Rather than spectacle, atmosphere; rather than excess, refinement. Nothing is incidental. Everything is intentional.",
     "name": "Our approach",
-    "portrait": "/images/voice-1.jpg",
-    "right": "/images/voice-1-wide.jpg",
+    "portrait": "/images/wow-white-florals-800.jpg",
+    "right": "/images/wow-lawn-dinner.jpg",
     "extra": null
   },
   {
     "quote": "A slower kind of celebration — the spaces expand, and everything within them is placed with intention.",
     "name": "The Setting",
-    "portrait": "/images/voice-2.jpg",
-    "right": "/images/voice-2-wide.jpg",
+    "portrait": "/images/wow-desert-pavilion-800.jpg",
+    "right": "/images/wow-palm-walk.jpg",
     "extra": null
   },
   {
     "quote": "Production, sound and lighting are designed to disappear.",
     "name": "Entertainment",
-    "portrait": "/images/voice-3.jpg",
-    "right": "/images/voice-3-wide.jpg",
+    "portrait": "/images/wow-arch-performer-800.jpg",
+    "right": "/images/wow-carpet-stage.jpg",
     "extra": null
   },
   {
     "quote": "Arrivals, accommodation and transport handled end to end, so that arriving is already part of the celebration.",
     "name": "Guest Experience",
-    "portrait": "/images/voice-4.jpg",
-    "right": "/images/voice-4-wide.jpg",
+    "portrait": "/images/wow-welcome-sign-800.jpg",
+    "right": "/images/wow-cocktails.jpg",
     "extra": null
   }
 ]

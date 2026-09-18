@@ -15,6 +15,8 @@ import { stories } from '@/data/stories'
  * and lifts that item's title from 0.3 to full.
  *
  * Which item is active, as the page scrolls:
+ *   the band coming into view                → the first, so its photograph is
+ *                                              already there on arrival
  *   entering an item from either direction   → that item, alone
  *   leaving downward                          → cleared, unless it is the last
  *   leaving upward                            → the one before it
@@ -24,8 +26,8 @@ import { stories } from '@/data/stories'
  * exactly as every later one does.
  *
  * Hovering the active title turns it brand-coloured and drains the photograph
- * behind it to half-brightness greyscale. The whole section fades out once its
- * bottom reaches 80% of the viewport, and back in on the way up.
+ * behind it to half-brightness greyscale. The band itself holds full opacity
+ * throughout — see the note where the source site's fade used to be.
  */
 export default function StickyStories() {
   const wrapRef = useRef<HTMLElement>(null)
@@ -53,6 +55,15 @@ export default function StickyStories() {
     const ctx = gsap.context(() => {
       const items = gsap.utils.toArray<HTMLElement>('.sticky-gallery_item')
       const last = items.length - 1
+
+      // The first photograph is lit as the band comes into view, so it is
+      // already there on arrival rather than appearing under the reader.
+      ScrollTrigger.create({
+        trigger: wrap,
+        start: 'top 85%',
+        onEnter: () => setActive((cur) => (cur === null ? 0 : cur)),
+        onLeaveBack: () => setActive(null),
+      })
 
       items.forEach((item, i) => {
         ScrollTrigger.create({

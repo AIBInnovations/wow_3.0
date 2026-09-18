@@ -16,6 +16,8 @@ import { ArrowSlider, QuoteMark } from './svg'
  *   incoming slide's own entrance: its portrait fades in while settling from 1.1
  *   to 1, its quote fades in, its attribution rises from below, and the large
  *   photograph settles from 1.1.
+ * - The arch portrait and quote sit centred in the column; the attribution lives
+ *   in the controls row at the foot, between the two arrows.
  * - The first slide's photograph is wiped in from the right, over 2s, the first
  *   time the band reaches mid-viewport, and wiped back out if you scroll above.
  * - The quote mark behind the first statement drifts from -20% to +10% as it
@@ -174,10 +176,6 @@ export default function Voices() {
                             <div className="testimonial1_slider_rtb text-align-center w-richtext">
                               <p>{t.quote}</p>
                             </div>
-                            <div className="testimonial1_slider_name_wrap">
-                              <h3 className="testimonial1_slider_name">–</h3>
-                              <h3 className="testimonial1_slider_name">{t.name}</h3>
-                            </div>
                           </div>
 
                           <div className="testimonial1_slider_controls">
@@ -190,7 +188,10 @@ export default function Voices() {
                               >
                                 <ArrowSlider />
                               </button>
-                              <span className="testimonial1_slider_control_btn" aria-hidden="true" />
+                              <div className="testimonial1_slider_name_wrap">
+                                <h3 className="testimonial1_slider_name">–</h3>
+                                <h3 className="testimonial1_slider_name">{t.name}</h3>
+                              </div>
                               <button
                                 type="button"
                                 onClick={() => go(1)}

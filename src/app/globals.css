@@ -10,6 +10,16 @@
 /* Editorial type and text spacing, after the brand deck. */
 @import '../styles/typography.css';
 
+/* About page: its layout, then its brand adaptation. */
+@import '../styles/about.css';
+
+/* Inner pages, each its own layer. */
+@import '../styles/home.css';
+@import '../styles/home-sections.css';
+@import '../styles/legal.css';
+@import '../styles/gallery.css';
+@import '../styles/celebrations.css';
+@import '../styles/disciplines.css';
 
 /* Split-text scaffolding. SplitType builds .line at runtime; the inner span is
    what actually translates, clipped by the line box the stylesheet already

@@ -1,0 +1,608 @@
+/*
+ * Disciplines page — an index that opens.
+ *
+ * Type follows the home page's scale exactly (styles/typography.css). Each piece
+ * of text on this page takes one role and that role's step, never a one-off size:
+ *
+ *   step  role     here
+ *   ────  ───────  ─────────────────────────────────────────────────────────
+ *     6   display  the hero headline
+ *     5   h1       discipline names, in the index and at each chapter's opening
+ *     4   h2       each chapter's opening statement
+ *     2   h3       feature and card titles, the closing line
+ *     1   lead     the hero statement
+ *     0   body     the index lead and captions, intros, feature and card text,
+ *                  list items
+ *    -1   label    the hero label, numerals, list titles, "next", progress
+ *
+ * Grounds: the hero and index on the deep wine, then the five chapters on the
+ * wine ramp, descending to the middle chapter and rising again.
+ */
+
+/* ═══ Shared voices ══════════════════════════════════════════════════════ */
+
+.disc-hero_title,
+.disc-index_name,
+.disc-opener_name,
+.disc-chapter_statement,
+.disc-closing_line {
+  font-family: var(--font--primary-family);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-heading);
+  line-height: var(--leading-heading);
+}
+
+.disc-hero_label,
+.disc-num,
+.disc-list_title,
+.disc-index_label,
+.disc-next,
+.disc-progress_btn {
+  font-family: var(--font--inherit);
+  font-size: var(--step-n1);
+  line-height: var(--leading-label);
+  font-style: normal;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+}
+
+.disc-hero_statement,
+.disc-index_lead,
+.disc-index_caption,
+.disc-chapter_intro,
+.disc-p,
+.disc-list li {
+  font-family: var(--font--body);
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  letter-spacing: 0;
+}
+
+/* Statement copy is italic, as the deck sets it. List items are not statements. */
+.disc-hero_statement,
+.disc-index_lead,
+.disc-index_caption,
+.disc-chapter_intro,
+.disc-p {
+  font-style: italic;
+}
+
+/* ═══ Hero ═══════════════════════════════════════════════════════════════ */
+
+.disc-hero {
+  background-color: var(--swatch--dark);
+}
+
+.u-container.disc-hero_contain {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  min-height: 88svh;
+  padding-top: clamp(7rem, 16vh, 10rem);
+  padding-bottom: var(--rhythm-lg);
+}
+
+.disc-hero_label {
+  margin: 0;
+  color: var(--swatch--brand);
+}
+
+.disc-hero_title {
+  font-size: var(--step-6);
+  max-width: min(14ch, 100%);
+  margin: var(--rhythm-md) 0 0;
+  text-wrap: balance;
+}
+
+.disc-hero_row {
+  display: block;
+}
+
+.disc-hero_title .line {
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+/* The script initial's upper loop rises above its line; widen the clip for it
+   and hand the space back, exactly as the home headings do. */
+.disc-hero_title .line:has(.initial) {
+  padding-top: 0.45em;
+  margin-top: -0.45em;
+}
+
+.disc-hero_statement {
+  font-size: var(--step-1);
+  line-height: var(--leading-lead);
+  max-width: 42ch;
+  margin: var(--rhythm-md) 0 0;
+}
+
+.disc-hero_statement .line {
+  overflow: hidden;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+/* ═══ Index ══════════════════════════════════════════════════════════════ */
+
+.disc-index {
+  background-color: var(--swatch--dark);
+}
+
+.disc-index_head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--rhythm-md);
+  margin-bottom: var(--rhythm-lg);
+  opacity: 0;
+}
+
+.disc-index_label {
+  margin: 0;
+  opacity: 0.59;
+}
+
+.disc-index_lead {
+  max-width: 46ch;
+  margin: 0;
+  text-align: right;
+}
+
+.disc-index_list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid rgb(251 244 233 / 20%);
+}
+
+.disc-index_row {
+  display: grid;
+  grid-template-columns: 5ch 1fr auto;
+  align-items: baseline;
+  column-gap: var(--rhythm-md);
+  padding: var(--rhythm-md) 0;
+  border-bottom: 1px solid rgb(251 244 233 / 20%);
+  color: inherit;
+  text-decoration: none;
+  opacity: 0;
+}
+
+.disc-index_name {
+  font-size: var(--step-5);
+  transition: color 0.4s ease;
+}
+
+.disc-index_row:hover .disc-index_name,
+.disc-index_row:focus-visible .disc-index_name {
+  color: var(--swatch--brand);
+}
+
+.disc-index_caption {
+  max-width: 30ch;
+  text-align: right;
+  opacity: 0.8;
+}
+
+/* The photograph that trails the cursor over the index. Fixed to the viewport,
+   under the navigation, never in the way of the pointer. */
+.disc-index_frame {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  width: clamp(14rem, 19vw, 24rem);
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  will-change: transform;
+}
+
+.disc-index_frame.is-visible {
+  opacity: 1;
+}
+
+.disc-index_frame_img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  filter: grayscale(1);
+  transition: opacity 0.5s ease, filter 1.4s ease;
+}
+
+.disc-index_frame_img.is-active {
+  opacity: 1;
+  filter: grayscale(0);
+}
+
+@media (min-width: 992px) and (hover: hover) {
+  .disc-index_frame {
+    display: block;
+  }
+}
+
+/* ═══ Chapters ═══════════════════════════════════════════════════════════ */
+
+/* The footer links land here; the fixed navigation must not cover the top. */
+.disc-chapter {
+  position: relative;
+  scroll-margin-top: 6rem;
+}
+
+/* ─── Opener ─────────────────────────────────────────────────────────── */
+
+/* Taller than a viewport on a wide screen, so the title has a photograph to
+   hold against while it scrolls. */
+.disc-opener {
+  position: relative;
+  height: min(66vw, 120vh);
+  min-height: 70svh;
+}
+
+.disc-opener_media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.disc-opener_img {
+  display: block;
+  width: 100%;
+  height: 115%;
+  object-fit: cover;
+  will-change: transform;
+}
+
+/* A neutral scrim, as on the home hero — no wine cast over the photograph. */
+.disc-opener_scrim {
+  position: absolute;
+  inset: 0;
+  background-color: rgb(0 0 0 / 30%);
+}
+
+.disc-opener_title {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 6.5rem var(--padding-horizontal--main) 0;
+}
+
+.disc-opener_name {
+  font-size: var(--step-5);
+  max-width: 12em;
+  margin: var(--rhythm-xs) 0 0;
+  text-wrap: balance;
+}
+
+.disc-num {
+  display: block;
+}
+
+/* ─── Lead ───────────────────────────────────────────────────────────── */
+
+.disc-chapter_lead {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--rhythm-lg);
+  align-items: end;
+}
+
+.disc-chapter_statement {
+  font-size: var(--step-4);
+  margin: 0;
+  opacity: 0;
+}
+
+.disc-chapter_statement_line {
+  display: block;
+}
+
+.disc-chapter_statement .line {
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.disc-chapter_statement .line:has(.initial) {
+  padding-top: 0.45em;
+  margin-top: -0.45em;
+}
+
+.disc-chapter_intro {
+  max-width: 46ch;
+  margin: 0;
+}
+
+/* ─── Two photographs ────────────────────────────────────────────────── */
+
+.disc-double {
+  display: grid;
+  grid-template-columns: 7fr 4fr;
+  column-gap: var(--grid-gap--main);
+  align-items: start;
+  margin-top: var(--padding-vertical--small);
+}
+
+.disc-double_wide,
+.disc-double_narrow {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+}
+
+.disc-double_wide {
+  aspect-ratio: 3 / 2;
+}
+
+/* The narrow frame sits lower than the wide one, and drifts more. */
+.disc-double_narrow {
+  aspect-ratio: 2 / 3;
+  margin-top: clamp(3rem, 8vw, 8rem);
+}
+
+.disc-double img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 125%;
+  object-fit: cover;
+  will-change: transform;
+}
+
+/* ─── Feature and lists ──────────────────────────────────────────────── */
+
+.disc-feature {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--rhythm-lg);
+  margin-top: var(--padding-vertical--small);
+}
+
+.disc-feature .u-text-h4 {
+  margin: 0 0 var(--rhythm-sm);
+}
+
+.disc-p {
+  max-width: 46ch;
+  margin: 0;
+}
+
+.disc-lists {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--rhythm-md);
+}
+
+.disc-list_title {
+  margin: 0 0 var(--rhythm-xs);
+  opacity: 0.59;
+}
+
+.disc-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── Cards ──────────────────────────────────────────────────────────── */
+
+.disc-cards {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--rhythm-lg) var(--rhythm-md);
+  margin: var(--padding-vertical--small) 0 0;
+  padding: 0;
+}
+
+.disc-card {
+  padding-top: var(--rhythm-sm);
+  border-top: 1px solid rgb(251 244 233 / 20%);
+}
+
+.disc-card .u-text-h4 {
+  margin: 0 0 var(--rhythm-xs);
+}
+
+/* ─── Closing ────────────────────────────────────────────────────────── */
+
+/* The closing line, then the way to the next chapter beneath it — both at the
+   left, clear of the progress column on the right edge. */
+.disc-closing {
+  display: flex;
+  flex-flow: column;
+  align-items: flex-start;
+  gap: var(--rhythm-md);
+  margin-top: var(--padding-vertical--small);
+  padding-top: var(--rhythm-md);
+  border-top: 1px solid rgb(251 244 233 / 20%);
+}
+
+.disc-closing_line {
+  font-size: var(--step-2);
+  max-width: 20ch;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.disc-closing_line .line {
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+
+.disc-next {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75em;
+  flex: none;
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.4s ease;
+}
+
+.disc-next .disc-num {
+  opacity: 0.59;
+}
+
+.disc-next:hover {
+  color: var(--swatch--brand);
+}
+
+/* Blocks hidden until they rise into place. */
+.disc-chapter .hw {
+  opacity: 0;
+}
+
+/* ═══ Chapter progress ═══════════════════════════════════════════════════ */
+
+/* Kept narrow, inside the page gutter, so it never sits over the text. */
+.disc-progress {
+  display: none;
+  position: fixed;
+  right: 0.75rem;
+  top: 50%;
+  z-index: 20;
+  flex-flow: column;
+  align-items: flex-end;
+  gap: var(--rhythm-xs);
+  transform: translateY(-50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.disc-progress.is-shown {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.disc-progress_btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0;
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.45;
+  transition: opacity 0.4s ease, color 0.4s ease;
+}
+
+.disc-progress_rule {
+  display: block;
+  width: 0.75rem;
+  height: 1px;
+  background-color: currentColor;
+  transition: width 0.4s ease;
+}
+
+.disc-progress_btn:hover,
+.disc-progress_btn.is-active {
+  opacity: 1;
+}
+
+.disc-progress_btn.is-active {
+  color: var(--swatch--brand);
+}
+
+.disc-progress_btn.is-active .disc-progress_rule {
+  width: 1.5rem;
+}
+
+@media (min-width: 992px) {
+  .disc-progress {
+    display: flex;
+  }
+}
+
+/* ═══ Narrow screens ═════════════════════════════════════════════════════ */
+
+@media screen and (max-width: 991px) {
+  .disc-chapter_lead,
+  .disc-feature {
+    grid-template-columns: 1fr;
+  }
+
+  .disc-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .u-container.disc-hero_contain {
+    min-height: 80svh;
+  }
+
+  .disc-index_head {
+    flex-flow: column;
+    align-items: flex-start;
+  }
+
+  .disc-index_lead {
+    text-align: left;
+  }
+
+  .disc-index_row {
+    grid-template-columns: 4ch 1fr;
+    row-gap: var(--rhythm-xs);
+    padding: var(--rhythm-sm) 0;
+  }
+
+  .disc-index_caption {
+    grid-column: 2;
+    max-width: none;
+    text-align: left;
+  }
+
+  .disc-opener {
+    height: auto;
+    min-height: 70svh;
+  }
+
+  .disc-opener_title {
+    padding-top: 6rem;
+  }
+
+  .disc-double {
+    grid-template-columns: 1fr;
+    row-gap: var(--rhythm-md);
+  }
+
+  .disc-double_narrow {
+    width: 70%;
+    margin: 0 0 0 auto;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .disc-lists,
+  .disc-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .disc-cards {
+    gap: var(--rhythm-md);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .disc-index_name,
+  .disc-index_frame,
+  .disc-index_frame_img,
+  .disc-next,
+  .disc-progress,
+  .disc-progress_btn,
+  .disc-progress_rule {
+    transition: none;
+  }
+}

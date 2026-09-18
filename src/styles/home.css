@@ -1,0 +1,151 @@
+/*
+ * Home page adjustments, layered over site.css and typography.css.
+ *
+ * Two bands are retuned here: the statements band (a larger arch portrait,
+ * centred, with the attribution moved down between the arrows, and film grain
+ * over both photographs) and the atelier photograph (cropped so the faces at the
+ * top of the frame are never cut).
+ */
+
+/* ═══ Statements band ════════════════════════════════════════════════════ */
+
+/* The running line above the band. Each panel was a fixed 100% wide, so on a
+   phone — where the line is wider than the screen — the two copies overlapped.
+   A panel is now at least as wide as its own text; the keyframes move it by its
+   own width, so the loop stays seamless at every size. */
+.kind-words_panel {
+  min-width: max-content;
+  /* A word space between one copy and the next, so "& Composed" never runs
+     together. The keyframes move a panel by its full width, padding included. */
+  padding-right: 0.35em;
+}
+
+/*
+ * The arch, taller.
+ *
+ * Its height governs and the width follows from the ratio — setting both, as a
+ * width here and a height in typography.css did, ignores the ratio outright and
+ * squashed the arch to a stub.
+ *
+ * Its own compositing layer, because the photograph inside is scaled on every
+ * slide change and a transformed child makes the browser drop the parent's
+ * rounded clip: the picture broke out of the arch as a plain rectangle, and the
+ * grain over it shifted about outside the curve. A layer holds the clip.
+ */
+.testimonial1_slider_img_wrap {
+  width: auto;
+  height: clamp(20rem, 52vh, 34rem);
+  aspect-ratio: 2 / 2.7;
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
+/* The arch and the quote centre together in the column; the attribution has
+   left this group for the controls row, so nothing pulls the pair off centre. */
+.testimonial1_slider_left_content_layout.u-vflex-center-center {
+  row-gap: var(--rhythm-md);
+  justify-content: center;
+}
+
+/*
+ * The statement reserves the height of the longest of the five, so the arch
+ * above it rests in exactly the same place on every slide. Without it the
+ * column re-centred on each change and the arch jumped up and down.
+ */
+.testimonial1_slider_rtb.text-align-center {
+  height: auto;
+  min-height: calc(var(--step-0) * var(--leading-body) * 4);
+  max-width: 34ch;
+}
+
+@media screen and (max-width: 991px) {
+  .testimonial1_slider_rtb.text-align-center {
+    min-height: calc(var(--step-0) * var(--leading-body) * 5);
+  }
+}
+
+/* The controls row: arrow, attribution, arrow. */
+.testimonial1_slider_control_layout.u-hflex-between-center {
+  column-gap: var(--rhythm-sm);
+  align-items: center;
+}
+
+.testimonial1_slider_name_wrap {
+  flex: 1 1 auto;
+  justify-content: center;
+  min-width: 0;
+  padding: 0 0 0.35em;
+  text-align: center;
+}
+
+.testimonial1_slider_name_wrap .testimonial1_slider_name {
+  white-space: nowrap;
+}
+
+.testimonial1_slider_control_btn.left,
+.testimonial1_slider_control_btn.right {
+  flex: none;
+}
+
+/*
+ * Film grain over both photographs. A tile of monochrome noise, blended softly,
+ * that shifts every fifth of a second — the flicker of a print rather than a
+ * static texture.
+ *
+ * The layer sits exactly on its frame and moves its pattern rather than itself:
+ * an oversized layer that moved bodily drew a faint noise rectangle over the
+ * page ground beside the arch, and the drift made that edge crawl.
+ */
+.testimonial1_slider_img_wrap::after,
+.testimonial1_slider_right_visual_wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+  opacity: 0.32;
+  mix-blend-mode: soft-light;
+  animation: home-grain 1s steps(1) infinite;
+}
+
+@keyframes home-grain {
+  0% { background-position: 0 0; }
+  20% { background-position: -37px 23px; }
+  40% { background-position: 29px -41px; }
+  60% { background-position: -53px -19px; }
+  80% { background-position: 41px 47px; }
+  100% { background-position: 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .testimonial1_slider_img_wrap::after,
+  .testimonial1_slider_right_visual_wrap::after {
+    animation: none;
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .testimonial1_slider_img_wrap {
+    height: clamp(18rem, 40vh, 26rem);
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .testimonial1_slider_img_wrap {
+    height: min(52vh, 22rem);
+    max-width: 68vw;
+  }
+
+  .testimonial1_slider_name_wrap .testimonial1_slider_name {
+    font-size: var(--step-0);
+  }
+}
+
+/* ═══ Atelier photograph ═════════════════════════════════════════════════ */
+
+/* The crop stays centred. Anchoring it to the top pushed the couple down out of
+   the frame instead; what was cutting them was the drift, now shortened in
+   TallImage.tsx. */
