@@ -16,9 +16,17 @@ import { homeAtelier, homeAtelierCards } from '@/data/home'
  * About stacks three cards at 7, 11 and 15rem, and five need their own ramp
  * across the same span, so `.home-atelier_cards` sets its own from `--i`.
  *
- * A sticky card only stays pinned while its parent still has content beneath it.
- * That is what the closing band under the stack is for — a solid layer carrying
- * the button, which scrolls up over all five and releases them in turn.
+ * A sticky card only stays pinned while its parent still has content beneath it,
+ * which is what keeps the first four pinned while the ones after them climb past.
+ *
+ * The closing band sits OUTSIDE that container, and must stay there. Inside, it
+ * was the content beneath the fifth card — so the fifth card stayed pinned too,
+ * hanging below its own place in the flow by as much as the band was tall, and
+ * the band (solid, and painted above the cards) covered exactly that much of it:
+ * the last lines of "Entertainment" were cut off, however far you scrolled.
+ * Outside, the fifth card is never displaced, so nothing ever overlaps it, and
+ * the four above it still stack as they did. This has been undone once already
+ * by a bare revert; it is not a stray change.
  */
 export default function HomeAtelier() {
   const headingRef = useRef<HTMLHeadingElement>(null)
@@ -61,12 +69,13 @@ export default function HomeAtelier() {
               </div>
             </div>
           ))}
+        </div>
 
-          {/* Solid, on its own layer: what the stack rests under, and releases against. */}
-          <div data-theme="inherit" className="press_wrap home-atelier_close">
-            <div className="btn-wrap home-atelier_cta">
-              <MainButton href={homeAtelier.cta.href} label={homeAtelier.cta.label} />
-            </div>
+        {/* Solid, on its own layer, and outside the stack on purpose — see the
+            note above the component before moving it back in. */}
+        <div data-theme="inherit" className="press_wrap home-atelier_close">
+          <div className="btn-wrap home-atelier_cta">
+            <MainButton href={homeAtelier.cta.href} label={homeAtelier.cta.label} />
           </div>
         </div>
       </div>

@@ -32,6 +32,10 @@ export default function CelebrationSection() {
           </div>
         </div>
 
+        {/* Directly under the heading, before the frames: the figures belong to it —
+            the last of them is the heading counted out. */}
+        <HomeStats />
+
         <div className="content-lo1_content_layout">
           <div id={GRID.albumLeft} className="content-lo1_content_left">
             <div className="content-lo1_content_bg_wrap">
@@ -60,8 +64,6 @@ export default function CelebrationSection() {
           </div>
         </div>
 
-        {/* The figures belong under this heading: the last of them is it counted out. */}
-        <HomeStats />
       </div>
     </section>
   )

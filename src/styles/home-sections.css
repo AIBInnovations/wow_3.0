@@ -74,6 +74,14 @@
 
 /* ═══ Step 6 — display ═══════════════════════════════════════════════════ */
 
+/* Restored: a regex sweep over the films rules took this out along with them,
+   and the heading fell back to the 20.8px body size. It is the section's
+   display heading, set at the same step as "Four Days / One Celebration". */
+.home-films_title {
+  font-size: var(--step-6);
+  max-width: 16ch;
+  text-wrap: balance;
+}
 
 /* ═══ Step 4 — h2 ════════════════════════════════════════════════════════ */
 
@@ -532,12 +540,12 @@
  * with four numerals, which gave neither room.
  */
 /*
- * The figures sit inside the "Four Days / One Celebration" section rather than
- * in a band of their own, so they bring no background or container of their own
- * — only the space that separates them from the frames above.
+ * The figures sit inside the "Four Days / One Celebration" section, directly
+ * under its heading and above its frames, so they bring no background or
+ * container of their own — only the space that sets them apart from both.
  */
 .home-stats_block {
-  margin-top: var(--rhythm-lg);
+  margin-block: var(--rhythm-lg);
 }
 
 .home-stats_layout {
