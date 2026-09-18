@@ -24,30 +24,48 @@ export const heroMarquee: Media[] = [
   { src: '/images/hero-couple-haldi.jpg', alt: 'The couple laughing through the haldi, petals in the air' },
 ]
 
-/** Three scroll-gallery columns; className preserves the original column modifiers. */
-export const galleryColumns: { className: string; images: Media[] }[] = [
+/**
+ * Three scroll-gallery columns; className preserves the original column modifiers.
+ *
+ * The studio's own frames, chosen to sit together: palace architecture, cream
+ * and white florals, and candlelit night rooms, so the three columns read as one
+ * body of work rather than a contact sheet.
+ *
+ * Every one is cropped to the same 2:3 portrait, so the columns read as a
+ * single run of frames rather than a mix of shapes. The grain and the wash over
+ * them are in styles/home.css.
+ */
+export type GalleryImage = Media & {
+  /** Shown in black and white, as the hero band alternates its own frames. */
+  mono?: boolean
+}
+
+export const galleryColumns: { className: string; images: GalleryImage[] }[] = [
   {
     "className": "_3-col-wrapper col-1-s hide-mob",
     "images": [
       {
-        "src": "/images/grid-0-0.jpg",
-        "alt": ""
+        "src": "/images/wow-gal-singer.jpg",
+        "alt": "A singer on a darkened stage",
+        "mono": true
       },
       {
-        "src": "/images/grid-0-1.jpg",
-        "alt": ""
+        "src": "/images/wow-gal-white-florals.jpg",
+        "alt": "A table beneath a chandelier of white blooms"
       },
       {
-        "src": "/images/grid-0-2.jpg",
-        "alt": ""
+        "src": "/images/wow-gal-floral-corridor.jpg",
+        "alt": "A corridor of florals and hanging lanterns",
+        "mono": true
       },
       {
-        "src": "/images/grid-0-3.jpg",
-        "alt": ""
+        "src": "/images/wow-gal-palace-entrance.jpg",
+        "alt": "The bride at the palace entrance"
       },
       {
-        "src": "/images/grid-0-4.jpg",
-        "alt": ""
+        "src": "/images/wow-gal-mehendi-detail.jpg",
+        "alt": "Mehendi and embroidery, hand in hand",
+        "mono": true
       }
     ]
   },
@@ -55,28 +73,31 @@ export const galleryColumns: { className: string; images: Media[] }[] = [
     "className": "_3-col-wrapper col-s-2",
     "images": [
       {
-        "src": "/images/grid-1-0.jpg",
-        "alt": ""
+        "src": "/images/wow-gal-feather-stage.jpg",
+        "alt": "A white stage dressed with feathered plumes"
       },
       {
-        "src": "/images/grid-1-1.jpg",
-        "alt": ""
+        "src": "/images/wow-gal-couple-gate.jpg",
+        "alt": "The couple at a lantern-lit gate",
+        "mono": true
       },
       {
-        "src": "/images/grid-1-2.jpg",
-        "alt": ""
+        "src": "/images/wow-gal-floral-arch.jpg",
+        "alt": "An arch banked with blue and white flowers"
       },
       {
-        "src": "/images/grid-1-3.jpg",
-        "alt": ""
+        "src": "/images/wow-gal-palace-dance.jpg",
+        "alt": "A dancer turning in the palace hall",
+        "mono": true
       },
       {
-        "src": "/images/grid-1-4.jpg",
-        "alt": ""
+        "src": "/images/wow-gal-chandelier-tables.jpg",
+        "alt": "A chandelier of white blooms over a dressed table"
       },
       {
-        "src": "/images/grid-1-5.jpg",
-        "alt": ""
+        "src": "/images/wow-gal-haldi-joy.jpg",
+        "alt": "Haldi, and the laughter through it",
+        "mono": true
       }
     ]
   },
@@ -84,24 +105,27 @@ export const galleryColumns: { className: string; images: Media[] }[] = [
     "className": "_3-col-wrapper col-1-s off-set",
     "images": [
       {
-        "src": "/images/grid-2-0.jpg",
-        "alt": ""
+        "src": "/images/wow-gal-couple-portrait.jpg",
+        "alt": "The couple, close, in black and white",
+        "mono": true
       },
       {
-        "src": "/images/grid-2-1.jpg",
-        "alt": ""
+        "src": "/images/wow-gal-celebration.jpg",
+        "alt": "Napkins in the air as the celebration breaks"
       },
       {
-        "src": "/images/grid-2-2.jpg",
-        "alt": ""
+        "src": "/images/wow-gal-family-portrait.jpg",
+        "alt": "The groom seated, family either side",
+        "mono": true
       },
       {
-        "src": "/images/grid-2-3.jpg",
-        "alt": ""
+        "src": "/images/wow-gal-aisle-dusk.jpg",
+        "alt": "An aisle of chandeliers to the water at dusk"
       },
       {
-        "src": "/images/grid-2-4.jpg",
-        "alt": ""
+        "src": "/images/wow-gal-mother-daughter.jpg",
+        "alt": "A mother and daughter, cheek to cheek",
+        "mono": true
       }
     ]
   }

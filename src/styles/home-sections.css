@@ -36,8 +36,7 @@
 .home-atelier_kicker.kicker,
 .home-stats_kicker.kicker,
 .home-films_kicker.kicker,
-.home-stats_label,
-.home-films_duration {
+.home-stats_label {
   font-family: var(--font--inherit);
   font-size: var(--step-n1);
   line-height: var(--leading-label);
@@ -75,11 +74,6 @@
 
 /* ═══ Step 6 — display ═══════════════════════════════════════════════════ */
 
-.home-films_title {
-  font-size: var(--step-6);
-  max-width: 16ch;
-  text-wrap: balance;
-}
 
 /* ═══ Step 4 — h2 ════════════════════════════════════════════════════════ */
 
@@ -109,10 +103,6 @@
   opacity: 0.75;
 }
 
-.home-films_duration {
-  opacity: 0.59;
-  white-space: nowrap;
-}
 
 /* ═══ Animation clips ════════════════════════════════════════════════════ */
 
@@ -129,15 +119,13 @@
 }
 
 .home-atelier_head,
-.home-stats_lead,
-.home-films_head {
+.home-stats_lead {
   display: flex;
   flex-direction: column;
   row-gap: var(--rhythm-sm);
 }
 
-.home-atelier_head,
-.home-films_head {
+.home-atelier_head {
   margin-bottom: var(--rhythm-lg);
 }
 
@@ -145,14 +133,19 @@
   position: relative;
 }
 
-/* The band the pinned second card rests under, as the portfolio band on
-   /about: on its own layer, solid, scrolling up over the stack. */
+/* The portfolio band is what the pinned cards rest under — on its own layer,
+   solid, scrolling up over the stack, exactly as it does on /about. The button
+   rides with it so nothing sits between the band and the stack. */
+.press_wrap.home-atelier_portfolio {
+  background-color: var(--swatch--dark);
+}
+
 .btn-wrap.home-atelier_cta {
-  position: relative;
-  z-index: 9;
+  display: flex;
+  justify-content: center;
   margin-top: 0;
   padding-top: var(--rhythm-lg);
-  background-color: var(--swatch--dark);
+  padding-bottom: var(--rhythm-sm);
 }
 
 /* ═══ The stats band ═════════════════════════════════════════════════════ */
@@ -183,345 +176,277 @@
   border-left: 1px solid var(--light-fade-2);
 }
 
+
 /* ═══ The films ══════════════════════════════════════════════════════════ */
+
+:root {
+  /* The wall's easing: fast away, long settle, so a frame opens out rather
+     than snapping. */
+  --ease-out-quint: cubic-bezier(0.16, 1, 0.3, 1);
+}
 
 .home-films_wrap {
   position: relative;
-  overflow: hidden;
   background-color: var(--swatch--dark);
 }
 
-.home-films_bg_wrap {
-  position: absolute;
-  inset: 0;
-}
-
-.home-films_bg_video {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 50%;
-}
-
-/* Neutral, as every scrim over photography here. */
-.home-films_bg_scrim {
-  position: absolute;
-  inset: 0;
-  background-color: rgb(0 0 0 / 45%);
-}
-
-.home-films_carousel {
-  max-width: 64rem;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.home-films_carousel:focus-visible {
-  outline: 1px solid var(--swatch--brand);
-  outline-offset: var(--rhythm-sm);
-}
-
-.home-films_slide {
-  position: absolute;
-  inset: 0;
-}
-
-.home-films_controls {
-  display: flex;
-  align-items: center;
-  column-gap: var(--rhythm-md);
-  margin-top: var(--rhythm-sm);
-}
-
-/* The caption sits between the arrows, as the statements band sets it. */
-.home-films_arrow {
-  flex: none;
-  width: 3rem;
-  height: 3rem;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: inherit;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.home-films_arrow:hover,
-.home-films_arrow:focus-visible {
-  color: var(--swatch--brand);
-}
-
-.home-films_arrow.left {
-  transform: scaleX(-1);
-}
-
-.home-films_dots {
-  display: flex;
-  justify-content: center;
-  column-gap: var(--rhythm-xs);
-  margin-top: var(--rhythm-md);
-}
-
-.home-films_dot {
-  width: 2.5rem;
-  height: 1px;
-  padding: 0;
-  border: 0;
-  background-color: var(--wow-cream);
-  opacity: 0.3;
-  cursor: pointer;
-  transition: opacity 0.3s ease, background-color 0.3s ease;
-}
-
-.home-films_dot.is-active {
-  background-color: var(--swatch--brand);
-  opacity: 1;
-}
-
-.home-films_frame {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  background-color: rgb(0 0 0 / 35%);
-  will-change: clip-path;
-}
-
-/* The whole frame is the target; the button carries no chrome of its own. */
-.home-films_poster_btn {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-}
-
-.home-films_poster {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: saturate(1);
-  transition: filter 0.3s ease;
-}
-
-/* The poster drains to greyscale under the pointer and the ring turns gold. */
-.home-films_poster_btn:hover .home-films_poster {
-  filter: saturate(0);
-}
-
-.home-films_play {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: clamp(3.5rem, 5.5vw, 5.5rem);
-  aspect-ratio: 1;
-  transform: translate(-50%, -50%);
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--wow-cream);
-  border-radius: 50%;
-  color: var(--wow-cream);
-  background-color: rgb(0 0 0 / 20%);
-  transition: border-color 0.3s ease, color 0.3s ease;
-}
-
-/* A triangle's visual centre sits left of its box's; nudged to compensate. */
-.home-films_play svg {
-  display: block;
-  width: 34%;
-  height: 34%;
-  margin-left: 5%;
-}
-
-.home-films_poster_btn:hover .home-films_play,
-.home-films_poster_btn:focus-visible .home-films_play {
-  border-color: var(--swatch--brand);
-  color: var(--swatch--brand);
-}
-
-.home-films_player {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-
-.home-films_meta {
-  flex: 1 1 auto;
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
-  column-gap: var(--rhythm-sm);
-  min-width: 0;
+.home-films_head {
+  margin-bottom: var(--rhythm-lg);
   text-align: center;
 }
 
-.home-films_name {
-  margin: 0;
-}
-
-/* ═══ Narrow screens ═════════════════════════════════════════════════════ */
-
-@media screen and (max-width: 1699px) {
-  /* The statement takes the full width above the figures. */
-  .home-stats_layout {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: var(--rhythm-lg);
-  }
-}
-
-@media screen and (max-width: 991px) {
-  .home-stats_grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    row-gap: var(--rhythm-md);
-  }
-
-  /* The second row takes a hairline above as well. */
-  .home-stats_item:nth-child(n + 3) {
-    padding-top: var(--rhythm-md);
-    border-top: 1px solid var(--light-fade-2);
-  }
-}
-
-@media screen and (max-width: 767px) {
-  .home-films_arrow {
-    width: 2rem;
-    height: 2rem;
-  }
-
-  .home-films_controls {
-    column-gap: var(--rhythm-sm);
-  }
-}
-
-@media screen and (max-width: 479px) {
-  /* One figure per row, a hairline above each. */
-  .home-stats_grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .home-stats_item {
-    padding-left: 0;
-    padding-top: var(--rhythm-md);
-    border-left: 0;
-    border-top: 1px solid var(--light-fade-2);
-  }
-}
-/* ═══ Atelier staircase: the five disciplines ════════════════════════════ */
-
 /*
- * About stacks three cards at 7, 11 and 15rem. Five need their own ramp, and it
- * is kept across the same span so the staircase reads at the same depth as the
- * one on /about — 2rem a step instead of 4rem. The offsets are computed from
- * `--i` rather than written out, so the band follows src/data/disciplines.ts if
- * a discipline is ever added or dropped.
+ * The wall: eight frames in two rows, each row a flex line whose children share
+ * it by `flex-grow`. Pointing at a frame opens it out on both axes at once — it
+ * takes width from its row-mates, and its row takes depth from the other row
+ * (that is the `:has()` rule). Nothing is transformed, so no frame ever covers
+ * its neighbour; they genuinely give way.
  */
-.home-atelier_cards > .home-atelier_card {
-  position: sticky;
-  top: calc(7rem + var(--i) * 2rem);
-  /* The wine ramp the About cards descend, over five steps rather than three. */
-  background-image: linear-gradient(
-    hsl(354 49% calc(23.5% - var(--i) * 2.6%)),
-    hsl(354 49% calc(23.5% - var(--i) * 2.6%))
-  );
+.films-wall {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: clamp(440px, 42vw, 640px);
+  max-width: 77.5rem;
+  margin-inline: auto;
 }
 
-/* The number above the name, as the Disciplines page sets it. */
-.home-atelier_card_num.kicker {
-  opacity: 0.6;
+.films-wall_row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1 1 0;
+  min-height: 0;
+  transition: flex-grow 0.9s var(--ease-out-quint);
 }
 
-/*
- * Two-word names where About had one. "Guest Experience" and "Food & Beverage"
- * cannot hold the display size a single word did, so the title is sized to its
- * own box here and allowed to break between words.
- *
- * The floor is set by "Entertainment": thirteen characters with nowhere to
- * break, which at 2.2rem measured 322px and dragged the card's column — and so
- * the whole page — wider than a 320px screen. `min-width: 0` stops a long word
- * stretching the column at any size; the floor keeps it inside the gutters.
- */
-.home-atelier_card_title.u-text-display {
-  font-size: clamp(1.65rem, 7cqw, 5.5rem);
-  text-wrap: balance;
+.films-wall_row-offset {
+  padding-inline: 4.5% 2.5%;
 }
 
-.home-atelier_card .deets_card_text-wrap {
+/* Vertical axis: every row gives a little, the pointed-at row takes it. */
+.films-wall:hover .films-wall_row {
+  flex-grow: 0.8;
+}
+
+.films-wall_row:has(.films-wall_tile:hover),
+.films-wall_row:has(.films-wall_tile:focus-visible) {
+  flex-grow: 1.55;
+}
+
+.films-wall_tile {
+  --fx: 1;
+  position: relative;
+  flex: var(--fx) 1 0%;
   min-width: 0;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background-color: rgb(0 0 0 / 35%);
+  cursor: pointer;
+  transition:
+    flex-grow 0.9s var(--ease-out-quint),
+    height 0.9s var(--ease-out-quint);
 }
 
-.home-atelier_card_link {
-  color: inherit;
-  text-decoration: none;
+.films-wall_tile:focus-visible {
+  outline: 1px solid var(--swatch--brand);
+  outline-offset: 2px;
 }
 
-.home-atelier_card_link:hover {
-  color: var(--swatch--brand);
+/* The scatter: each frame's share of its row, and how deep it hangs. */
+.films-wall_row:nth-child(1) .films-wall_tile:nth-child(1) { --fx: 1.15; height: 92%; align-self: flex-end; }
+.films-wall_row:nth-child(1) .films-wall_tile:nth-child(2) { --fx: 0.8; height: 100%; }
+.films-wall_row:nth-child(1) .films-wall_tile:nth-child(3) { --fx: 1.3; height: 86%; align-self: flex-end; }
+.films-wall_row:nth-child(1) .films-wall_tile:nth-child(4) { --fx: 0.95; height: 94%; align-self: flex-end; }
+.films-wall_row:nth-child(2) .films-wall_tile:nth-child(1) { --fx: 0.9; height: 94%; align-self: flex-start; }
+.films-wall_row:nth-child(2) .films-wall_tile:nth-child(2) { --fx: 1.25; height: 100%; }
+.films-wall_row:nth-child(2) .films-wall_tile:nth-child(3) { --fx: 0.85; height: 84%; align-self: flex-start; }
+.films-wall_row:nth-child(2) .films-wall_tile:nth-child(4) { --fx: 1.1; height: 92%; align-self: flex-start; }
+
+/* Horizontal axis: row-mates give way, the pointed-at frame grows. */
+.films-wall_row:hover .films-wall_tile {
+  flex-grow: calc(var(--fx) * 0.78);
 }
 
-/* The band the stack comes to rest under, carrying the button. */
-.press_wrap.home-atelier_close {
-  background-color: var(--swatch--dark);
+.films-wall_row .films-wall_tile:hover,
+.films-wall_row .films-wall_tile:focus-visible {
+  flex-grow: calc(var(--fx) * 2 + 0.7);
+  height: 100%;
 }
 
-@media (max-width: 991px) {
-  .home-atelier_cards > .home-atelier_card {
-    top: calc(15.5vw + var(--i) * 6.325vw);
-  }
-}
-
-/*
- * The shield over a playing film.
- *
- * Transparent and on top of the player: wheel events over it reach the window,
- * so Lenis keeps scrolling the page while a film runs. Clicking it stands it
- * down and hands the pointer to the player's own controls; leaving the frame
- * puts it back. Without it the iframe swallows every wheel event and the page
- * cannot be scrolled past this band at all.
- */
-.home-films_shield {
+.films-wall_video {
   position: absolute;
   inset: 0;
-  z-index: 2;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  filter: grayscale(1);
+  transition: transform 0.9s var(--ease-out-quint), filter 0.6s ease;
 }
 
-.home-films_shield:focus-visible {
-  outline: 2px solid var(--swatch--brand);
-  outline-offset: -4px;
+/* Colour comes with the motion: a frame is grey until it plays. */
+.films-wall_tile:hover .films-wall_video,
+.films-wall_tile:focus-visible .films-wall_video {
+  filter: grayscale(0);
+  transform: scale(1.04);
 }
 
-/*
- * The stats band leads with its heading now, the figures ranked underneath it
- * rather than beside the statement. Two columns left the heading sharing a row
- * with four numerals, which gave neither room.
- */
-/*
- * The figures sit inside the "Four Days / One Celebration" section rather than
- * in a band of their own, so they bring no background or container of their own
- * — only the space that separates them from the frames above.
- */
-.home-stats_block {
+.films-wall_tile figcaption {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 1;
+  padding: 2rem 0.875rem 0.7rem;
+  background-image: linear-gradient(0deg, rgb(20 6 7 / 78%) 0%, rgb(20 6 7 / 0%) 100%);
+  font-family: var(--font--inherit);
+  font-size: var(--step-n1);
+  line-height: var(--leading-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--wow-cream);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.films-wall_tile:hover figcaption,
+.films-wall_tile:focus-visible figcaption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* The two full films, beneath the wall. */
+.films-wall_more {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  column-gap: var(--rhythm-lg);
+  row-gap: var(--rhythm-sm);
   margin-top: var(--rhythm-lg);
 }
 
-.home-stats_layout {
-  grid-template-columns: minmax(0, 1fr);
-  row-gap: var(--rhythm-md);
-  align-items: start;
+.films-wall_link {
+  display: flex;
+  align-items: center;
+  column-gap: var(--rhythm-xs);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  font-family: var(--font--inherit);
+  font-size: var(--step-n1);
+  line-height: var(--leading-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+.films-wall_link:hover,
+.films-wall_link:focus-visible {
+  color: var(--swatch--brand);
+}
+
+.films-wall_link_time {
+  margin-left: 0.6em;
+  opacity: 0.55;
+}
+
+/* ═══ A full film, over the page ═════════════════════════════════════════ */
+
+.films-player {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 4vw, 3rem);
+}
+
+.films-player_scrim {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  background-color: rgb(0 0 0 / 92%);
+  cursor: pointer;
+}
+
+.films-player_frame {
+  position: relative;
+  width: min(100%, 68rem);
+  aspect-ratio: 16 / 9;
+  background-color: #000;
+}
+
+.films-player_iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.films-player_close {
+  position: absolute;
+  top: clamp(0.75rem, 2.5vw, 1.75rem);
+  right: clamp(0.75rem, 2.5vw, 1.75rem);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--wow-cream);
+  cursor: pointer;
+  font-family: var(--font--inherit);
+  font-size: var(--step-n1);
+  line-height: var(--leading-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+.films-player_close:hover,
+.films-player_close:focus-visible {
+  color: var(--swatch--brand);
+}
+
+/* No pointer to hover with: a plain grid, captions always shown, stills only
+   until a frame is tapped. */
+@media (max-width: 900px) {
+  .films-wall {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    height: auto;
+    gap: 6px;
+  }
+
+  .films-wall_row,
+  .films-wall_row-offset {
+    display: contents;
+    padding-inline: 0;
+  }
+
+  .films-wall_tile,
+  .films-wall_row .films-wall_tile:nth-child(n) {
+    flex: none;
+    height: auto;
+    align-self: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .films-wall_tile figcaption {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .films-wall_row,
+  .films-wall_tile,
+  .films-wall_video,
+  .films-wall_tile figcaption {
+    transition: none;
+  }
 }

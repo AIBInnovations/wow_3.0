@@ -68,7 +68,12 @@ export default function GalleryScroll() {
                 <div key={i} className={col.className}>
                   {col.images.map((img, j) => (
                     <div key={j} className="grid-child">
-                      <img src={img.src} alt={img.alt} loading="lazy" className="grid-img" />
+                      <img
+                        src={img.src}
+                        alt={img.alt}
+                        loading="lazy"
+                        className={`grid-img${img.mono ? ' is-mono' : ''}`}
+                      />
                     </div>
                   ))}
                 </div>

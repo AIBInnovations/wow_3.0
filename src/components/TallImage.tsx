@@ -16,6 +16,10 @@ import { atelierBackground } from '@/data/media'
  * viewport, measured in the image's own em so the travel scales with type. It is
  * styled at 110% height precisely so it has room to move without showing an edge,
  * and the travel is kept short so the faces at the top of the frame stay in it.
+ *
+ * It arrives in black and white and takes on its colour as it rises, fully
+ * coloured by the time the section sits at the middle of the screen — the
+ * photograph coming through as the statement is read.
  */
 export default function TallImage() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -33,6 +37,21 @@ export default function TallImage() {
       const img = section.querySelector<HTMLElement>('.tall-img_bg_img')
       if (!img) return
       const em = () => parseFloat(getComputedStyle(img).fontSize)
+
+      gsap.fromTo(
+        img,
+        { filter: 'grayscale(1)' },
+        {
+          filter: 'grayscale(0)',
+          ease: 'none',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top bottom',
+            end: 'center center',
+            scrub: true,
+          },
+        }
+      )
 
       gsap.fromTo(
         img,

@@ -6,22 +6,19 @@ import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { voices } from '@/data/voices'
 import { voicesMarquee } from '@/data/content'
-import { ArrowSlider, QuoteMark } from './svg'
+import { ArrowSlider } from './svg'
 
 /**
- * The statements band.
+ * The celebrations band.
  *
  * - The headline runs endlessly on the `move-text` keyframes in site.css.
  * - Slides change instantly — no crossfade. What reads as the transition is the
  *   incoming slide's own entrance: its portrait fades in while settling from 1.1
- *   to 1, its quote fades in, its attribution rises from below, and the large
- *   photograph settles from 1.1.
- * - The arch portrait and quote sit centred in the column; the attribution lives
- *   in the controls row at the foot, between the two arrows.
+ *   to 1, its name rises from below, and the large photograph settles from 1.1.
+ * - The arch sits centred in the column; the couple's name lives in the controls
+ *   row at the foot, between the two arrows.
  * - The first slide's photograph is wiped in from the right, over 2s, the first
  *   time the band reaches mid-viewport, and wiped back out if you scroll above.
- * - The quote mark behind the first statement drifts from -20% to +10% as it
- *   crosses the viewport.
  * - Arrows, arrow keys and horizontal swipes all change slide; it loops.
  */
 export default function Voices() {
@@ -44,7 +41,6 @@ export default function Voices() {
     const portrait = q('.testimonial1_slider_img')
     const names = q('.testimonial1_slider_name')
     const photo = q('.testimonial1_slider_right_image')
-    const quote = q('.testimonial1_slider_rtb.text-align-center')
 
     // The page opens on slide one already composed; only a real change animates.
     if (firstRun.current) {
@@ -60,14 +56,13 @@ export default function Voices() {
     tl.fromTo(names, { yPercent: 107 }, { yPercent: 0, duration: 1, ease: EASE.inOutQuad }, 0)
     tl.fromTo(names, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'none' }, 0)
     tl.fromTo(photo, { scale: 1.1 }, { scale: 1, duration: 1, ease: EASE.outQuad }, 0)
-    tl.fromTo(quote, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'none' }, 0)
 
     return () => {
       tl.kill()
     }
   }, [index, reduced])
 
-  // Scroll-driven pieces: the first photograph's wipe and the quote mark's drift.
+  // Scroll-driven: the first photograph's wipe as the band is reached.
   useIsomorphicLayoutEffect(() => {
     const root = rootRef.current
     if (!root || reduced) return
@@ -88,18 +83,6 @@ export default function Voices() {
         })
       }
 
-      const mark = root.querySelector('.image-22')
-      if (mark) {
-        gsap.fromTo(
-          mark,
-          { yPercent: -20 },
-          {
-            yPercent: 10,
-            ease: 'none',
-            scrollTrigger: { trigger: mark, start: 'top bottom', end: 'bottom top', scrub: scrubFor(50) },
-          }
-        )
-      }
     }, root)
 
     return () => ctx.revert()
@@ -147,7 +130,7 @@ export default function Voices() {
                 const current = i === index
                 return (
                   <div
-                    key={t.name}
+                    key={t.portrait}
                     ref={(el) => {
                       if (el) slidesRef.current[i] = el
                     }}
@@ -167,15 +150,12 @@ export default function Voices() {
                       <div className="testimonial1_slider_left_wrap">
                         <div className="testimonial1_slider_left_contain u-container">
                           <div className="testimonial1_slider_left_content_layout u-vflex-center-center u-gap-main">
-                            {i === 0 && <QuoteMark />}
                             {t.portrait && (
                               <div className="testimonial1_slider_img_wrap">
                                 <img src={t.portrait} alt="" loading="lazy" className="testimonial1_slider_img" />
                               </div>
                             )}
-                            <div className="testimonial1_slider_rtb text-align-center w-richtext">
-                              <p>{t.quote}</p>
-                            </div>
+
                           </div>
 
                           <div className="testimonial1_slider_controls">
@@ -190,7 +170,7 @@ export default function Voices() {
                               </button>
                               <div className="testimonial1_slider_name_wrap">
                                 <h3 className="testimonial1_slider_name">–</h3>
-                                <h3 className="testimonial1_slider_name">{t.name}</h3>
+                                <h3 className="testimonial1_slider_name">{t.credit ?? ''}</h3>
                               </div>
                               <button
                                 type="button"

@@ -1,54 +1,37 @@
 export type Voice = {
-  quote: string
-  /** Attribution line — the discipline or theme the statement belongs to. */
-  name: string
-  portrait: string | null
-  right: string | null
-  extra: string | null
+  /**
+   * Whose celebration this is. Shown on its own between the arrows — the band
+   * carries the studio's photographs and the couple's name, and no words: the
+   * studio's statements are its own, and are never signed by a couple who did
+   * not say them. Null until a name is to hand.
+   */
+  credit: string | null
+  /** The arch, in its tall crop. */
+  portrait: string
+  /** The full-height photograph beside it. */
+  right: string
 }
 
 /**
- * The studio's own statements, not client quotes.
+ * The celebrations band: three celebrations, each an arch and a photograph, the
+ * couple's name beneath.
  *
- * This band is shaped for client testimonials, and there are none on record
- * yet. Rather than invent them it runs the copy the studio already writes about
- * its own work, attributed to the discipline it belongs to. Swap in real client
- * quotes by replacing `quote`/`name`.
+ * The photographs are the studio's own, supplied for these three weddings.
  */
 export const voices: Voice[] = [
   {
-    "quote": "Nothing on show. The working parts of a celebration dissolve into it — only what was meant to be seen remains.",
-    "name": "The Atelier",
-    "portrait": "/images/wow-arch-night-800.jpg",
-    "right": "/images/wow-tented-lounge.jpg",
-    "extra": null
+    credit: 'Anvita & Vishal',
+    portrait: '/images/wow-anvita-vishal-800.jpg',
+    right: '/images/wow-fireworks-aisle.jpg',
   },
   {
-    "quote": "Rather than spectacle, atmosphere; rather than excess, refinement. Nothing is incidental. Everything is intentional.",
-    "name": "Our approach",
-    "portrait": "/images/wow-white-florals-800.jpg",
-    "right": "/images/wow-lawn-dinner.jpg",
-    "extra": null
+    credit: 'Ronak & Sanya',
+    portrait: '/images/wow-ronak-sanya-800.jpg',
+    right: '/images/wow-haldi-stage.jpg',
   },
   {
-    "quote": "A slower kind of celebration — the spaces expand, and everything within them is placed with intention.",
-    "name": "The Setting",
-    "portrait": "/images/wow-desert-pavilion-800.jpg",
-    "right": "/images/wow-palm-walk.jpg",
-    "extra": null
+    credit: null,
+    portrait: '/images/wow-green-couple-800.jpg',
+    right: '/images/wow-sangeet-floor.jpg',
   },
-  {
-    "quote": "Production, sound and lighting are designed to disappear.",
-    "name": "Entertainment",
-    "portrait": "/images/wow-arch-performer-800.jpg",
-    "right": "/images/wow-carpet-stage.jpg",
-    "extra": null
-  },
-  {
-    "quote": "Arrivals, accommodation and transport handled end to end, so that arriving is already part of the celebration.",
-    "name": "Guest Experience",
-    "portrait": "/images/wow-welcome-sign-800.jpg",
-    "right": "/images/wow-cocktails.jpg",
-    "extra": null
-  }
 ]

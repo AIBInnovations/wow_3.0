@@ -1,97 +1,41 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { gsap, registerGsap } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useLineAnimation } from '@/hooks/useSplitText'
+import { useSmoothScroll } from '@/providers/SmoothScrollProvider'
 import Initial from '@/components/Initial'
-import { ArrowSlider } from '@/components/svg'
-import { homeFilms } from '@/data/home'
+import { homeFilms, type Film, type WallClip } from '@/data/home'
 
 /**
- * The films, over the celebration reel.
+ * The films, as a wall of moving frames.
  *
- * The reel plays silently behind everything, under a neutral scrim, and only
- * while the section is on screen — an IntersectionObserver pauses it the moment
- * the section leaves and resumes it on return. Under reduced motion it never
- * plays at all and its poster stands in.
+ * Eight silent clips from the studio's own celebration film, in two rows. A
+ * frame holds its still until it is pointed at, and then plays and opens out in
+ * both directions at once: it widens while its row-mates give way, and its row
+ * deepens while the other row shrinks. Only one clip is ever playing, and each
+ * rewinds as the pointer leaves, so the wall is always met from the same frame.
  *
- * One film at a time, in a frame the width of the band: the arrows, the arrow
- * keys and a swipe move to the next, and the dots say where you are. Each is a
- * facade — a poster with a play ring, and no player in the page until it is
- * clicked. Moving on stops whatever was playing, so two films can never run at
- * once. The frame wipes up out of a bottom clip as the band arrives.
+ * Nothing loads until it is asked for — the clips are `preload="none"` behind
+ * their posters — and under reduced motion none of them play at all.
+ *
+ * Beneath the wall are the two full films. Those are cross-origin players, so
+ * they open over the page rather than in the wall, and while one is open the
+ * page's smooth scrolling is stopped rather than fighting the iframe for the
+ * wheel.
  */
 export default function HomeFilms() {
   const sectionRef = useRef<HTMLElement>(null)
-  const videoRef = useRef<HTMLVideoElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
   const reduced = useReducedMotion()
-
-  const films = homeFilms.films
-  const count = films.length
-  const [index, setIndex] = useState(0)
-  /** The film currently playing, if any — cleared whenever the frame changes. */
-  const [playing, setPlaying] = useState<string | null>(null)
-  /**
-   * Whether the reader has handed the pointer to the player.
-   *
-   * A film plays in a cross-origin iframe, and an iframe owns every wheel event
-   * over it — they never reach the window, so Lenis never sees them and the page
-   * simply stops scrolling at this band. While this is false a transparent
-   * shield sits over the player and takes those events instead, so the page
-   * scrolls normally with a film running underneath. Clicking the shield hands
-   * the pointer to the player for its own controls; leaving the frame puts it
-   * back.
-   */
-  const [engaged, setEngaged] = useState(false)
-
-  const go = useCallback(
-    (delta: number) => {
-      setPlaying(null)
-      setEngaged(false)
-      setIndex((i) => (i + delta + count) % count)
-    },
-    [count]
-  )
+  const [open, setOpen] = useState<Film | null>(null)
 
   useLineAnimation(headingRef)
 
-  // The ambient reel: on while in view, off otherwise, never under reduced motion.
-  useIsomorphicLayoutEffect(() => {
-    const section = sectionRef.current
-    const video = videoRef.current
-    if (!section || !video) return
-
-    // useReducedMotion reports one effect cycle late; the query is read here
-    // too so the pause lands before the first paint rather than after it.
-    if (reduced || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      video.removeAttribute('autoplay')
-      video.pause()
-      return
-    }
-
-    const io = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        video.play().catch(() => {})
-      } else {
-        video.pause()
-        // Scrolling away puts the frame back to its poster. A film left running
-        // in an iframe off screen keeps playing sound and keeps hold of the
-        // wheel if the reader ever comes back to it.
-        setPlaying(null)
-        setEngaged(false)
-      }
-    })
-    io.observe(section)
-
-    return () => {
-      io.disconnect()
-    }
-  }, [reduced])
-
-  // The frame wipes up as the carousel reaches 80% of the viewport.
+  // The wall rises as it arrives, one row after the other.
   useIsomorphicLayoutEffect(() => {
     const section = sectionRef.current
     if (!section || reduced) return
@@ -99,13 +43,15 @@ export default function HomeFilms() {
 
     const ctx = gsap.context(() => {
       gsap.fromTo(
-        '.home-films_frame',
-        { clipPath: 'inset(100% 0 0 0)' },
+        '.films-wall_row',
+        { opacity: 0, y: 40 },
         {
-          clipPath: 'inset(0% 0 0 0)',
-          duration: 1.5,
+          opacity: 1,
+          y: 0,
+          duration: 1.4,
+          stagger: 0.12,
           ease: 'power3.out',
-          scrollTrigger: { trigger: '.home-films_carousel', start: 'top 80%', once: true },
+          scrollTrigger: { trigger: '.films-wall', start: 'top 80%', once: true },
         }
       )
     }, section)
@@ -113,60 +59,8 @@ export default function HomeFilms() {
     return () => ctx.revert()
   }, [reduced])
 
-  // The incoming film's poster fades up; a playing film is never animated.
-  const firstRun = useRef(true)
-  useEffect(() => {
-    if (reduced) return
-    if (firstRun.current) {
-      firstRun.current = false
-      return
-    }
-    registerGsap()
-    const tween = gsap.fromTo(
-      '.home-films_slide',
-      { opacity: 0, xPercent: 2 },
-      { opacity: 1, xPercent: 0, duration: 0.6, ease: 'power3.out' }
-    )
-    return () => {
-      tween.kill()
-    }
-  }, [index, reduced])
-
-  // Horizontal swipe on touch and pen.
-  const swipeX = useRef<number | null>(null)
-  const onPointerDown = (e: React.PointerEvent) => {
-    if (e.pointerType !== 'mouse') swipeX.current = e.clientX
-  }
-  const onPointerUp = (e: React.PointerEvent) => {
-    if (swipeX.current === null) return
-    const dx = e.clientX - swipeX.current
-    swipeX.current = null
-    if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1)
-  }
-
-  const { ambient } = homeFilms
-  const film = films[index]
-
   return (
     <section ref={sectionRef} data-theme="inherit" className="home-films_wrap">
-      <div className="home-films_bg_wrap" aria-hidden="true">
-        <video
-          ref={videoRef}
-          className="home-films_bg_video"
-          src={ambient.src}
-          poster={ambient.poster}
-          width={ambient.w}
-          height={ambient.h}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          tabIndex={-1}
-        />
-        <div className="home-films_bg_scrim" />
-      </div>
-
       <div className="u-container home-films_contain" data-padding-top="main" data-padding-bottom="main">
         <div className="home-films_head">
           {/* Wrapped: .kicker grows to fill a flex column on its own. */}
@@ -178,114 +72,147 @@ export default function HomeFilms() {
           </h2>
         </div>
 
-        <div
-          className="home-films_carousel"
-          role="region"
-          aria-roledescription="carousel"
-          aria-label={homeFilms.kicker}
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'ArrowLeft') go(-1)
-            if (e.key === 'ArrowRight') go(1)
-          }}
-          onPointerDown={onPointerDown}
-          onPointerUp={onPointerUp}
-        >
-          <div className="home-films_frame" onMouseLeave={() => setEngaged(false)}>
-            <div
-              key={film.id}
-              className="home-films_slide"
-              role="group"
-              aria-roledescription="slide"
-              aria-label={`${index + 1} of ${count}: ${film.title}`}
-            >
-              {playing === film.id ? (
-                <>
-                  <iframe
-                    className="home-films_player"
-                    src={film.embed}
-                    title={film.title}
-                    allow={film.allow}
-                    referrerPolicy="strict-origin-when-cross-origin"
-                  />
-                  {/* Takes the wheel so the page still scrolls; see `engaged`. */}
-                  {!engaged ? (
-                    <button
-                      type="button"
-                      className="home-films_shield"
-                      onClick={() => setEngaged(true)}
-                      aria-label={`Use the player controls for ${film.title}`}
-                    />
-                  ) : null}
-                </>
-              ) : (
-                <button
-                  type="button"
-                  className="home-films_poster_btn"
-                  onClick={() => setPlaying(film.id)}
-                  aria-label={`Play ${film.title}`}
-                >
-                  <img
-                    src={film.poster.src}
-                    width={film.poster.w}
-                    height={film.poster.h}
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                    className="home-films_poster"
-                  />
-                  <span className="home-films_play" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" focusable="false">
-                      <path d="M8.5 6v12l10-6z" fill="currentColor" />
-                    </svg>
-                  </span>
-                </button>
-              )}
+        <div className="films-wall">
+          {homeFilms.wall.map((row, i) => (
+            <div key={i} className={`films-wall_row${i === 1 ? ' films-wall_row-offset' : ''}`}>
+              {row.map((clip) => (
+                <Tile key={clip.id} clip={clip} reduced={reduced} />
+              ))}
             </div>
-          </div>
+          ))}
+        </div>
 
-          <div className="home-films_controls">
-            <button
-              type="button"
-              onClick={() => go(-1)}
-              aria-label="Previous film"
-              className="home-films_arrow left"
-            >
-              <ArrowSlider />
+        <div className="films-wall_more">
+          {homeFilms.films.map((film) => (
+            <button key={film.id} type="button" className="films-wall_link" onClick={() => setOpen(film)}>
+              <span className="films-wall_link_text">
+                {film.title}
+                {film.duration ? <span className="films-wall_link_time">{film.duration}</span> : null}
+              </span>
+              <ArrowRight />
             </button>
-
-            <div className="home-films_meta">
-              <h3 className="u-text-h4 home-films_name">{film.title}</h3>
-              {film.duration ? <span className="home-films_duration">{film.duration}</span> : null}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => go(1)}
-              aria-label="Next film"
-              className="home-films_arrow right"
-            >
-              <ArrowSlider />
-            </button>
-          </div>
-
-          <div className="home-films_dots">
-            {films.map((f, i) => (
-              <button
-                key={f.id}
-                type="button"
-                className={`home-films_dot${i === index ? ' is-active' : ''}`}
-                aria-label={f.title}
-                aria-current={i === index}
-                onClick={() => {
-                  setPlaying(null)
-                  setIndex(i)
-                }}
-              />
-            ))}
-          </div>
+          ))}
         </div>
       </div>
+
+      {open ? <Player film={open} onClose={() => setOpen(null)} /> : null}
     </section>
+  )
+}
+
+/** One frame of the wall: its still until pointed at, then the clip. */
+function Tile({ clip, reduced }: { clip: WallClip; reduced: boolean }) {
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  const play = () => {
+    const video = videoRef.current
+    if (!video || reduced) return
+    video.play().catch(() => {})
+  }
+
+  const stop = () => {
+    const video = videoRef.current
+    if (!video) return
+    video.pause()
+    video.currentTime = 0
+  }
+
+  return (
+    <figure
+      className="films-wall_tile"
+      onMouseEnter={play}
+      onMouseLeave={stop}
+      onFocus={play}
+      onBlur={stop}
+      tabIndex={0}
+    >
+      <video
+        ref={videoRef}
+        className="films-wall_video"
+        src={`/videos/wall/${clip.id}.mp4`}
+        poster={`/videos/wall/${clip.id}.jpg`}
+        muted
+        loop
+        playsInline
+        preload="none"
+        aria-label={clip.alt}
+        tabIndex={-1}
+      />
+      <figcaption>{clip.caption}</figcaption>
+    </figure>
+  )
+}
+
+/**
+ * A full film, over the page.
+ *
+ * The player is cross-origin and owns every wheel event inside it, so Lenis is
+ * stopped for as long as this is open and started again on the way out — the
+ * page cannot be left unable to scroll.
+ */
+function Player({ film, onClose }: { film: Film; onClose: () => void }) {
+  const { start, stop } = useSmoothScroll()
+  const closeRef = useRef<HTMLButtonElement>(null)
+  const onCloseRef = useRef(onClose)
+  onCloseRef.current = onClose
+
+  const close = useCallback(() => onCloseRef.current(), [])
+
+  useEffect(() => {
+    stop()
+    document.documentElement.style.overflow = 'hidden'
+    closeRef.current?.focus()
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close()
+    }
+    window.addEventListener('keydown', onKey)
+
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.documentElement.style.overflow = ''
+      start()
+    }
+  }, [start, stop, close])
+
+  if (typeof document === 'undefined') return null
+
+  return createPortal(
+    <div className="films-player" role="dialog" aria-modal="true" aria-label={film.title}>
+      <button type="button" className="films-player_scrim" aria-label="Close" onClick={close} />
+      <div className="films-player_frame">
+        <iframe
+          className="films-player_iframe"
+          src={film.embed}
+          title={film.title}
+          allow={film.allow}
+          referrerPolicy="strict-origin-when-cross-origin"
+        />
+      </div>
+      <button ref={closeRef} type="button" className="films-player_close" onClick={close}>
+        Close
+      </button>
+    </div>,
+    document.body
+  )
+}
+
+function ArrowRight() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="18"
+      height="18"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M4 12h15" />
+      <path d="m13.5 6.5 5.5 5.5-5.5 5.5" />
+    </svg>
   )
 }
