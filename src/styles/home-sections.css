@@ -481,21 +481,27 @@
 
 /*
  * Two-word names where About had one. "Guest Experience" and "Food & Beverage"
- * cannot hold the display size a single word did, so the title is sized to its
- * own box here and allowed to break between words.
+ * break between words and fit; "Entertainment" is the one that decides the size.
+ * It is thirteen capitals with nowhere to break, and it measures 9.26em.
  *
- * The floor is set by "Entertainment": thirteen characters with nowhere to
- * break, which at 2.2rem measured 322px and dragged the card's column — and so
- * the whole page — wider than a 320px screen. `min-width: 0` stops a long word
- * stretching the column at any size; the floor keeps it inside the gutters.
+ * So the title is sized from its own column, not the page. The text column is a
+ * size container, and the title takes 10% of its width: 9.26em at that size is
+ * 93% of the column, which leaves the word clear of the photograph at every
+ * width. Sized from the page instead (7cqw), every title sat at the 5.5rem cap
+ * on a desktop, and "Entertainment" ran 84px into the photograph at 1400px.
+ *
+ * All five share the one size, so the cards read as a set; the shorter names
+ * simply leave more room. `min-width: 0` stops a long word stretching the
+ * column, which is what once widened the whole page past a 320px screen.
  */
 .home-atelier_card_title.u-text-display {
-  font-size: clamp(1.65rem, 7cqw, 5.5rem);
+  font-size: clamp(1.5rem, 10cqi, 5.5rem);
   text-wrap: balance;
 }
 
 .home-atelier_card .deets_card_text-wrap {
   min-width: 0;
+  container-type: inline-size;
 }
 
 .home-atelier_card_link {
