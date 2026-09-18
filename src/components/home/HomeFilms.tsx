@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { gsap, registerGsap } from '@/lib/gsap'
@@ -8,34 +9,31 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useLineAnimation } from '@/hooks/useSplitText'
 import { useSmoothScroll } from '@/providers/SmoothScrollProvider'
 import Initial from '@/components/Initial'
-import { homeFilms, type Film, type WallClip } from '@/data/home'
+import { homeFilms, type WallItem } from '@/data/home'
+
+/** Where every film starts: its first three seconds are titles and black. */
+const START = 3
 
 /**
- * The films, as a wall of moving frames.
+ * The films, as a wall that opens where you look.
  *
- * Eight silent clips from the studio's own celebration film, in two rows. A
- * frame holds its still until it is pointed at, and then plays and opens out in
- * both directions at once: it widens while its row-mates give way, and its row
- * deepens while the other row shrinks. Only one clip is ever playing, and each
- * rewinds as the pointer leaves, so the wall is always met from the same frame.
+ * Six frames in two rows — the five films and one photograph. Pointing at one
+ * opens it out on both axes at once while the others give way (the layout is all
+ * in the stylesheet), and a film hosted here starts playing in its own frame,
+ * three seconds in. The trailer lives on Vimeo, whose player will not start on
+ * hover, so its frame holds a still. Any film opens over the page on a click.
  *
- * Nothing loads until it is asked for — the clips are `preload="none"` behind
- * their posters — and under reduced motion none of them play at all.
- *
- * Beneath the wall are the two full films. Those are cross-origin players, so
- * they open over the page rather than in the wall, and while one is open the
- * page's smooth scrolling is stopped rather than fighting the iframe for the
- * wheel.
+ * Nothing loads until it is asked for, and under reduced motion nothing plays
+ * of its own accord.
  */
 export default function HomeFilms() {
   const sectionRef = useRef<HTMLElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
   const reduced = useReducedMotion()
-  const [open, setOpen] = useState<Film | null>(null)
+  const [open, setOpen] = useState<WallItem | null>(null)
 
   useLineAnimation(headingRef)
 
-  // The wall rises as it arrives, one row after the other.
   useIsomorphicLayoutEffect(() => {
     const section = sectionRef.current
     if (!section || reduced) return
@@ -59,98 +57,141 @@ export default function HomeFilms() {
     return () => ctx.revert()
   }, [reduced])
 
+  const { still, items } = homeFilms
+  // Two rows of three: the films in order, the photograph closing the second.
+  const rows = [items.slice(0, 3), items.slice(3)]
+
   return (
     <section ref={sectionRef} data-theme="inherit" className="home-films_wrap">
-      <div className="u-container home-films_contain" data-padding-top="main" data-padding-bottom="main">
+      {/* No top padding of its own: the Four Days section above is the same dark
+          ground and already ends on a full section's padding, so this band's own
+          on top of it read as one empty stretch of about 275px before anything. */}
+      <div className="u-container home-films_contain" data-padding-top="none" data-padding-bottom="main">
         <div className="home-films_head">
-          {/* Wrapped: .kicker grows to fill a flex column on its own. */}
-          <div>
-            <div className="kicker home-films_kicker">{homeFilms.kicker}</div>
-          </div>
           <h2 ref={headingRef} className="home-films_title" js-line-animation="">
             <Initial>{homeFilms.heading}</Initial>
           </h2>
         </div>
 
         <div className="films-wall">
-          {homeFilms.wall.map((row, i) => (
-            <div key={i} className={`films-wall_row${i === 1 ? ' films-wall_row-offset' : ''}`}>
-              {row.map((clip) => (
-                <Tile key={clip.id} clip={clip} reduced={reduced} />
+          {rows.map((row, r) => (
+            <div key={r} className={`films-wall_row${r === 1 ? ' films-wall_row-offset' : ''}`}>
+              {row.map((item) => (
+                <Tile key={item.id} item={item} reduced={reduced} onOpen={() => setOpen(item)} />
               ))}
+              {r === 1 ? (
+                <figure className="films-wall_cell films-wall_cell-still">
+                  <img src={still.src} alt={still.alt} loading="lazy" className="films-wall_media" />
+                  <figcaption className="films-wall_caption">{still.caption}</figcaption>
+                </figure>
+              ) : null}
             </div>
           ))}
+
+          <span className="films-wall_dot films-wall_dot-a" aria-hidden="true" />
+          <span className="films-wall_dot films-wall_dot-b" aria-hidden="true" />
+          <span className="films-wall_dot films-wall_dot-c" aria-hidden="true" />
         </div>
 
         <div className="films-wall_more">
-          {homeFilms.films.map((film) => (
-            <button key={film.id} type="button" className="films-wall_link" onClick={() => setOpen(film)}>
-              <span className="films-wall_link_text">
-                {film.title}
-                {film.duration ? <span className="films-wall_link_time">{film.duration}</span> : null}
-              </span>
-              <ArrowRight />
-            </button>
-          ))}
+          <Link className="films-wall_link" href="/gallery">
+            Explore the gallery <ArrowRight />
+          </Link>
         </div>
       </div>
 
-      {open ? <Player film={open} onClose={() => setOpen(null)} /> : null}
+      {open ? <Player item={open} onClose={() => setOpen(null)} /> : null}
     </section>
   )
 }
 
-/** One frame of the wall: its still until pointed at, then the clip. */
-function Tile({ clip, reduced }: { clip: WallClip; reduced: boolean }) {
+/** One film. It plays here if it is hosted here; otherwise it opens over the page. */
+function Tile({ item, reduced, onOpen }: { item: WallItem; reduced: boolean; onOpen: () => void }) {
   const videoRef = useRef<HTMLVideoElement>(null)
+  /** A film hosted elsewhere mounts its muted preview only while pointed at. */
+  const [previewing, setPreviewing] = useState(false)
 
   const play = () => {
+    if (reduced) return
+    if (item.preview) {
+      setPreviewing(true)
+      return
+    }
     const video = videoRef.current
-    if (!video || reduced) return
+    if (!video) return
+    if (video.currentTime < START) video.currentTime = START
     video.play().catch(() => {})
   }
 
   const stop = () => {
+    if (item.preview) {
+      setPreviewing(false)
+      return
+    }
     const video = videoRef.current
     if (!video) return
     video.pause()
-    video.currentTime = 0
+    video.currentTime = START
   }
 
   return (
-    <figure
-      className="films-wall_tile"
+    <button
+      type="button"
+      className={`films-wall_cell${item.vertical ? ' is-vertical' : ''}`}
       onMouseEnter={play}
       onMouseLeave={stop}
       onFocus={play}
       onBlur={stop}
-      tabIndex={0}
+      onClick={onOpen}
+      aria-label={`Play ${item.title}`}
     >
-      <video
-        ref={videoRef}
-        className="films-wall_video"
-        src={`/videos/wall/${clip.id}.mp4`}
-        poster={`/videos/wall/${clip.id}.jpg`}
-        muted
-        loop
-        playsInline
-        preload="none"
-        aria-label={clip.alt}
-        tabIndex={-1}
-      />
-      <figcaption>{clip.caption}</figcaption>
-    </figure>
+      {item.video ? (
+        <video
+          ref={videoRef}
+          className="films-wall_media"
+          src={`${item.video}#t=${START}`}
+          poster={item.poster}
+          muted
+          loop
+          playsInline
+          preload="none"
+          tabIndex={-1}
+          aria-hidden="true"
+        />
+      ) : (
+        <img src={item.poster} alt={item.alt} loading="lazy" className="films-wall_media" />
+      )}
+
+      {/* The host's own muted player, over the still. It takes no pointer
+          events, so the tile keeps the hover and the click, and the page keeps
+          the wheel. */}
+      {previewing && item.preview ? (
+        <iframe
+          className="films-wall_media films-wall_preview"
+          src={`${item.preview}#t=${START}s`}
+          title=""
+          aria-hidden="true"
+          tabIndex={-1}
+          allow="autoplay"
+        />
+      ) : null}
+
+      <span className="films-wall_caption">
+        {item.title}
+        {item.duration ? <span className="films-wall_time">{item.duration}</span> : null}
+      </span>
+    </button>
   )
 }
 
 /**
- * A full film, over the page.
+ * A film, over the page.
  *
- * The player is cross-origin and owns every wheel event inside it, so Lenis is
+ * A cross-origin player owns every wheel event inside it, so smooth scrolling is
  * stopped for as long as this is open and started again on the way out — the
- * page cannot be left unable to scroll.
+ * page can never be left unable to scroll.
  */
-function Player({ film, onClose }: { film: Film; onClose: () => void }) {
+function Player({ item, onClose }: { item: WallItem; onClose: () => void }) {
   const { start, stop } = useSmoothScroll()
   const closeRef = useRef<HTMLButtonElement>(null)
   const onCloseRef = useRef(onClose)
@@ -178,16 +219,27 @@ function Player({ film, onClose }: { film: Film; onClose: () => void }) {
   if (typeof document === 'undefined') return null
 
   return createPortal(
-    <div className="films-player" role="dialog" aria-modal="true" aria-label={film.title}>
+    <div className="films-player" role="dialog" aria-modal="true" aria-label={item.title}>
       <button type="button" className="films-player_scrim" aria-label="Close" onClick={close} />
-      <div className="films-player_frame">
-        <iframe
-          className="films-player_iframe"
-          src={film.embed}
-          title={film.title}
-          allow={film.allow}
-          referrerPolicy="strict-origin-when-cross-origin"
-        />
+      <div className={`films-player_frame${item.vertical ? ' is-vertical' : ''}`}>
+        {item.video ? (
+          <video
+            className="films-player_media"
+            src={`${item.video}#t=${START}`}
+            poster={item.poster}
+            controls
+            autoPlay
+            playsInline
+          />
+        ) : (
+          <iframe
+            className="films-player_media"
+            src={`${item.embed}#t=${START}s`}
+            title={item.title}
+            allow={item.allow}
+            referrerPolicy="strict-origin-when-cross-origin"
+          />
+        )}
       </div>
       <button ref={closeRef} type="button" className="films-player_close" onClick={close}>
         Close
@@ -201,8 +253,8 @@ function ArrowRight() {
   return (
     <svg
       viewBox="0 0 24 24"
-      width="18"
-      height="18"
+      width="16"
+      height="16"
       fill="none"
       stroke="currentColor"
       strokeWidth={1.5}

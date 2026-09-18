@@ -203,20 +203,27 @@
   text-align: center;
 }
 
+/* The heading's measure is narrower than the row, so its box is centred too —
+   otherwise the lines centre inside a box that sits at the left. */
+.home-films_head .home-films_title {
+  margin-inline: auto;
+}
+
 /*
- * The wall: eight frames in two rows, each row a flex line whose children share
- * it by `flex-grow`. Pointing at a frame opens it out on both axes at once — it
- * takes width from its row-mates, and its row takes depth from the other row
- * (that is the `:has()` rule). Nothing is transformed, so no frame ever covers
- * its neighbour; they genuinely give way.
+ * The wall: six frames in two rows, and pointing at one opens it out on both
+ * axes at once — it widens while its row-mates give way, and its row deepens
+ * while the other row gives up height (the `:has()` rule). Every tile keeps its
+ * own share of its row and hangs at its own depth, so at rest the wall reads as
+ * a loose collage rather than a grid; nothing is transformed, so no tile ever
+ * covers another.
  */
 .films-wall {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  height: clamp(440px, 42vw, 640px);
   max-width: 77.5rem;
+  height: clamp(440px, 42vw, 640px);
   margin-inline: auto;
 }
 
@@ -238,112 +245,154 @@
   flex-grow: 0.8;
 }
 
-.films-wall_row:has(.films-wall_tile:hover),
-.films-wall_row:has(.films-wall_tile:focus-visible) {
+.films-wall_row:has(.films-wall_cell:hover),
+.films-wall_row:has(.films-wall_cell:focus-visible) {
   flex-grow: 1.55;
 }
 
-.films-wall_tile {
+.films-wall_cell {
   --fx: 1;
   position: relative;
+  display: block;
   flex: var(--fx) 1 0%;
   min-width: 0;
   height: 100%;
   margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
   overflow: hidden;
   background-color: rgb(0 0 0 / 35%);
+  color: inherit;
   cursor: pointer;
   transition:
     flex-grow 0.9s var(--ease-out-quint),
     height 0.9s var(--ease-out-quint);
 }
 
-.films-wall_tile:focus-visible {
+.films-wall_cell-still {
+  cursor: default;
+}
+
+.films-wall_cell:focus-visible {
   outline: 1px solid var(--swatch--brand);
   outline-offset: 2px;
 }
 
 /* The scatter: each frame's share of its row, and how deep it hangs. */
-.films-wall_row:nth-child(1) .films-wall_tile:nth-child(1) { --fx: 1.15; height: 92%; align-self: flex-end; }
-.films-wall_row:nth-child(1) .films-wall_tile:nth-child(2) { --fx: 0.8; height: 100%; }
-.films-wall_row:nth-child(1) .films-wall_tile:nth-child(3) { --fx: 1.3; height: 86%; align-self: flex-end; }
-.films-wall_row:nth-child(1) .films-wall_tile:nth-child(4) { --fx: 0.95; height: 94%; align-self: flex-end; }
-.films-wall_row:nth-child(2) .films-wall_tile:nth-child(1) { --fx: 0.9; height: 94%; align-self: flex-start; }
-.films-wall_row:nth-child(2) .films-wall_tile:nth-child(2) { --fx: 1.25; height: 100%; }
-.films-wall_row:nth-child(2) .films-wall_tile:nth-child(3) { --fx: 0.85; height: 84%; align-self: flex-start; }
-.films-wall_row:nth-child(2) .films-wall_tile:nth-child(4) { --fx: 1.1; height: 92%; align-self: flex-start; }
+.films-wall_row:nth-child(1) .films-wall_cell:nth-child(1) { --fx: 1.15; height: 92%; align-self: flex-end; }
+.films-wall_row:nth-child(1) .films-wall_cell:nth-child(2) { --fx: 0.85; height: 100%; }
+.films-wall_row:nth-child(1) .films-wall_cell:nth-child(3) { --fx: 1.25; height: 86%; align-self: flex-end; }
+.films-wall_row:nth-child(2) .films-wall_cell:nth-child(1) { --fx: 0.95; height: 94%; align-self: flex-start; }
+.films-wall_row:nth-child(2) .films-wall_cell:nth-child(2) { --fx: 1.25; height: 100%; }
+.films-wall_row:nth-child(2) .films-wall_cell:nth-child(3) { --fx: 0.9; height: 88%; align-self: flex-start; }
 
 /* Horizontal axis: row-mates give way, the pointed-at frame grows. */
-.films-wall_row:hover .films-wall_tile {
+.films-wall_row:hover .films-wall_cell {
   flex-grow: calc(var(--fx) * 0.78);
 }
 
-.films-wall_row .films-wall_tile:hover,
-.films-wall_row .films-wall_tile:focus-visible {
+.films-wall_row .films-wall_cell:hover,
+.films-wall_row .films-wall_cell:focus-visible {
   flex-grow: calc(var(--fx) * 2 + 0.7);
   height: 100%;
 }
 
-.films-wall_video {
+.films-wall_media {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 40%;
-  filter: grayscale(1);
-  transition: transform 0.9s var(--ease-out-quint), filter 0.6s ease;
+  object-position: center 35%;
+  /* Held well past the frame — a closer crop, and no film can show a black
+     edge here. */
+  transform: scale(1.14);
+  transition: transform 0.9s var(--ease-out-quint);
 }
 
-/* Colour comes with the motion: a frame is grey until it plays. */
-.films-wall_tile:hover .films-wall_video,
-.films-wall_tile:focus-visible .films-wall_video {
-  filter: grayscale(0);
-  transform: scale(1.04);
+.films-wall_cell:hover .films-wall_media,
+.films-wall_cell:focus-visible .films-wall_media {
+  transform: scale(1.2);
 }
 
-.films-wall_tile figcaption {
+/* A preview player sits over the still, taking no pointer at all. An iframe
+   has no object-fit, so it is sized to cover the tile the way the stills do. */
+.films-wall_preview {
+  border: 0;
+  pointer-events: none;
+  inset: 50% auto auto 50%;
+  width: max(100%, 177.78cqh);
+  height: max(100%, 56.25cqw);
+  translate: -50% -50%;
+}
+
+.films-wall_cell {
+  container-type: size;
+}
+
+/* An upright film shows a band of its frame here, set where the faces are.
+   The whole frame is in the player. */
+.films-wall_cell.is-vertical .films-wall_media {
+  object-position: center 28%;
+}
+
+/* The caption rises with the frame that is being looked at. */
+.films-wall_caption {
   position: absolute;
   inset: auto 0 0;
   z-index: 1;
-  padding: 2rem 0.875rem 0.7rem;
+  display: flex;
+  align-items: baseline;
+  column-gap: 0.7em;
+  padding: 1.9rem 0.875rem 0.7rem;
   background-image: linear-gradient(0deg, rgb(20 6 7 / 78%) 0%, rgb(20 6 7 / 0%) 100%);
   font-family: var(--font--inherit);
   font-size: var(--step-n1);
   line-height: var(--leading-label);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
+  text-align: left;
   color: var(--wow-cream);
   opacity: 0;
   transform: translateY(6px);
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
-.films-wall_tile:hover figcaption,
-.films-wall_tile:focus-visible figcaption {
+.films-wall_cell:hover .films-wall_caption,
+.films-wall_cell:focus-visible .films-wall_caption {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* The two full films, beneath the wall. */
+.films-wall_time {
+  opacity: 0.55;
+}
+
+/* Three gold points set about the wall. */
+.films-wall_dot {
+  position: absolute;
+  border-radius: 50%;
+  background-color: var(--swatch--brand);
+  pointer-events: none;
+}
+
+.films-wall_dot-a { width: 24px; height: 24px; left: 1.2%; bottom: 14%; }
+.films-wall_dot-b { width: 10px; height: 10px; right: 0.6%; bottom: 4%; }
+.films-wall_dot-c { width: 12px; height: 12px; right: 24%; top: -26px; }
+
 .films-wall_more {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
-  column-gap: var(--rhythm-lg);
-  row-gap: var(--rhythm-sm);
-  margin-top: var(--rhythm-lg);
+  margin-top: clamp(1.625rem, 3vw, 2.75rem);
 }
 
 .films-wall_link {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   column-gap: var(--rhythm-xs);
-  padding: 0;
-  border: 0;
-  background: none;
   color: inherit;
-  cursor: pointer;
+  text-decoration: none;
   font-family: var(--font--inherit);
   font-size: var(--step-n1);
   line-height: var(--leading-label);
@@ -357,9 +406,65 @@
   color: var(--swatch--brand);
 }
 
-.films-wall_link_time {
-  margin-left: 0.6em;
-  opacity: 0.55;
+/* No pointer to hover with: a plain grid, captions always shown. */
+@media (max-width: 900px) {
+  .films-wall {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    height: auto;
+  }
+
+  .films-wall_row,
+  .films-wall_row-offset {
+    display: contents;
+  }
+
+  /* Written at the scatter's own weight (four classes) so it wins: at three
+     the desktop heights and alignments survived and no two tiles matched. */
+  .films-wall_cell,
+  .films-wall_row:nth-child(n) .films-wall_cell:nth-child(n) {
+    flex: none;
+    width: 100%;
+    height: auto;
+    align-self: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .films-wall_caption {
+    opacity: 1;
+    transform: none;
+  }
+
+  .films-wall_dot {
+    display: none;
+  }
+}
+
+/* One film to a row on a phone, each the full width and a true widescreen. */
+@media (max-width: 600px) {
+  .films-wall {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .films-wall_cell,
+  .films-wall_row:nth-child(n) .films-wall_cell:nth-child(n) {
+    aspect-ratio: 16 / 10;
+  }
+
+  /* The upright reel keeps a band where the faces are. */
+  .films-wall_cell.is-vertical .films-wall_media {
+    object-position: center 30%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .films-wall_row,
+  .films-wall_cell,
+  .films-wall_media,
+  .films-wall_caption {
+    transition: none;
+  }
 }
 
 /* ═══ A full film, over the page ═════════════════════════════════════════ */
@@ -388,6 +493,22 @@
   width: min(100%, 68rem);
   aspect-ratio: 16 / 9;
   background-color: #000;
+}
+
+.films-player_frame.is-vertical {
+  width: auto;
+  height: min(88vh, 60rem);
+  aspect-ratio: 9 / 16;
+}
+
+.films-player_media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background-color: #000;
+  object-fit: contain;
 }
 
 .films-player_iframe {
@@ -422,42 +543,7 @@
 
 /* No pointer to hover with: a plain grid, captions always shown, stills only
    until a frame is tapped. */
-@media (max-width: 900px) {
-  .films-wall {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    height: auto;
-    gap: 6px;
-  }
 
-  .films-wall_row,
-  .films-wall_row-offset {
-    display: contents;
-    padding-inline: 0;
-  }
-
-  .films-wall_tile,
-  .films-wall_row .films-wall_tile:nth-child(n) {
-    flex: none;
-    height: auto;
-    align-self: auto;
-    aspect-ratio: 4 / 3;
-  }
-
-  .films-wall_tile figcaption {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .films-wall_row,
-  .films-wall_tile,
-  .films-wall_video,
-  .films-wall_tile figcaption {
-    transition: none;
-  }
-}
 
 /* Restored: these rules were dropped when the films band was rebuilt.
    Without them the five cards lose position:sticky and scroll past in one
@@ -552,4 +638,38 @@
   grid-template-columns: minmax(0, 1fr);
   row-gap: var(--rhythm-md);
   align-items: start;
+}
+
+/* ═══ The figures on narrow screens ══════════════════════════════════════ */
+
+/*
+ * Restored: these went out with the old films rules they shared a section with,
+ * and without them the four figures stayed four across on a phone — every label
+ * ran past its column. Two by two below 992px, one to a row below 480px.
+ */
+@media screen and (max-width: 991px) {
+  .home-stats_grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: var(--rhythm-md);
+  }
+
+  /* The second row takes a hairline above as well. */
+  .home-stats_item:nth-child(n + 3) {
+    padding-top: var(--rhythm-md);
+    border-top: 1px solid var(--light-fade-2);
+  }
+}
+
+@media screen and (max-width: 479px) {
+  /* One figure per row, a hairline above each. */
+  .home-stats_grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-stats_item {
+    padding-left: 0;
+    padding-top: var(--rhythm-md);
+    border-left: 0;
+    border-top: 1px solid var(--light-fade-2);
+  }
 }

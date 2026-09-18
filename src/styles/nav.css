@@ -1,0 +1,31 @@
+/*
+ * The fullscreen menu, fitted to the screen.
+ *
+ * site.css gives every row a fixed seventh of the viewport — sized for a menu of
+ * six links under the spacer row. This one has five, so the six rows covered
+ * only six sevenths of the screen and the page showed through beneath them. The
+ * rows now share the full height between them, however many there are: the
+ * panel is a column exactly one screen tall and every row, the spacer under the
+ * bar included, takes an equal part of it.
+ */
+.nav_drop_wrap,
+.nav_drop_wrap.active {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100svh;
+}
+
+.nav_drop_link,
+.nav_drop_link.first {
+  flex: 1 1 0;
+  height: auto;
+  min-height: 0;
+}
+
+/* The longest label, "Celebrations", is one word with nowhere to break. At the
+   display step it ran past a 320px screen, so below that width the menu type
+   follows the screen instead; from 390px up it is the display step unchanged. */
+.nav_drop_link .nav_drop_txt {
+  font-size: min(var(--step-6), 9.6vw);
+}

@@ -27,9 +27,9 @@ export const heroMarquee: Media[] = [
 /**
  * Three scroll-gallery columns; className preserves the original column modifiers.
  *
- * The studio's own frames, chosen to sit together: palace architecture, cream
- * and white florals, and candlelit night rooms, so the three columns read as one
- * body of work rather than a contact sheet.
+ * Candid frames only — the people and the moments, not the rooms: the entrance,
+ * the dance floor, the mehendi, the applause. Nothing here is a photograph of an
+ * empty set.
  *
  * Every one is cropped to the same 2:3 portrait, so the columns read as a
  * single run of frames rather than a mix of shapes. The grain and the wash over
@@ -46,17 +46,15 @@ export const galleryColumns: { className: string; images: GalleryImage[] }[] = [
     "images": [
       {
         "src": "/images/wow-gal-singer.jpg",
-        "alt": "A singer on a darkened stage",
-        "mono": true
+        "alt": "A singer on a darkened stage"
       },
       {
-        "src": "/images/wow-gal-white-florals.jpg",
-        "alt": "A table beneath a chandelier of white blooms"
+        "src": "/images/wow-gal-glass-mandap.jpg",
+        "alt": "The couple beneath a glasshouse mandap"
       },
       {
-        "src": "/images/wow-gal-floral-corridor.jpg",
-        "alt": "A corridor of florals and hanging lanterns",
-        "mono": true
+        "src": "/images/wow-gal-palace-dance.jpg",
+        "alt": "A dancer turning in the palace hall"
       },
       {
         "src": "/images/wow-gal-palace-entrance.jpg",
@@ -64,8 +62,7 @@ export const galleryColumns: { className: string; images: GalleryImage[] }[] = [
       },
       {
         "src": "/images/wow-gal-mehendi-detail.jpg",
-        "alt": "Mehendi and embroidery, hand in hand",
-        "mono": true
+        "alt": "Mehendi and embroidery, hand in hand"
       }
     ]
   },
@@ -78,26 +75,23 @@ export const galleryColumns: { className: string; images: GalleryImage[] }[] = [
       },
       {
         "src": "/images/wow-gal-couple-gate.jpg",
-        "alt": "The couple at a lantern-lit gate",
-        "mono": true
+        "alt": "The couple at a lantern-lit gate"
       },
       {
-        "src": "/images/wow-gal-floral-arch.jpg",
-        "alt": "An arch banked with blue and white flowers"
+        "src": "/images/wow-gal-arms-raised.jpg",
+        "alt": "Arms up as the fireworks break"
       },
       {
-        "src": "/images/wow-gal-palace-dance.jpg",
-        "alt": "A dancer turning in the palace hall",
-        "mono": true
+        "src": "/images/wow-gal-applause.jpg",
+        "alt": "Applause from the front row"
       },
       {
-        "src": "/images/wow-gal-chandelier-tables.jpg",
-        "alt": "A chandelier of white blooms over a dressed table"
+        "src": "/images/wow-gal-floral-corridor.jpg",
+        "alt": "A corridor of florals and hanging lanterns"
       },
       {
         "src": "/images/wow-gal-haldi-joy.jpg",
-        "alt": "Haldi, and the laughter through it",
-        "mono": true
+        "alt": "Haldi, and the laughter through it"
       }
     ]
   },
@@ -106,8 +100,7 @@ export const galleryColumns: { className: string; images: GalleryImage[] }[] = [
     "images": [
       {
         "src": "/images/wow-gal-couple-portrait.jpg",
-        "alt": "The couple, close, in black and white",
-        "mono": true
+        "alt": "The couple, close, in black and white"
       },
       {
         "src": "/images/wow-gal-celebration.jpg",
@@ -115,17 +108,15 @@ export const galleryColumns: { className: string; images: GalleryImage[] }[] = [
       },
       {
         "src": "/images/wow-gal-family-portrait.jpg",
-        "alt": "The groom seated, family either side",
-        "mono": true
+        "alt": "The groom seated, family either side"
       },
       {
-        "src": "/images/wow-gal-aisle-dusk.jpg",
-        "alt": "An aisle of chandeliers to the water at dusk"
+        "src": "/images/wow-gal-group-portrait.jpg",
+        "alt": "The party gathered under the arches"
       },
       {
         "src": "/images/wow-gal-mother-daughter.jpg",
-        "alt": "A mother and daughter, cheek to cheek",
-        "mono": true
+        "alt": "A mother and daughter, cheek to cheek"
       }
     ]
   }

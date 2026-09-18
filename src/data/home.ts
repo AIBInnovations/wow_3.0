@@ -83,60 +83,101 @@ export type Film = {
   poster: { src: string; w: number; h: number }
 }
 
-export type WallClip = {
-  /** File stem under /videos/wall — `<id>.mp4` and its poster `<id>.jpg`. */
+export type WallItem = {
   id: string
-  caption: string
+  title: string
+  /** Shown beside the title where the source states a running time. */
+  duration?: string
+  /**
+   * A film hosted with the site plays in its own tile as soon as it is pointed
+   * at. One that lives on Vimeo or Drive cannot — a cross-origin player will not
+   * start on hover — so its tile holds a still and opens the player on a click.
+   */
+  video?: string
+  embed?: string
+  allow?: string
+  /**
+   * For a film that is not hosted here: the muted, chrome-free version its host
+   * offers, mounted in the tile only while it is pointed at.
+   */
+  preview?: string
+  poster: string
   alt: string
+  /** Shot upright (9:16); the player gives it a tall frame rather than bars. */
+  vertical?: boolean
 }
 
+/**
+ * The films.
+ *
+ * All five are the client's own. The four from Drive and the one from the
+ * client's machine are re-encoded for the web and hosted here, so each plays in
+ * its tile; the trailer stays on Vimeo and opens over the page.
+ */
 export const homeFilms = {
-  kicker: 'Films',
   heading: 'The Celebration, In Motion',
-  /**
-   * Eight moments cut from the studio's own celebration film, five seconds each
-   * and silent. A tile shows its still until it is hovered, and plays only then,
-   * so the section costs a few posters until someone asks for more.
-   */
-  wall: [
-    [
-      { id: 'entrance', caption: 'The entrance', alt: 'The bride at the entrance' },
-      { id: 'fountains', caption: 'Fountains at nightfall', alt: 'Lit fountains along the approach' },
-      { id: 'firstlight', caption: 'The first light', alt: 'The groom at the lamps' },
-      { id: 'walk', caption: 'The walk in', alt: 'The couple walking in' },
-    ],
-    [
-      { id: 'together', caption: 'Side by side', alt: 'The couple, side by side' },
-      { id: 'mandap', caption: 'The mandap, lit', alt: 'The mandap lit against the dark' },
-      { id: 'mist', caption: 'Through the mist', alt: 'The couple through low mist' },
-      { id: 'fireworks', caption: 'Fireworks over the arch', alt: 'Fireworks breaking over the arch' },
-    ],
-  ] as WallClip[][],
-  /** The full films, opened over the page rather than played in the wall. */
-  films: [
+  items: [
+    {
+      id: 'geet-heena-highlight',
+      title: 'Geet & Heena | Highlight',
+      duration: '2:01',
+      // HIGHLIGHT.m4v from the client's "GEET & HEENA" Drive folder: 295 MB at
+      // 4K, re-encoded at 720p to 26 MB.
+      video: '/videos/highlight.mp4',
+      poster: '/videos/highlight-poster.jpg',
+      alt: 'Geet and Heena, from their highlight film',
+    },
+    {
+      id: 'geet-heena-reel',
+      title: 'Geet & Heena | Reel',
+      duration: '0:34',
+      // REEL.m4v from the same folder, shot upright at 4K; 76 MB became 6 MB.
+      video: '/videos/reel.mp4',
+      poster: '/videos/reel-poster.jpg',
+      alt: 'Geet and Heena, from their reel',
+      vertical: true,
+    },
+    {
+      id: 'show-reel',
+      title: 'Show Reel',
+      duration: '1:35',
+      // The Drive file "SHOW REEL.mp4" (587 MB at 4K) re-encoded for the web at
+      // 720p, 19 MB, so it is hosted here and plays in its tile.
+      video: '/videos/show-reel.mp4',
+      poster: '/videos/show-reel-poster.jpg',
+      alt: 'The studio’s show reel',
+    },
     {
       id: 'rajvi-karan-trailer',
-      // Title, running time and thumbnail from Vimeo's oEmbed record for the
-      // unlisted film 1154719831 (hash 594f4a3343): "Rajvi & Karan | Trailer", 341s.
+      // Vimeo 1154719831 (unlisted, hash 594f4a3343). Title, running time and
+      // still are its own oEmbed record's.
       title: 'Rajvi & Karan | Trailer',
       duration: '5:41',
       embed:
         'https://player.vimeo.com/video/1154719831?h=594f4a3343&autoplay=1&title=0&byline=0&portrait=0&dnt=1',
       allow: 'autoplay; fullscreen; picture-in-picture',
-      poster: {
-        src: 'https://i.vimeocdn.com/video/2108166639-765618da5486e3f4676077b882d62cbb3688d361c0ccbedc27e2ccfc45bcf1da-d_1280x720',
-        w: 1280,
-        h: 720,
-      },
+      // Vimeo's background mode: muted, looping, no controls — so the trailer
+      // plays in its tile on hover like the films hosted here.
+      preview:
+        'https://player.vimeo.com/video/1154719831?h=594f4a3343&background=1&autoplay=1&loop=1&muted=1&dnt=1',
+      poster: '/videos/rajvi-karan-poster.jpg',
+      alt: 'Rajvi and Karan, from the trailer',
     },
     {
-      id: 'show-reel',
-      // The Google Drive file 1s4aaZSslWXim8lqH-07v0ILBBMmpo7lo is named
-      // "SHOW REEL.mp4" (the /view page's title).
-      title: 'Show Reel',
-      embed: 'https://drive.google.com/file/d/1s4aaZSslWXim8lqH-07v0ILBBMmpo7lo/preview',
-      allow: 'autoplay; fullscreen',
-      poster: { src: '/videos/show-reel-poster.jpg', w: 1280, h: 800 },
+      id: 'sangeet',
+      title: 'Sangeet',
+      duration: '2:21',
+      // The client's own file, re-encoded for the web: 356 MB at 1080p became
+      // 32 MB at 720p, so it can be hosted here and play in its tile.
+      video: '/videos/sangeet.mp4',
+      poster: '/videos/sangeet-poster.jpg',
+      alt: 'The sangeet, from the studio’s film',
     },
-  ] as Film[],
+  ] as WallItem[],
+  /** The still that closes the wall. */
+  still: {
+    src: '/images/wow-films-still.jpg',
+    alt: 'The couple beneath a glasshouse mandap, low mist at their feet',
+    caption: 'The glasshouse mandap',
+  },
 }

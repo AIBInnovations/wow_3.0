@@ -10,6 +10,9 @@
 /* Editorial type and text spacing, after the brand deck. */
 @import '../styles/typography.css';
 
+/* The fullscreen menu, fitted to the screen whatever its row count. */
+@import '../styles/nav.css';
+
 /* About page: its layout, then its brand adaptation. */
 @import '../styles/about.css';
 
