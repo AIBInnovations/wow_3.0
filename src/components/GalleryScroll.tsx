@@ -19,7 +19,11 @@ import { galleryColumns } from '@/data/media'
  *
  * Travelling in opposite directions at different rates is what makes the grid
  * read as depth. The bar is fixed to the viewport and only shown while the
- * section is in range, and the whole frame fades out as the section ends.
+ * section is in range.
+ *
+ * The source site also faded the whole frame out over its last screen. That is
+ * left off here: the photographs are the section, and dimming them while they
+ * are still half on screen reads as a fault rather than as an effect.
  */
 export default function GalleryScroll() {
   const wrapRef = useRef<HTMLElement>(null)
@@ -49,16 +53,6 @@ export default function GalleryScroll() {
       tl.fromTo('.col-1-s', { y: '-190vw' }, { y: '70vw', ease: 'none' }, 0)
       tl.fromTo('.col-s-2', { y: '0vw' }, { y: '-170vw', ease: 'sine.inOut' }, 0)
       tl.fromTo('.home-gal_scroll-indicator', { width: '0%' }, { width: '120%', ease: 'none' }, 0)
-
-      gsap.to('.home-gal_fade-trigger', {
-        opacity: 0,
-        scrollTrigger: {
-          trigger: '.home-gal_fade-trigger',
-          start: 'bottom 80%',
-          end: 'bottom 30%',
-          scrub: true,
-        },
-      })
     }, wrap)
 
     return () => ctx.revert()

@@ -74,9 +74,17 @@
   }
 }
 
+/*
+ * Sized to fit beside MENU rather than to a fixed step. Twenty-one capitals is a
+ * long wordmark for a phone: at 0.9rem it still measured 220px, which is wider
+ * than the 207px a 320px screen has left once the bar's padding, the button and
+ * the gap are paid for, so the two ran into each other. The floor here clears
+ * the button at 320px with room to spare, and it reaches its full size again by
+ * the time the bar is wide enough to hold it.
+ */
 @media (max-width: 767px) {
   .nav_wordmark {
-    font-size: 0.9rem;
+    font-size: clamp(0.74rem, 3.7vw, 1.15rem);
     letter-spacing: 0.04em;
   }
 }

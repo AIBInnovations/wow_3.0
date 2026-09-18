@@ -89,15 +89,10 @@ export default function StickyStories() {
         }
       })
 
-      ScrollTrigger.create({
-        trigger: wrap,
-        start: 'bottom 80%',
-        end: 'bottom top',
-        onEnter: () => wrap.classList.add('fadetrig'),
-        onLeave: () => wrap.classList.remove('fadetrig'),
-        onEnterBack: () => wrap.classList.add('fadetrig'),
-        onLeaveBack: () => wrap.classList.remove('fadetrig'),
-      })
+      // The source site put `fadetrig` on this section over its last screen,
+      // taking it to opacity 0 while four fifths of it were still in view. Left
+      // off: a whole band of destinations dissolving under the reader is the
+      // "sections disappearing" fault, not an effect.
     }, wrap)
 
     return () => {

@@ -499,3 +499,70 @@
     height: clamp(11rem, 30vh, 16rem);
   }
 }
+
+/* ═══ Small screens ══════════════════════════════════════════════════════ */
+
+/*
+ * The header below 768px.
+ *
+ * The source site put a compact mark between ENQUIRIES and MENU. Ours holds a
+ * twenty-one character wordmark, which at 390px measured 220px against the 190px
+ * the row had left once the two labels and the 16px gaps were paid for — so MENU
+ * was pushed 14px past the right edge of the screen, and 44px past it at 375px.
+ *
+ * Two regimes were at fault, not one. The bar is a three-column grid down to
+ * 480px and a flex row below that. In the grid each column is a third of the
+ * bar — 150px at 480px — and the wordmark, centred in the middle column, simply
+ * spilled over the labels either side. So the flex row starts here instead of at
+ * 479px: the three parts are then measured from their own contents and spaced
+ * across whatever width there is.
+ */
+@media (max-width: 767px) {
+  .nav_flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Each part as wide as it needs to be — a quarter of the bar each, which is
+     what the grid gave them, is both too little for the wordmark and too much
+     for four letters of MENU. */
+  .nav_link_wrap,
+  .nav_link_wrap.left,
+  .nav_link_wrap.right {
+    width: auto;
+    flex: 0 0 auto;
+  }
+}
+
+/*
+ * Under 480px there is no room for three. ENQUIRIES stands down: it is the first
+ * row of the menu the remaining button opens, and the address is in the footer,
+ * so nothing is lost — and the wordmark, the one thing that has to stay legible
+ * at any width, gets the middle of the bar to itself.
+ */
+@media (max-width: 479px) {
+  .nav_link_wrap.left {
+    display: none;
+  }
+
+  .nav_flex.nl1 {
+    justify-content: flex-end;
+  }
+
+  /* Centred on the bar rather than on the space left beside MENU, so the
+     wordmark sits under the middle of the screen where the eye expects it. */
+  .nav_logo_link {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* The mark stands taller than the wordmark it replaces, and it is hung from
+     the ring rather than from its own box — so at its desktop size the crown
+     reached above the top of the screen once the bar shrank to phone padding.
+     Sized from the viewport here, it sits inside the bar at every width. */
+  .nav_logo_mark {
+    height: clamp(2rem, 8.5vw, 2.75rem);
+  }
+}
