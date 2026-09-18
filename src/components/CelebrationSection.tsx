@@ -7,6 +7,7 @@ import { GRID } from '@/data/gridNodes'
 import Initial from './Initial'
 import { celebration } from '@/data/content'
 import { celebrationImages } from '@/data/media'
+import HomeStats from './home/HomeStats'
 
 /**
  * "Four Days / One Celebration".
@@ -58,6 +59,9 @@ export default function CelebrationSection() {
             </div>
           </div>
         </div>
+
+        {/* The figures belong under this heading: the last of them is it counted out. */}
+        <HomeStats />
       </div>
     </section>
   )

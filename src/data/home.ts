@@ -50,11 +50,6 @@ export type Stat = {
 export const homeStats = {
   kicker: 'In numbers',
   /**
-   * Broken as the celebration band breaks it, and set the same way — the last of
-   * the four figures below is this heading counted out.
-   */
-  heading: { lead: 'Four Days', tail: 'One Celebration' },
-  /**
    * The caption under the main site's "200+ weddings" pill, word for word —
    * ../../../wow/src/components/sections/Destinations/Destinations.tsx.
    */

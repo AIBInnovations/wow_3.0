@@ -4,7 +4,6 @@ import GalleryScroll from '@/components/GalleryScroll'
 import TallImage from '@/components/TallImage'
 import HomeAtelier from '@/components/home/HomeAtelier'
 import Voices from '@/components/Voices'
-import HomeStats from '@/components/home/HomeStats'
 import StickyStories from '@/components/StickyStories'
 import CelebrationSection from '@/components/CelebrationSection'
 import HomeFilms from '@/components/home/HomeFilms'
@@ -24,7 +23,6 @@ export default function Home() {
         <StickyStories />
         <CelebrationSection />
         <HomeFilms />
-        <HomeStats />
         <FinalCta />
       </main>
       <Footer />

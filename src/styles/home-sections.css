@@ -157,11 +157,6 @@
 
 /* ═══ The stats band ═════════════════════════════════════════════════════ */
 
-.home-stats_wrap {
-  position: relative;
-  background-color: var(--swatch--dark);
-}
-
 .home-stats_layout {
   display: grid;
   grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
@@ -516,18 +511,17 @@
  * rather than beside the statement. Two columns left the heading sharing a row
  * with four numerals, which gave neither room.
  */
-.home-stats_layout {
-  grid-template-columns: minmax(0, 1fr);
-  row-gap: var(--rhythm-lg);
-  align-items: start;
+/*
+ * The figures sit inside the "Four Days / One Celebration" section rather than
+ * in a band of their own, so they bring no background or container of their own
+ * — only the space that separates them from the frames above.
+ */
+.home-stats_block {
+  margin-top: var(--rhythm-lg);
 }
 
-.home-stats_title {
-  font-family: var(--font--primary-family);
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-heading);
-  font-size: var(--step-4);
-  line-height: var(--leading-heading);
-  margin: 0;
+.home-stats_layout {
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--rhythm-md);
+  align-items: start;
 }

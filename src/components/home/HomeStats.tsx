@@ -5,29 +5,29 @@ import { gsap, registerGsap } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useLineAnimation } from '@/hooks/useSplitText'
-import Initial from '@/components/Initial'
 import { homeStats } from '@/data/home'
 
 /** How long a numeral takes to rise and to count to its value. */
 const COUNT_S = 1.6
 
 /**
- * The stats band: a label and the studio's own statement on the left, four
- * figures across on the right, hairlines between them.
+ * The four figures, with the studio's own statement above them.
  *
- * The first time the band's top crosses 70% of the viewport, each numeral rises
- * out of its clip while counting up from 0 to its value — 1.6s, power3.out,
- * snapped to whole numbers — and the labels fade in beneath. The markup carries
- * the final values, so reduced motion, and no script at all, show them as they
- * are.
+ * Not a band of its own: this sits inside the "Four Days / One Celebration"
+ * section, under its heading, which is where the figures belong — the last of
+ * them is that heading counted out. It therefore renders no section, container
+ * or padding, and takes those from whatever it is placed in.
+ *
+ * The first time its top crosses 70% of the viewport, each numeral rises out of
+ * its clip while counting up from 0 to its value — 1.6s, power3.out, snapped to
+ * whole numbers — and the labels fade in beneath. The markup carries the final
+ * values, so reduced motion, and no script at all, show them as they are.
  */
 export default function HomeStats() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const headingRef = useRef<HTMLHeadingElement>(null)
+  const sectionRef = useRef<HTMLDivElement>(null)
   const statementRef = useRef<HTMLParagraphElement>(null)
   const reduced = useReducedMotion()
 
-  useLineAnimation(headingRef)
   useLineAnimation(statementRef)
 
   useIsomorphicLayoutEffect(() => {
@@ -81,41 +81,34 @@ export default function HomeStats() {
   }, [reduced])
 
   return (
-    <section ref={sectionRef} data-theme="inherit" className="home-stats_wrap">
-      <div className="u-container home-stats_contain" data-padding-top="main" data-padding-bottom="main">
-        <div className="home-stats_layout">
-          <div className="home-stats_lead">
-            {/* Wrapped: .kicker grows to fill a flex column on its own. */}
-            <div>
-              <div className="kicker home-stats_kicker">{homeStats.kicker}</div>
-            </div>
-            <h2 ref={headingRef} className="home-stats_title" js-line-animation="">
-              <Initial>{homeStats.heading.lead}</Initial>
-              <br />
-              {homeStats.heading.tail}
-            </h2>
-            <p ref={statementRef} className="home-stats_statement" js-line-animation="">
-              {homeStats.statement}
-            </p>
+    <div ref={sectionRef} className="home-stats_block">
+      <div className="home-stats_layout">
+        <div className="home-stats_lead">
+          {/* Wrapped: .kicker grows to fill a flex column on its own. */}
+          <div>
+            <div className="kicker home-stats_kicker">{homeStats.kicker}</div>
           </div>
-
-          <ul className="home-stats_grid" role="list">
-            {homeStats.stats.map((stat) => (
-              <li key={stat.label} className="home-stats_item">
-                <div className="home-stats_clip">
-                  <span className="home-stats_num">
-                    <span className="home-stats_value" data-value={stat.value}>
-                      {stat.value}
-                    </span>
-                    {stat.suffix ? <sup className="home-stats_suffix">{stat.suffix}</sup> : null}
-                  </span>
-                </div>
-                <div className="home-stats_label">{stat.label}</div>
-              </li>
-            ))}
-          </ul>
+          <p ref={statementRef} className="home-stats_statement" js-line-animation="">
+            {homeStats.statement}
+          </p>
         </div>
+
+        <ul className="home-stats_grid" role="list">
+          {homeStats.stats.map((stat) => (
+            <li key={stat.label} className="home-stats_item">
+              <div className="home-stats_clip">
+                <span className="home-stats_num">
+                  <span className="home-stats_value" data-value={stat.value}>
+                    {stat.value}
+                  </span>
+                  {stat.suffix ? <sup className="home-stats_suffix">{stat.suffix}</sup> : null}
+                </span>
+              </div>
+              <div className="home-stats_label">{stat.label}</div>
+            </li>
+          ))}
+        </ul>
       </div>
-    </section>
+    </div>
   )
 }
