@@ -16,6 +16,7 @@ export const homeAtelier = {
 
 export type AtelierCard = {
   number: string
+  background: string
   title: string
   body: string
   image: string
@@ -33,6 +34,7 @@ export type AtelierCard = {
  */
 export const homeAtelierCards: AtelierCard[] = disciplines.map((discipline) => ({
   number: discipline.number,
+  background: discipline.background,
   title: discipline.name,
   body: discipline.intro,
   image: discipline.photos.index.src,
@@ -47,27 +49,15 @@ export type Stat = {
   label: string
 }
 
+/** Preview deck pp. 2 and 7; five is the site's service grouping. */
 export const homeStats = {
   kicker: 'In numbers',
-  /**
-   * The caption under the main site's "200+ weddings" pill, word for word —
-   * ../../../wow/src/components/sections/Destinations/Destinations.tsx.
-   */
-  statement: 'More than two hundred weddings, across India and international destinations.',
+  statement: 'Based in Indore and celebrated across India and international destinations.',
   stats: [
-    // Main site, src/components/sections/Destinations/Destinations.tsx: the
-    // "200+ weddings" pill and its caption, "More than two hundred weddings…".
-    { value: 200, suffix: '+', label: 'Weddings composed' },
-    // The five discipline pages the main site publishes —
-    // src/components/pages/DisciplinePage/content.ts: Decor, Guest Experience,
-    // Invites & Gifting, Food & Beverage, Entertainment (the same five in this
-    // project's src/data/disciplines.ts).
+    { value: 50, suffix: '+', label: 'Weddings & milestone celebrations' },
+    { value: 8, suffix: '+', label: 'Years of experience' },
+    { value: 90, suffix: '+', label: 'Operational & hospitality checkpoints' },
     { value: 5, label: 'Disciplines, as one' },
-    // The seven the studio names — the destinations band in src/data/stories.ts,
-    // and the figure the main site quotes: "across seven destinations".
-    { value: 7, label: 'Destinations named' },
-    // "Four Days / One Celebration" — `celebration` in src/data/content.ts.
-    { value: 4, label: 'Days, one celebration' },
   ] as Stat[],
 }
 

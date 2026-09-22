@@ -567,25 +567,14 @@
   }
 }
 
-/* ═══ Destinations: photographs cut, never fade ══════════════════════════ */
+/* ═══ Destinations: smooth photographic transitions ══════════════════════════ */
 
-/*
- * Each destination's photograph waited at opacity 0 and faded in over 0.55s
- * (`transition: all .55s`) once its item became active — so the first one
- * visibly faded up as the band arrived, and every change of destination was a
- * slow dissolve. The first is now active from the start, and with the
- * transition gone a new destination replaces the last one at once.
- *
- * Only the photograph loses its transition. The hover treatment on its wrapper —
- * the drain to half-brightness greyscale — still eases, since that is a response
- * to the pointer rather than to the page scrolling.
- *
- * Two classes, because site.css sets the fade twice: `.sticky-gallery_bg_img`
- * (all .55s) and `.sticky-gallery_item .sticky-gallery_bg_img` (opacity .5s).
- * A single-class rule here loses to the second on specificity, and the fade
- * carried on.
- */
+/* Destinations dissolve between their already-loaded photographs. */
 .sticky-gallery_bg_img,
 .sticky-gallery_item .sticky-gallery_bg_img {
-  transition: none;
+  transition: opacity 1s ease-in-out, transform 1.6s ease-out;
+  transform: scale(1.06);
+}
+.sticky-gallery_item.active .sticky-gallery_bg_img {
+  transform: scale(1);
 }

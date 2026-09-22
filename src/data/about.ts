@@ -77,7 +77,7 @@ export const aboutCards: AboutCard[] = [
 export const aboutPortfolio = {
   kicker: 'Signature Portfolio',
   lines: ['A Discreet Anthology', 'Never Repeated'],
-  note: 'Identities and imagery are not publicly disclosed.',
+  note: 'Each celebration within our portfolio reflects a narrative interpreted with depth, sensitivity and aesthetic clarity.',
   left: { src: '/images/wow-fireworks-couple.jpg', alt: 'Fireworks over the mandap' },
   right: { src: '/images/wow-red-ballroom.jpg', alt: 'A ballroom lit red, candles on every table' },
 }

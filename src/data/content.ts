@@ -1,10 +1,5 @@
-/**
- * Every string the page shows, in one place.
- *
- * All of it is WOW Weddings & Events' own copy, lifted from the main site in
- * `../../../wow` rather than rewritten — the hero statement and the disciplines
- * line come from /disciplines, the four-days paragraph from /celebrations, the
- * enquiry note from the atelier's contact band.
+/** Marketing copy follows the supplied Website Content PDF and preview deck.
+ * Navigation, contact details and short interface labels remain site metadata.
  */
 
 export const site = {
@@ -22,10 +17,10 @@ export const wordmark = { lead: 'WOW', middle: 'Weddings', tail: '& Events' }
 export const hero = {
   kicker: 'Weddings, ceremonies and events',
   /** The oversized display line. */
-  title: 'celebrations artfully composed',
+  title: 'celebrations composed with intention',
   paragraph:
-    'Rather than spectacle, atmosphere; rather than excess, refinement. '
-    + 'Nothing is incidental. Everything is intentional.',
+    'We curate weddings as immersive experiences, where every gesture, detail and moment is '
+    + 'composed with artistic precision, allowing each celebration to unfold as a singular work of art.',
   cta: { label: 'Make an enquiry', href: 'mailto:enquiries@woweventsandweddings.com' },
 }
 
@@ -36,7 +31,7 @@ export const atelier = {
    * Set at 16cqw across a 13ch measure, so it has to stay short — the longer
    * form of this line from /disciplines runs well past the fold.
    */
-  statement: 'Five disciplines, composed as one — never in isolation.',
+  statement: 'Nothing is incidental. Everything is intentional.',
   cta: { href: '/about', label: 'The Atelier' },
   circleText: 'THE ATELIER · INTENTION WITHOUT EXCESS · ',
 }
@@ -45,21 +40,26 @@ export const atelier = {
 export const voicesMarquee = 'Composed With Intention &'
 
 export const celebration = {
-  headingLead: 'Four Days',
+  headingLead: 'Every Moment',
   headingOutline: 'One Celebration',
   paragraph:
-    'Haldi at first light, mehendi and sangeet through the evening, the ceremony '
-    + "itself, and the night that follows — conceived together rather than as four "
-    + 'separate days. The rituals are kept exactly as the family keeps them. '
-    + 'Everything around them is composed.',
+    'From the first arrival to the final farewell, every movement of the celebration is orchestrated with '
+    + 'narrative precision. Spaces evolve, atmospheres shift and moments unfold with a quiet sense of theatre.',
   cta: { label: 'Explore Celebrations', href: '/celebrations' },
 }
 
 export const closing = {
   heading: 'Shall We Begin?',
   note:
-    'A limited number of celebrations each year. Private enquiries begin with a '
-    + 'confidential conversation.',
+    'Our atelier accepts a limited number of celebrations each year. '
+    + 'For private enquiries, we invite you to begin a confidential conversation with our studio.',
   cta: { href: 'mailto:enquiries@woweventsandweddings.com', label: 'Start an enquiry' },
   circleText: 'START AN ENQUIRY · MAKE AN ENQUIRY · ',
+}
+
+/** Website Content PDF: What Distinguishes Our Celebrations. */
+export const scrollGallery = {
+  left: 'Immersive celebrations.',
+  right: 'Artfully orchestrated.',
+  note: 'Guests do not merely attend our celebrations. They inhabit them.',
 }

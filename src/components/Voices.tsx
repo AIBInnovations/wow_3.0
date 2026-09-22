@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { gsap, ScrollTrigger, registerGsap, EASE, scrubFor } from '@/lib/gsap'
+import { gsap, ScrollTrigger, registerGsap, EASE } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { voices } from '@/data/voices'
@@ -11,7 +11,9 @@ import { ArrowSlider } from './svg'
 /**
  * The celebrations band.
  *
- * - The headline runs endlessly on the `move-text` keyframes in site.css.
+ * - Desktop retains the side-by-side composition and running headline.
+ * - Mobile layers the arch over the large photograph, with upward portrait
+ *   drift and oversized type moving left to right as the section scrolls.
  * - Slides change instantly — no crossfade. What reads as the transition is the
  *   incoming slide's own entrance: its portrait fades in while settling from 1.1
  *   to 1, its name rises from below, and the large photograph settles from 1.1.
@@ -62,30 +64,47 @@ export default function Voices() {
     }
   }, [index, reduced])
 
-  // Scroll-driven: the first photograph's wipe as the band is reached.
+  // Desktop photo reveal; mobile overlapping portrait and scroll-driven type.
   useIsomorphicLayoutEffect(() => {
     const root = rootRef.current
     if (!root || reduced) return
     registerGsap()
 
+    const media = gsap.matchMedia()
     const ctx = gsap.context(() => {
-      const wrap = root.querySelector('.testimonial1_slider_wrap')
-      const visual = root.querySelector('.testimonial1_slider_right_visual_wrap')
-      if (wrap && visual) {
-        gsap.set(visual, { clipPath: 'inset(0 0 0 100%)' })
-        const wipe = gsap.timeline({ paused: true, defaults: { duration: 2, ease: 'power2.out' } })
-        wipe.to(visual, { clipPath: 'inset(0 0 0 0%)' })
-        ScrollTrigger.create({
-          trigger: wrap,
-          start: 'top 50%',
-          onEnter: () => wipe.play(),
-          onLeaveBack: () => wipe.reverse(),
+      media.add('(min-width: 768px)', () => {
+        const wrap = root.querySelector('.testimonial1_slider_wrap')
+        const visual = root.querySelector('.testimonial1_slider_right_visual_wrap')
+        if (wrap && visual) {
+          gsap.set(visual, { clipPath: 'inset(0 0 0 100%)' })
+          const wipe = gsap.timeline({ paused: true, defaults: { duration: 2, ease: 'power2.out' } })
+          wipe.to(visual, { clipPath: 'inset(0 0 0 0%)' })
+          ScrollTrigger.create({
+            trigger: wrap,
+            start: 'top 50%',
+            onEnter: () => wipe.play(),
+            onLeaveBack: () => wipe.reverse(),
+          })
+        }
+      })
+      media.add('(max-width: 767px)', () => {
+        gsap.fromTo('.voices-scroll-text', { xPercent: -35 }, {
+          xPercent: 0,
+          ease: 'none',
+          scrollTrigger: { trigger: root, start: 'top bottom', end: 'bottom top', scrub: true },
         })
-      }
-
+        gsap.fromTo('.testimonial1_slider_img_wrap', { y: 32 }, {
+          y: -24,
+          ease: 'none',
+          scrollTrigger: { trigger: root, start: 'top bottom', end: 'bottom top', scrub: true },
+        })
+      })
     }, root)
 
-    return () => ctx.revert()
+    return () => {
+      media.revert()
+      ctx.revert()
+    }
   }, [reduced])
 
   // Horizontal swipe on touch and pen.
@@ -116,7 +135,7 @@ export default function Voices() {
             className="testimonial1_slider_component w-slider"
             role="region"
             aria-roledescription="carousel"
-            aria-label="What the studio works to"
+            aria-label="WOW celebrations"
             tabIndex={0}
             onKeyDown={(e) => {
               if (e.key === 'ArrowLeft') go(-1)
@@ -147,12 +166,15 @@ export default function Voices() {
                     }}
                   >
                     <div className="testimonial1_slider_layout u-hflex-center-stretch">
+                      <div className="voices-scroll-text" aria-hidden="true">
+                        <span>{voicesMarquee}&nbsp; {voicesMarquee}&nbsp;</span>
+                      </div>
                       <div className="testimonial1_slider_left_wrap">
                         <div className="testimonial1_slider_left_contain u-container">
                           <div className="testimonial1_slider_left_content_layout u-vflex-center-center u-gap-main">
                             {t.portrait && (
                               <div className="testimonial1_slider_img_wrap">
-                                <img src={t.portrait} alt="" loading="lazy" className="testimonial1_slider_img" />
+                                <img src={t.portrait} alt={`${t.credit ?? 'A WOW couple'}, wedding portrait`} loading="lazy" className="testimonial1_slider_img" />
                               </div>
                             )}
 
@@ -163,7 +185,7 @@ export default function Voices() {
                               <button
                                 type="button"
                                 onClick={() => go(-1)}
-                                aria-label="Previous statement"
+                                aria-label="Previous celebration"
                                 className="testimonial1_slider_control_btn left w-inline-block"
                               >
                                 <ArrowSlider />
@@ -175,7 +197,7 @@ export default function Voices() {
                               <button
                                 type="button"
                                 onClick={() => go(1)}
-                                aria-label="Next statement"
+                                aria-label="Next celebration"
                                 className="testimonial1_slider_control_btn right w-inline-block"
                               >
                                 <ArrowSlider />
@@ -188,7 +210,7 @@ export default function Voices() {
                       <div className="testimonial1_slider_right_wrap">
                         <div className="testimonial1_slider_right_visual_wrap">
                           {t.right && (
-                            <img src={t.right} alt="" loading="lazy" className="testimonial1_slider_right_image" />
+                            <img src={t.right} alt={`${t.credit ?? 'WOW'}, celebration setting`} loading="lazy" className="testimonial1_slider_right_image" />
                           )}
                         </div>
                       </div>

@@ -5,26 +5,9 @@ import { gsap, registerGsap } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { galleryColumns } from '@/data/media'
+import { scrollGallery } from '@/data/content'
 
-/**
- * A 200vh section with a sticky 100vh frame holding three photo columns.
- *
- * Nothing here moves on its own. The columns are driven entirely by scroll,
- * across the whole time the section is on screen — from its top entering at the
- * bottom of the viewport to its bottom leaving at the top:
- *
- *   outer columns   -190vw → 70vw    linear       (they travel down)
- *   middle column      0vw → -170vw  sine.inOut   (it travels up)
- *   progress bar        0% → 120%    linear
- *
- * Travelling in opposite directions at different rates is what makes the grid
- * read as depth. The bar is fixed to the viewport and only shown while the
- * section is in range.
- *
- * The source site also faded the whole frame out over its last screen. That is
- * left off here: the photographs are the section, and dimming them while they
- * are still half on screen reads as a fault rather than as an effect.
- */
+/** Opposing photo columns and left/right copy, driven by scroll on every screen. */
 export default function GalleryScroll() {
   const wrapRef = useRef<HTMLElement>(null)
   const reduced = useReducedMotion()
@@ -44,22 +27,44 @@ export default function GalleryScroll() {
           start: 'top bottom',
           end: 'bottom top',
           scrub: true,
+          invalidateOnRefresh: true,
           onEnter: () => show(true),
           onLeave: () => show(false),
           onEnterBack: () => show(true),
           onLeaveBack: () => show(false),
         },
       })
-      tl.fromTo('.col-1-s', { y: '-190vw' }, { y: '70vw', ease: 'none' }, 0)
-      tl.fromTo('.col-s-2', { y: '0vw' }, { y: '-170vw', ease: 'sine.inOut' }, 0)
-      tl.fromTo('.home-gal_scroll-indicator', { width: '0%' }, { width: '120%', ease: 'none' }, 0)
+      const frame = wrap.querySelector<HTMLElement>('.div-block-31')!
+      wrap.querySelectorAll<HTMLElement>('._3-col-wrapper').forEach((column) => {
+        const travel = () => Math.max(0, column.scrollHeight - frame.clientHeight)
+        const reverse = column.classList.contains('col-1-s')
+        tl.fromTo(column,
+          { y: () => reverse ? -travel() : 0 },
+          { y: () => reverse ? 0 : -travel(), ease: 'none' }, 0)
+      })
+      // Start only once the frame pins. Both blocks travel straight upward.
+      gsap.fromTo(['.home-gal_copy-left', '.home-gal_copy-right'],
+        { y: () => frame.clientHeight * 0.12 },
+        {
+          y: () => -frame.clientHeight * 0.12,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: wrap,
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
+        })
+      tl.fromTo('.home-gal_scroll-indicator', { width: '0%' },
+        { width: '100%', ease: 'none' }, 0)
     }, wrap)
 
     return () => ctx.revert()
   }, [reduced])
 
   return (
-    <section ref={wrapRef} data-theme="inherit" className="home-gal_wrap">
+    <section ref={wrapRef} data-theme="dark" className="home-gal_wrap" aria-label="Immersive celebrations">
       <div className="home-gal_fade-trigger">
         <div className="div-block-31">
           <div className="u-container home-gal_contain" data-padding-top="main" data-padding-bottom="main">
@@ -78,6 +83,14 @@ export default function GalleryScroll() {
                   ))}
                 </div>
               ))}
+            </div>
+          </div>
+          <div className="home-gal_scrim" aria-hidden="true" />
+          <div className="home-gal_copy">
+            <h2 className="home-gal_copy-left">{scrollGallery.left}</h2>
+            <div className="home-gal_copy-right">
+              <p className="home-gal_copy-title">{scrollGallery.right}</p>
+              <p className="home-gal_copy-note">{scrollGallery.note}</p>
             </div>
           </div>
         </div>

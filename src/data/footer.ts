@@ -18,7 +18,7 @@ export const footerColumns: FooterColumn[] = [
     links: [
       { href: '/disciplines#decor', label: 'Decor' },
       { href: '/disciplines#guest-experience', label: 'Guest Experience' },
-      { href: '/disciplines#invites', label: 'Invites' },
+      { href: '/disciplines#invites', label: 'Invites & Gifting' },
       { href: '/disciplines#food-beverage', label: 'Food & Beverage' },
       { href: '/disciplines#entertainment', label: 'Entertainment' },
     ],
@@ -35,7 +35,7 @@ export const footerColumns: FooterColumn[] = [
   },
 ]
 
-export const copyright = '©2025 WOW WEDDINGS & EVENTS'
+export const copyright = `©${new Date().getFullYear()} WOW WEDDINGS & EVENTS`
 
 /**
  * The destination photographs are openly-licensed Wikimedia images; CC BY and

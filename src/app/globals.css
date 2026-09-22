@@ -23,6 +23,7 @@
 @import '../styles/gallery.css';
 @import '../styles/celebrations.css';
 @import '../styles/disciplines.css';
+@import '../styles/refinements.css';
 
 /* Split-text scaffolding. SplitType builds .line at runtime; the inner span is
    what actually translates, clipped by the line box the stylesheet already

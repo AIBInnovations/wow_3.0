@@ -2,35 +2,52 @@
 
 import Link from 'next/link'
 import { useRef } from 'react'
+import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import Initial from '@/components/Initial'
 import { MainButton } from '@/components/HeroMarquee'
 import { useLineAnimation } from '@/hooks/useSplitText'
 import { homeAtelier, homeAtelierCards } from '@/data/home'
 
 /**
- * The atelier on the home page: a label, a heading that rises line by line,
- * then the five disciplines as a staircase of cards.
- *
- * The markup and classes are the ones the About page's staircase was built on,
- * so about.css carries most of it untouched. The sticky offsets are not shared:
- * About stacks three cards at 7, 11 and 15rem, and five need their own ramp
- * across the same span, so `.home-atelier_cards` sets its own from `--i`.
- *
- * A sticky card only stays pinned while its parent still has content beneath it,
- * which is what keeps the first four pinned while the ones after them climb past.
- *
- * The closing band sits OUTSIDE that container, and must stay there. Inside, it
- * was the content beneath the fifth card — so the fifth card stayed pinned too,
- * hanging below its own place in the flow by as much as the band was tall, and
- * the band (solid, and painted above the cards) covered exactly that much of it:
- * the last lines of "Entertainment" were cut off, however far you scrolled.
- * Outside, the fifth card is never displaced, so nothing ever overlaps it, and
- * the four above it still stack as they did. This has been undone once already
- * by a bare revert; it is not a stray change.
+ * Five sticky cards, each with a dedicated number strip. Their pin offsets match
+ * the strip height so every earlier number remains visible beneath navigation.
+ * The closing band stays outside the stack so the last card can scroll away.
  */
 export default function HomeAtelier() {
   const headingRef = useRef<HTMLHeadingElement>(null)
+  const stackRef = useRef<HTMLDivElement>(null)
   useLineAnimation(headingRef)
+
+  useIsomorphicLayoutEffect(() => {
+    const stack = stackRef.current
+    if (!stack) return
+    const cards = Array.from(stack.querySelectorAll<HTMLElement>('.home-atelier_card'))
+    let frame = 0
+    const measure = () => {
+      const strip = parseFloat(getComputedStyle(stack).getPropertyValue('--card-strip'))
+      // Equal pinned bottom edges make every card release at the same scroll
+      // position. Measuring the content, not the stretched card, avoids feedback.
+      const bottom = Math.ceil(Math.max(...cards.map((card, i) => {
+        const content = card.querySelector<HTMLElement>('.deets_card_wrap')!
+        return strip + content.getBoundingClientRect().height + i * strip
+      })))
+      stack.style.setProperty('--stack-height', `${bottom}px`)
+    }
+    const schedule = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(measure)
+    }
+    const observer = new ResizeObserver(schedule)
+    cards.forEach(card => observer.observe(card.querySelector('.deets_card_wrap')!))
+    window.addEventListener('resize', schedule)
+    measure()
+    return () => {
+      cancelAnimationFrame(frame)
+      observer.disconnect()
+      window.removeEventListener('resize', schedule)
+      stack.style.removeProperty('--stack-height')
+    }
+  }, [])
 
   return (
     <section data-theme="inherit" className="home-atelier_wrap">
@@ -45,17 +62,19 @@ export default function HomeAtelier() {
           </h2>
         </div>
 
-        <div className="deets_layout home-atelier_cards">
+        <div ref={stackRef} className="deets_layout home-atelier_cards">
           {homeAtelierCards.map((card, i) => (
             <div
               key={card.href}
               className="home-atelier_card"
               /* The depth this card comes to rest at, counted down the stack. */
-              style={{ '--i': i } as React.CSSProperties}
+              style={{ '--i': i, background: card.background } as React.CSSProperties}
             >
+              <div className="home-atelier_card_header">
+                <span className="home-atelier_card_num kicker">{card.number}</span>
+              </div>
               <div className="deets_card_wrap u-grid-custom">
                 <div className="deets_card_text-wrap u-column u-vflex-left-top u-gap-large">
-                  <div className="home-atelier_card_num kicker">{card.number}</div>
                   <h2 className="deets_card_title u-text-display home-atelier_card_title">
                     <Link href={card.href} className="home-atelier_card_link">
                       <Initial>{card.title}</Initial>
@@ -71,8 +90,7 @@ export default function HomeAtelier() {
           ))}
         </div>
 
-        {/* Solid, on its own layer, and outside the stack on purpose — see the
-            note above the component before moving it back in. */}
+        {/* Outside the stack so the final card is never trapped underneath it. */}
         <div data-theme="inherit" className="press_wrap home-atelier_close">
           <div className="btn-wrap home-atelier_cta">
             <MainButton href={homeAtelier.cta.href} label={homeAtelier.cta.label} />

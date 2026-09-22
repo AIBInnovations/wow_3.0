@@ -12,7 +12,7 @@ export default function Footer() {
   useLetterAnimation(logoRef)
 
   return (
-    <section data-theme="inherit" className="footernn_wrap">
+    <footer data-theme="light" className="footernn_wrap">
       <div className="u-container" data-padding-top="small" data-padding-bottom="none">
         <div className="logo-footer-wrap">
           <div ref={logoRef} className="footernn_logo" js-letter-animation="">
@@ -72,6 +72,6 @@ export default function Footer() {
           </a>
         </div>
       </div>
-    </section>
+    </footer>
   )
 }

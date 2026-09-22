@@ -1,12 +1,7 @@
-/**
- * Every string and image the Disciplines page shows.
- *
- * The copy is the studio's own, trimmed and never rewritten: the hero from the
- * website content brief's Design Ideology (`../../../wow/content`) and the main
- * site's disciplines framing; each chapter from the main site's discipline pages
- * (`../../../wow/src/components/pages/DisciplinePage/content.ts` — the opening
- * statement, intro, first feature, first lists, the highlight cards and the
- * closing line). Places are the ones the About page already names.
+/** Service copy: Weddings_Preview Deck (1).pdf, pp. 5–19 and 22;
+ * design philosophy: Wow events Website Content.pdf, Design Ideology.
+ * Short card explanations are faithful condensations, not verbatim quotations.
+ * Existing five-service navigation and supplied photographs are retained.
  */
 
 export type Photo = { src: string; src800: string; w: number; h: number; alt: string }
@@ -27,7 +22,7 @@ export type Discipline = {
   cards: Card[]
   /** The closing line, in the studio's breaks. */
   closing: string[]
-  /** The wine ramp step behind this chapter. */
+  /** Discipline color drawn from the preview deck. */
   background: string
   photos: { index: Photo; open: Photo; wide: Photo; narrow: Photo }
 }
@@ -46,11 +41,9 @@ export const disciplinesIndex = {
   lead: 'Decor, guest experience, invitations, cuisine and entertainment — conceived together, never in isolation.',
 }
 
-const PLACES = 'Jaipur · Goa · Indore · Bangalore'
-
 const photo = (file: string, w: number, h: number, alt: string): Photo => ({
-  src: `/disciplines/${file}.jpg`,
-  src800: `/disciplines/${file}-800.jpg`,
+  src: `/wow/${file}.jpg`,
+  src800: `/wow/${file}-800.jpg`,
   w,
   h,
   alt,
@@ -61,187 +54,344 @@ export const disciplines: Discipline[] = [
     slug: 'decor',
     number: '01',
     name: 'Decor',
-    caption: 'Florals, staging, lighting and venue transformation',
-    statement: ['Every space', 'holds a story', 'worth telling'],
-    intro:
-      'Decor is where a celebration first becomes visible. We compose florals, staging, lighting and the '
-      + 'transformation of a venue as a single idea, so that every room, lawn and courtyard reads as part of the '
-      + 'same story. Nothing is added for effect; every element is chosen for what it brings to the atmosphere '
-      + 'of the day — from the first flower at the entrance to the last candle at night.',
+    caption: "Décor & spatial styling",
+    statement: ['Luxury is', 'a thousand', 'small things'],
+    intro: "Environments layered with texture, mood, scale, and visual precision.",
     feature: {
-      title: 'Designed around the place',
-      text:
-        'We begin with the venue as it is — its light, its architecture, its views — and design with it rather '
-        + 'than over it. Palaces, lawns and lakesides each ask for something different.',
+      "title": "Considered elegance",
+      "text": "Each celebration is conceived as a living composition, where architecture, florals, light, texture and music are brought together with deliberate harmony."
     },
     lists: [
-      { title: 'Where we compose', items: [PLACES, 'In India and abroad'] },
-      { title: 'What we transform', items: ['Lawns, courtyards and ballrooms', 'Terraces, lakesides and private estates', 'Day and night settings'] },
+      {
+        "title": "Spatial styling",
+        "items": [
+          "Texture and mood",
+          "Scale and visual precision",
+          "Architecture, florals and light"
+        ]
+      },
+      {
+        "title": "Execution framework",
+        "items": [
+          "Vendor alignment",
+          "Timelines and logistics",
+          "Production and guest management"
+        ]
+      }
     ],
     cards: [
-      { title: 'Florals', text: 'Seasonal flowers arranged in installations, canopies and table pieces — composed for colour and scent as much as for form.' },
-      { title: 'Staging', text: 'Mandaps, stages and lounges built to the proportions of the space, so that every ceremony has a natural centre.' },
-      { title: 'Lighting', text: 'Light designed from dusk to the last hour of the night, carrying a setting gently from day into evening.' },
-      { title: 'Colour stories', text: 'A palette for every event — pastel mornings, marigold afternoons, deep jewel-toned nights.' },
-      { title: 'Lounges', text: 'Soft seating and quiet corners where guests can pause between moments.' },
-      { title: 'Transformation', text: 'Lawns, ballrooms and courtyards reimagined completely, and returned untouched.' },
+      {
+        "title": "Architecture",
+        "text": "A living composition shaped through space and atmosphere."
+      },
+      {
+        "title": "Florals",
+        "text": "Florals brought together with light and texture in deliberate harmony."
+      },
+      {
+        "title": "Light",
+        "text": "Light that contributes to the emotional landscape of the celebration."
+      },
+      {
+        "title": "Texture",
+        "text": "Environments layered with texture, mood and visual precision."
+      },
+      {
+        "title": "Atmosphere",
+        "text": "Rather than spectacle, we pursue atmosphere. Rather than excess, we pursue refinement."
+      },
+      {
+        "title": "Intention",
+        "text": "Nothing is incidental. Everything is intentional."
+      }
     ],
-    closing: ['Quiet luxury,', 'true to', 'the place'],
-    background: '#5a1f24',
+    closing: [
+      "Nothing is incidental.",
+      "Everything is",
+      "intentional."
+    ],
+    background: '#262d20',
     photos: {
-      index: photo('index-decor', 1122, 1402, 'Decor by WOW Weddings & Events'),
-      open: photo('decor-open', 1600, 1066, 'A ceremony setting composed by WOW Weddings & Events'),
-      wide: photo('decor-wide', 1600, 1067, 'Florals and staging by WOW Weddings & Events'),
-      narrow: photo('decor-narrow', 1066, 1600, 'Lighting and florals by WOW Weddings & Events'),
+      index: photo('decor-index', 710, 1066, 'The couple beneath a glasshouse mandap'),
+      open: photo('decor-open', 1600, 1066, 'The couple entering their ceremony between fireworks'),
+      wide: photo('decor-wide', 1600, 1067, 'A floral pavilion beneath palms'),
+      narrow: photo('decor-narrow', 1066, 1599, 'Florals and lanterns lining the ceremony aisle'),
     },
   },
   {
     slug: 'guest-experience',
     number: '02',
     name: 'Guest Experience',
-    caption: 'Arrivals, accommodation, transport and concierge',
-    statement: ['A warm welcome', 'and care in', 'every detail'],
-    intro:
-      'Guest experience is everything a guest feels between the invitation and the journey home. Arrivals, '
-      + 'accommodation, transport and concierge are planned as one continuous hospitality, so that every guest — '
-      + 'family, friends and those travelling furthest — feels expected, looked after and free to simply enjoy the '
-      + 'celebration.',
+    caption: "Hospitality & guest experience",
+    statement: ['Hospitality,', 'redefined'],
+    intro: "Because how your guests feel matters just as much as how the wedding looks.",
     feature: {
-      title: 'Received by name',
-      text:
-        'Guests are met at the airport and at the door, garlanded, welcomed with aarti and shown to their rooms '
-        + 'without a queue or a question.',
+      "title": "Thoughtful. Personal. Invisible.",
+      "text": "Thoughtfully curated keepsakes and gifting experiences designed to elevate every guest touchpoint."
     },
     lists: [
-      { title: 'Where we host', items: [PLACES, 'In India and abroad'] },
-      { title: 'From arrival to departure', items: ['Airport and station receptions', 'Transfers to the venue', 'Check-in handled in advance'] },
+      {
+        "title": "Arrivals that feel cinematic",
+        "items": [
+          "Airport hospitality & logistics",
+          "Curated luxury transport",
+          "Porter & baggage coordination",
+          "Traditional welcome rituals"
+        ]
+      },
+      {
+        "title": "After check-in",
+        "items": [
+          "Concierge assistance",
+          "Personalised communication",
+          "Room coordination",
+          "Real-time guest support"
+        ]
+      }
     ],
     cards: [
-      { title: 'Airport receptions', text: 'Guests are met on arrival with flowers and a familiar welcome, and taken straight to the venue.' },
-      { title: 'Welcome rituals', text: 'Aarti, tilak and garlands at the door — traditions kept exactly as the family keeps them.' },
-      { title: 'Accommodation', text: 'Rooms allocated, prepared and checked before anyone arrives, with keys waiting at the door.' },
-      { title: 'Transport', text: 'Cars, coaches and transfers scheduled around every event, so nobody waits and nobody is lost.' },
-      { title: 'Concierge', text: 'A team on hand throughout the celebration for every request, large or small.' },
-      { title: 'Welcome hampers', text: 'Personal notes, itineraries and gifts waiting in every room.' },
+      {
+        "title": "Arrival assistance",
+        "text": "Dedicated arrival assistance, floral welcomes and escorts."
+      },
+      {
+        "title": "Guest movement",
+        "text": "Guest movement management and hotel arrival experiences."
+      },
+      {
+        "title": "Welcome experiences",
+        "text": "Live instrumental performances, curated entertainment moments and thematic arrival experiences."
+      },
+      {
+        "title": "Hospitality desks",
+        "text": "Signature hospitality desks and personalised arrival branding."
+      },
+      {
+        "title": "During the stay",
+        "text": "Post check-in experiences, concierge assistance and experience updates."
+      },
+      {
+        "title": "Hampers & gifting",
+        "text": "Thoughtfully curated keepsakes and gifting experiences designed to elevate every guest touchpoint."
+      }
     ],
-    closing: ['Quiet care,', 'at every', 'turn'],
-    background: '#4a181d',
+    closing: [
+      "Thoughtful.",
+      "Personal.",
+      "Invisible."
+    ],
+    background: '#10264a',
     photos: {
-      index: photo('index-guest-experience', 1122, 1402, 'Guest experience by WOW Weddings & Events'),
-      open: photo('guest-experience-open', 1600, 1066, 'Guests welcomed by WOW Weddings & Events'),
-      wide: photo('guest-experience-wide', 1600, 1066, 'A welcome composed by WOW Weddings & Events'),
-      narrow: photo('guest-experience-narrow', 1066, 1600, 'A guest arrival by WOW Weddings & Events'),
+      index: photo('guest-experience-index', 1600, 1066, 'Family and guests celebrating beneath a floral arch'),
+      open: photo('guest-experience-open', 1600, 1066, 'Drummers welcoming wedding guests'),
+      wide: photo('guest-experience-wide', 1600, 1067, 'Family gathered on the wedding lawn'),
+      narrow: photo('guest-experience-narrow', 710, 1066, 'A mother and daughter sharing a quiet moment'),
     },
   },
   {
     slug: 'invites',
     number: '03',
     name: 'Invites & Gifting',
-    caption: 'Stationery, digital invitations and gifting',
-    statement: ['The first', 'impression,', 'kept forever'],
-    intro:
-      'An invitation is the first moment of a celebration that a guest holds in their hands. We design stationery, '
-      + 'digital invitations and gifting as one visual language — the same colours, monograms and materials carried '
-      + 'from the first save-the-date to the welcome hamper in the room and the gift a guest takes home.',
+    caption: "Wedding branding & stationery",
+    statement: ["Every celebration", "carries its own", "visual language"],
+    intro: "Timeless monograms, invitation suites, and visual identities designed with sophistication and restraint.",
     feature: {
-      title: 'Written in the family’s hand',
-      text:
-        'Every suite begins with the family: their names, their story and the tone of the celebration, translated '
-        + 'into paper, print and design.',
+      "title": "Wedding branding",
+      "text": "The wedding begins long before the first event. Every celebration carries its own visual language."
     },
     lists: [
-      { title: 'Where we create', items: [PLACES, 'Delivered in India and abroad'] },
-      { title: 'What we design', items: ['Save-the-dates and invitations', 'Digital invitations', 'Gifting and hampers'] },
+      {
+        "title": "Crafted across",
+        "items": [
+          "Bespoke monograms",
+          "Invitation suites",
+          "Save The Date concepts",
+          "Wedding collateral"
+        ]
+      },
+      {
+        "title": "Guest touchpoints",
+        "items": [
+          "Countdown creatives",
+          "Guest communication systems",
+          "Technology-led experiences",
+          "Hampers & gifting"
+        ]
+      }
     ],
     cards: [
-      { title: 'Invitations', text: 'Printed suites designed around the family’s story, finished by hand.' },
-      { title: 'Digital invitations', text: 'Invitations and itineraries for guests near and far, in the same visual language as print.' },
-      { title: 'Monograms', text: 'A mark for the celebration, carried from paper to signage, cakes and lights.' },
-      { title: 'Signage', text: 'Welcome boards, event signs and wayfinding designed to belong to the setting.' },
-      { title: 'Gifting', text: 'Trays and gifts for family rituals, arranged and presented with ceremony.' },
-      { title: 'Welcome hampers', text: 'Personal notes and keepsakes waiting for guests in every room.' },
+      {
+        "title": "Monograms",
+        "text": "Bespoke monograms within the celebration’s own visual language."
+      },
+      {
+        "title": "Invitation suites",
+        "text": "Invitation suites designed with sophistication and restraint."
+      },
+      {
+        "title": "Save the date",
+        "text": "Save The Date concepts and countdown creatives."
+      },
+      {
+        "title": "Wedding collateral",
+        "text": "Wedding collateral that carries the celebration’s visual identity."
+      },
+      {
+        "title": "Guest communication",
+        "text": "Guest communication systems and technology-led experiences."
+      },
+      {
+        "title": "Gifting",
+        "text": "Thoughtfully curated keepsakes and gifting experiences."
+      }
     ],
-    closing: ['Quiet luxury,', 'made', 'personal'],
-    background: '#3b1215',
+    closing: [
+      "The wedding begins",
+      "long before",
+      "the first event."
+    ],
+    background: '#49262d',
     photos: {
-      index: photo('index-invites', 1122, 1402, 'Invitations and gifting by WOW Weddings & Events'),
-      open: photo('invites-open', 1600, 1066, 'Gifting presented by WOW Weddings & Events'),
-      wide: photo('invites-wide', 1600, 1066, 'Stationery and gifts by WOW Weddings & Events'),
-      narrow: photo('invites-narrow', 1066, 1600, 'A ritual tray by WOW Weddings & Events'),
+      index: photo('invites-index', 1600, 1066, 'Wedding gifts arranged in presentation trays'),
+      open: photo('invites-open', 1600, 1189, 'A ceremonial tray presented to the family'),
+      wide: photo('invites-wide', 1600, 1066, 'Family sharing gifts and wedding rituals'),
+      narrow: photo('invites-narrow', 1000, 1500, 'Personalised monogram details at the celebration'),
     },
   },
   {
     slug: 'food-beverage',
     number: '04',
     name: 'Food & Beverage',
-    caption: 'Menus, live counters and beverage programmes',
-    statement: ['Tables that', 'invite', 'conversation'],
-    intro:
-      'Food brings a celebration together more than anything else. We design menus, live counters and beverage '
-      + 'programmes around the family, the occasion and the season — from long welcome lunches to late-night bars — '
-      + 'so that every meal is a moment guests talk about long after the celebration is over.',
+    caption: "Culinary experiences",
+    statement: ['Food', 'is never just', 'food'],
+    intro: "Dining concepts curated not only for taste, but for memory, theatre, and conversation.",
     feature: {
-      title: 'Menus with a sense of place',
-      text:
-        'Every menu is written for its event: regional dishes for a family lunch, lighter plates for a morning '
-        + 'ceremony, generous spreads for a night of celebration.',
+      "title": "Food is never just food",
+      "text": "It’s memory, mood, and conversation."
     },
     lists: [
-      { title: 'Where we serve', items: [PLACES, 'In India and abroad'] },
-      { title: 'What we plan', items: ['Menus and tastings', 'Live counters', 'Beverage programmes'] },
+      {
+        "title": "F&B curation",
+        "items": [
+          "Culinary concept planning",
+          "Menu engineering",
+          "Buffet styling"
+        ]
+      },
+      {
+        "title": "The dining experience",
+        "items": [
+          "Service experience design",
+          "Luxury dining enhancements",
+          "Bespoke presentation concepts"
+        ]
+      }
     ],
     cards: [
-      { title: 'Menus', text: 'Written for each event and tasted in advance with the family.' },
-      { title: 'Live counters', text: 'Chefs cooking to order, turning a meal into something to watch and share.' },
-      { title: 'Regional cuisine', text: 'Dishes from the family’s own traditions alongside flavours from further afield.' },
-      { title: 'Beverage programmes', text: 'Bars, signature drinks and non-alcoholic menus designed for every event.' },
-      { title: 'Table settings', text: 'Linen, tableware and florals chosen to belong to the setting.' },
-      { title: 'Celebration cakes', text: 'Cakes and desserts designed around the occasion and its moments.' },
+      {
+        "title": "Culinary concepts",
+        "text": "Culinary concept planning for memory, theatre and conversation."
+      },
+      {
+        "title": "Menus",
+        "text": "Menu engineering as part of the F&B curation."
+      },
+      {
+        "title": "Buffet styling",
+        "text": "Buffet styling within the celebration’s visual language."
+      },
+      {
+        "title": "Service",
+        "text": "Service experience design as part of the dining experience."
+      },
+      {
+        "title": "Dining enhancements",
+        "text": "Luxury dining enhancements and luxury bar experiences."
+      },
+      {
+        "title": "Presentation",
+        "text": "Bespoke presentation concepts."
+      }
     ],
-    closing: ['Generous,', 'gracious,', 'unhurried'],
-    background: '#4a181d',
+    closing: [
+      "Memory,",
+      "mood, and",
+      "conversation."
+    ],
+    background: '#842522',
     photos: {
-      index: photo('index-food-beverage', 1122, 1402, 'Food and beverage by WOW Weddings & Events'),
-      open: photo('food-beverage-open', 1600, 1066, 'A table set by WOW Weddings & Events'),
-      wide: photo('food-beverage-wide', 1600, 1066, 'Dining composed by WOW Weddings & Events'),
-      narrow: photo('food-beverage-narrow', 1066, 1600, 'A live counter by WOW Weddings & Events'),
+      index: photo('food-beverage-index', 1067, 1600, 'A floral wedding table set for guests'),
+      open: photo('food-beverage-open', 1066, 1600, 'A sculpted ice bar at the evening celebration'),
+      wide: photo('food-beverage-wide', 1600, 1066, 'Wedding dining beneath a floral canopy'),
+      narrow: photo('food-beverage-narrow', 1500, 1001, 'The couple beside their celebration cake'),
     },
   },
   {
     slug: 'entertainment',
     number: '05',
     name: 'Entertainment',
-    caption: 'Artists, performances and technical production',
-    statement: ['Music and', 'movement that', 'fill the room'],
-    intro:
-      'Entertainment gives a celebration its energy. We bring together artists, performances and technical '
-      + 'production — sufi evenings, sangeet stages, carnival afternoons and late-night parties — and design each one '
-      + 'around the family’s taste and the mood of the moment, so that every event has its own sound and its own rhythm.',
+    caption: "Entertainment direction",
+    statement: ['Entertainment', 'with', 'presence'],
+    intro: "From celebrated performers to immersive cultural showcases, every act is curated to match the scale and spirit of the celebration.",
     feature: {
-      title: 'Curated for the family',
-      text:
-        'Artists and performances are chosen with the family, so that every act feels personal — from a quiet sufi '
-        + 'evening to a full sangeet production.',
+      "title": "Entertainment with presence",
+      "text": "Artists, performances, entries, and immersive showcases designed to complement the emotional rhythm of the celebration."
     },
     lists: [
-      { title: 'Where we perform', items: [PLACES, 'In India and abroad'] },
-      { title: 'What we produce', items: ['Artists and performers', 'Choreography', 'Sound, light and staging'] },
+      {
+        "title": "Artists & performances",
+        "items": [
+          "Bollywood & international artists",
+          "DJs & live performers",
+          "Folk & cultural acts"
+        ]
+      },
+      {
+        "title": "Signature moments",
+        "items": [
+          "Celebrity appearances",
+          "Baraat entertainment concepts",
+          "Grand bridal & groom entries"
+        ]
+      }
     ],
     cards: [
-      { title: 'Artists', text: 'Singers, musicians and performers chosen with the family for every event.' },
-      { title: 'Sufi evenings', text: 'Intimate performances, qawwali and whirling dervishes under soft light.' },
-      { title: 'Sangeet productions', text: 'Stages, choreography and rehearsals for family performances and professional acts.' },
-      { title: 'Carnival afternoons', text: 'Colour, games, music and performers for daytime celebrations.' },
-      { title: 'After-parties', text: 'DJs, lights and late nights that carry the celebration past midnight.' },
-      { title: 'Technical production', text: 'Sound, lighting, screens and special effects designed and run by one team.' },
+      {
+        "title": "Artists",
+        "text": "Bollywood and international artists."
+      },
+      {
+        "title": "Live performances",
+        "text": "DJs and live performers."
+      },
+      {
+        "title": "Cultural showcases",
+        "text": "Folk and cultural acts curated to match the celebration’s spirit."
+      },
+      {
+        "title": "Appearances",
+        "text": "Celebrity appearances."
+      },
+      {
+        "title": "Baraat",
+        "text": "Baraat entertainment concepts."
+      },
+      {
+        "title": "Signature enhancements",
+        "text": "Grand bridal and groom entries, fireworks and special effects."
+      }
     ],
-    closing: ['Energy,', 'timed to', 'perfection'],
-    background: '#5a1f24',
+    closing: [
+      "Entertainment",
+      "with",
+      "presence."
+    ],
+    background: '#a44818',
     photos: {
-      index: photo('index-entertainment', 1122, 1402, 'Entertainment by WOW Weddings & Events'),
-      open: photo('entertainment-open', 1600, 900, 'A performance produced by WOW Weddings & Events'),
-      wide: photo('entertainment-wide', 1600, 1067, 'A sangeet stage by WOW Weddings & Events'),
-      narrow: photo('entertainment-narrow', 1066, 1600, 'An evening performance by WOW Weddings & Events'),
+      index: photo('entertainment-index', 1600, 1066, 'The couple and guests dancing at the sangeet'),
+      open: photo('entertainment-open', 1067, 1600, 'Live performers on the sangeet stage'),
+      wide: photo('entertainment-wide', 1600, 1067, 'The wedding party dancing in the palace hall'),
+      narrow: photo('entertainment-narrow', 853, 1280, 'A singer performing on stage'),
     },
   },
 ]

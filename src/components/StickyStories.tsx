@@ -7,35 +7,12 @@ import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import Initial from './Initial'
 import { stories } from '@/data/stories'
 
-/**
- * Destinations over a sticky full-viewport frame.
- *
- * Only the item is ever marked active — never its image — so the stylesheet
- * shows the active photograph at 0.7 opacity, still at its resting 1.1 scale,
- * and lifts that item's title from 0.3 to full.
- *
- * There is always exactly one photograph on show. The first is active from the
- * moment the page renders, so it is already there when the band scrolls up —
- * nothing fades in under the reader. After that:
- *   entering an item from either direction   → that item
- *   leaving upward                            → the one before it
- * and nothing ever clears it. Clearing on the way out used to leave the frame
- * empty between two destinations, and blank again above the first.
- *
- * The change is a cut, not a fade: the stylesheet takes the photographs' opacity
- * transition away, so one destination simply replaces the next.
- *
- * Hovering the active title turns it brand-coloured and drains the photograph
- * behind it to half-brightness greyscale. The band itself holds full opacity
- * throughout — see the note where the source site's fade used to be.
- */
+/** Destinations crossfade over a shared sticky frame as their titles reach center. */
 export default function StickyStories() {
   const wrapRef = useRef<HTMLElement>(null)
   const [active, setActive] = useState(0)
 
-  // Fetch and decode every photograph up front. Lazily loaded, a photo only arrived
-  // once its item was reached, so it appeared late — faded in by the opacity
-  // transition rather than simply being there.
+  // Decode ahead of time so each crossfade has a ready photograph beneath it.
   useEffect(() => {
     for (const story of stories) {
       const img = new Image()
