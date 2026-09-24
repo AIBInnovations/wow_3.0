@@ -673,3 +673,123 @@
     border-top: 1px solid var(--light-fade-2);
   }
 }
+
+/* ═══ The reels ══════════════════════════════════════════════════════════ */
+
+/*
+ * A ring of upright frames. Every card sits at the centre of the track and is
+ * moved out by its --offset from the active one, so wrapping from the last to
+ * the first is just a change of number. Cards more than two places out fade
+ * away before they cross behind the others.
+ */
+.home-reels_wrap {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--swatch--dark);
+  padding-bottom: var(--padding-vertical--main, 6rem);
+}
+
+.home-reels_head {
+  text-align: center;
+}
+
+.home-reels_title {
+  margin: 0 auto;
+  font-family: var(--font--primary-family);
+  font-size: var(--step-6);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-heading);
+  line-height: var(--leading-heading);
+}
+
+.reels_track {
+  --card-w: clamp(13rem, 24vw, 22rem);
+  --gap: calc(var(--card-w) * 0.78);
+  position: relative;
+  height: calc(var(--card-w) * 16 / 9);
+  margin-top: var(--rhythm-lg, 3rem);
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none;
+}
+
+.reels_track.is-dragging {
+  cursor: grabbing;
+}
+
+.reels_card {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--card-w);
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border-radius: 4px;
+  background-color: #000;
+  transform:
+    translateX(calc(-50% + var(--offset) * var(--gap) + var(--drag, 0px)))
+    scale(calc(1 - var(--abs) * 0.14));
+  opacity: calc(1 - var(--abs) * 0.3);
+  z-index: calc(10 - var(--abs));
+  transition:
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.8s ease;
+  filter: brightness(0.55);
+  cursor: pointer;
+}
+
+.reels_card.is-active {
+  filter: none;
+  cursor: inherit;
+}
+
+.reels_card[data-far] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.reels_track.is-dragging .reels_card {
+  transition: none;
+}
+
+/*
+ * Instagram's embed: a 54px header, then the reel's 4:5 box with the 9:16 video
+ * centred in it, then the footer. Scaled to 64/45 of the card, the video strip
+ * is exactly the card's width; shifted left by half the surplus and up by the
+ * header, it fills the card and everything else falls outside.
+ */
+.reels_embed {
+  position: absolute;
+  top: -54px;
+  left: calc(-100% * 19 / 90);
+  width: calc(100% * 64 / 45);
+  height: calc(100% + 108px);
+  border: 0;
+  pointer-events: none;
+}
+
+/* Laid over the centred reel: a click opens it on Instagram. */
+.reels_link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  cursor: pointer;
+  -webkit-user-drag: none;
+}
+
+@media screen and (max-width: 767px) {
+  .reels_track {
+    --card-w: 62vw;
+    --gap: calc(var(--card-w) * 0.9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reels_card {
+    transition: none;
+  }
+}

@@ -124,9 +124,9 @@ export default function HeroMarquee() {
                 <div key={i} className="cta-marquee_bg_wrap">
                   <img
                     src={img.src}
-                    alt={panel === 0 ? img.alt : ''}
+                    alt={panel === 0 && i < 3 ? img.alt : ''}
                     loading={panel === 0 && i < 3 ? 'eager' : 'lazy'}
-                    className={`cta-marquee_bg_img${i % 2 === 1 ? ' is-mono' : ''}`}
+                    className="cta-marquee_bg_img"
                   />
                 </div>
               ))}

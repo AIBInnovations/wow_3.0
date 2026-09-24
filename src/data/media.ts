@@ -3,25 +3,19 @@ export type Media = { src: string; alt: string }
 /**
  * Hero marquee track — one panel, rendered twice for a seamless loop.
  *
- * Photos alternate colour and black-and-white. The count must stay even: the loop
- * slides the second panel into the first one's place, so an odd count would put
- * two frames of the same kind side by side at the seam.
- *
- * Order matters for that alternation: even positions render in colour, odd ones
- * in black-and-white, so fireworks and lit palaces sit on even positions where
- * their colour carries, and portraits on odd ones where monochrome suits them.
- * All eight are free of studio watermarks — several frames in the source
- * library carry one in a corner, which the tall crop would put on show.
+ * Three frames: the fireworks over the mandap, the couple's entrance through
+ * bubbles and low fog, and the singer on stage. The run repeats twice: tiles
+ * are 61.4vh wide and the loop slides a whole panel across, so a panel has to
+ * be wider than the viewport or the band runs out at the right edge on wide
+ * screens.
  */
-export const heroMarquee: Media[] = [
+const heroFrames: Media[] = [
   { src: '/images/hero-fireworks-mandap.jpg', alt: 'Fireworks and cold pyro over a floral mandap as the couple meet beneath it' },
-  { src: '/images/hero-couple-pyro.jpg', alt: 'The couple at the mandap between pyro fountains, fireworks above' },
-  { src: '/images/hero-couple-arches.jpg', alt: 'The couple walking hand in hand beneath palace arches' },
-  { src: '/images/hero-palace-day.jpg', alt: 'A lakeside palace and its gardens by day' },
-  { src: '/images/hero-couple-aisle.jpg', alt: 'The couple in a chandelier-lit floral aisle' },
-  { src: '/images/hero-palace-night.jpg', alt: 'A palace illuminated at night, guests arriving below' },
-  { src: '/images/hero-couple-haldi.jpg', alt: 'The couple laughing through the haldi, petals in the air' },
+  { src: '/images/hero-couple-bubbles.jpg', alt: 'The couple entering beneath a glass arch through falling bubbles and low fog' },
+  { src: '/images/hero-singer-stage.jpg', alt: 'A singer in a sequinned jacket performing on a smoke-lit stage' },
 ]
+
+export const heroMarquee: Media[] = [...heroFrames, ...heroFrames]
 
 /**
  * Three scroll-gallery columns; className preserves the original column modifiers.
@@ -35,7 +29,7 @@ export const heroMarquee: Media[] = [
  * them are in styles/home.css.
  */
 export type GalleryImage = Media & {
-  /** Shown in black and white, as the hero band alternates its own frames. */
+  /** Shown in black and white. */
   mono?: boolean
 }
 

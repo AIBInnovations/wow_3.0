@@ -3,6 +3,7 @@ import HeroMarquee from '@/components/HeroMarquee'
 import GalleryScroll from '@/components/GalleryScroll'
 import TallImage from '@/components/TallImage'
 import HomeAtelier from '@/components/home/HomeAtelier'
+import HomeReels from '@/components/home/HomeReels'
 import Voices from '@/components/Voices'
 import StickyStories from '@/components/StickyStories'
 import CelebrationSection from '@/components/CelebrationSection'
@@ -19,6 +20,7 @@ export default function Home() {
         <GalleryScroll />
         <TallImage />
         <HomeAtelier />
+        <HomeReels />
         <Voices />
         <StickyStories />
         <CelebrationSection />

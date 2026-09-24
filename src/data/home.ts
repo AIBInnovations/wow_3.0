@@ -171,3 +171,19 @@ export const homeFilms = {
     caption: 'The glasshouse mandap',
   },
 }
+
+export type Reel = {
+  id: string
+  /** The Instagram reel's shortcode (instagram.com/reel/<code>). */
+  instagram: string
+}
+
+/** The client's Instagram reels, by shortcode. */
+const reelCodes = ['DXRlgyNglRb', 'DXLemBjAoqx', 'DXJ23uuAsPo', 'DW-kql2gllj', 'DQjifJVjVgj', 'DN98CLyAmhA']
+
+/** The reels carousel, after the disciplines. */
+export const homeReels = {
+  kicker: 'In Motion',
+  heading: 'The Reels',
+  items: reelCodes.map((code) => ({ id: code, instagram: code })) as Reel[],
+}
