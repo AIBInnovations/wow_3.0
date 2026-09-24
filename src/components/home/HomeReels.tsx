@@ -87,7 +87,7 @@ export default function HomeReels() {
 
   return (
     <section ref={sectionRef} data-theme="inherit" className="home-reels_wrap">
-      <div className="u-container home-reels_contain" data-padding-top="main" data-padding-bottom="main">
+      <div className="u-container home-reels_contain" data-padding-top="main" data-padding-bottom="none">
         <div className="home-reels_head">
           <p className="kicker">{homeReels.kicker}</p>
           <h2 ref={headingRef} className="home-reels_title" js-line-animation="">

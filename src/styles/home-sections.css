@@ -693,6 +693,11 @@
   text-align: center;
 }
 
+/* The kicker sat on the script initial's ascender; this lifts it clear. */
+.home-reels_head .kicker {
+  margin-bottom: 0.75rem;
+}
+
 .home-reels_title {
   margin: 0 auto;
   font-family: var(--font--primary-family);
@@ -708,7 +713,7 @@
   --gap: calc(var(--card-w) * 0.78);
   position: relative;
   height: calc(var(--card-w) * 16 / 9);
-  margin-top: var(--rhythm-lg, 3rem);
+  margin-top: var(--rhythm-md, 2rem);
   touch-action: pan-y;
   cursor: grab;
   user-select: none;
