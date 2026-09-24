@@ -15,7 +15,6 @@ export type Media = { src: string; alt: string }
  */
 export const heroMarquee: Media[] = [
   { src: '/images/hero-fireworks-mandap.jpg', alt: 'Fireworks and cold pyro over a floral mandap as the couple meet beneath it' },
-  { src: '/images/hero-couple-sparklers.jpg', alt: 'The bride marks the groom’s forehead under a sky of sparklers' },
   { src: '/images/hero-couple-pyro.jpg', alt: 'The couple at the mandap between pyro fountains, fireworks above' },
   { src: '/images/hero-couple-arches.jpg', alt: 'The couple walking hand in hand beneath palace arches' },
   { src: '/images/hero-palace-day.jpg', alt: 'A lakeside palace and its gardens by day' },
