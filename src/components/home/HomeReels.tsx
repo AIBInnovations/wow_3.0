@@ -1,12 +1,25 @@
 'use client'
 
-import { useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { useLineAnimation } from '@/hooks/useSplitText'
 import Initial from '@/components/Initial'
 import { homeReels, type Reel } from '@/data/home'
 
 /** How far a drag has to travel, in px, before it counts as a swipe. */
 const SWIPE = 40
+
+/** How far a pointer has to travel, in px, before it is read as a drag or as the page scrolling. */
+const SLOP = 8
+
+/** The distance between two neighbouring reels, in px, as the stylesheet has set it. */
+function strideOf(track: HTMLElement | null) {
+  const card = track?.querySelector('.reels_card.is-active')
+  const next = card?.nextElementSibling ?? card?.previousElementSibling
+  if (!card || !next) return 240
+  const a = card.getBoundingClientRect()
+  const b = next.getBoundingClientRect()
+  return Math.abs(b.left + b.width / 2 - (a.left + a.width / 2)) || 240
+}
 
 /**
  * The reels, as a carousel that never ends in either direction.
@@ -18,7 +31,9 @@ const SWIPE = 40
  *
  * The embeds take no pointer events. A click on the centred reel opens it on
  * Instagram in a new tab; a click on a side reel centres it. Drag or swipe
- * either way to bring the next one in, or use the arrow keys.
+ * either way to bring the next one in, or use the arrow keys. A swipe that
+ * starts sideways belongs to the carousel and one that starts up or down
+ * belongs to the page, never both.
  */
 export default function HomeReels() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -29,13 +44,13 @@ export default function HomeReels() {
 
   const [active, setActive] = useState(0)
   const [drag, setDrag] = useState(0)
-  const dragRef = useRef<{ x: number; y: number; id: number; moved: boolean } | null>(null)
+  const dragRef = useRef<{ x: number; y: number; id: number; dx: number; moved: boolean } | null>(null)
   /** Set by a drag, so the click that ends it does not open or centre a reel. */
   const draggedRef = useRef(false)
 
   useLineAnimation(headingRef)
 
-  const go = (step: number) => setActive((a) => (((a + step) % count) + count) % count)
+  const go = useCallback((step: number) => setActive((a) => (((a + step) % count) + count) % count), [count])
 
   /** A reel's place relative to the centre, wrapped so the ring has no ends. */
   const offsetOf = (i: number) => {
@@ -44,41 +59,112 @@ export default function HomeReels() {
     return d
   }
 
-  const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (e.pointerType === 'mouse' && e.button !== 0) return
-    dragRef.current = { x: e.clientX, y: e.clientY, id: e.pointerId, moved: false }
+  const begin = useCallback((x: number, y: number, id: number) => {
+    dragRef.current = { x, y, id, dx: 0, moved: false }
     draggedRef.current = false
+  }, [])
+
+  /** Follows the pointer; true once its move has been claimed as a sideways drag. */
+  const follow = useCallback((x: number, y: number) => {
+    const d = dragRef.current
+    if (!d) return false
+    const dx = x - d.x
+    const dy = y - d.y
+    if (!d.moved) {
+      if (Math.abs(dx) < SLOP && Math.abs(dy) < SLOP) return false
+      // A mostly vertical move is the page scrolling, not a swipe.
+      if (Math.abs(dy) > Math.abs(dx)) {
+        dragRef.current = null
+        return false
+      }
+      d.moved = true
+      draggedRef.current = true
+    }
+    d.dx = dx
+    setDrag(dx)
+    return true
+  }, [])
+
+  /**
+   * Ends a drag. One that was let go of moves the ring on by as far as it
+   * travelled; one the browser took away puts the reels back where they were.
+   * The travel is the last the pointer reported, since a cancel carries none.
+   */
+  const release = useCallback(
+    (commit: boolean) => {
+      const d = dragRef.current
+      dragRef.current = null
+      if (!d?.moved) return
+      setDrag(0)
+      if (!commit || Math.abs(d.dx) < SWIPE) return
+      go(-Math.sign(d.dx) * Math.max(1, Math.round(Math.abs(d.dx) / strideOf(trackRef.current))))
+    },
+    [go],
+  )
+
+  // The mouse and the pen. Touch has its own listeners, below.
+  const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'touch') return
+    if (e.pointerType === 'mouse' && e.button !== 0) return
+    begin(e.clientX, e.clientY, e.pointerId)
   }
 
   const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
     const d = dragRef.current
-    if (!d || d.id !== e.pointerId) return
-    const dx = e.clientX - d.x
-    // A mostly vertical move is the page scrolling, not a swipe.
-    if (!d.moved && Math.abs(dx) < 6) return
-    if (!d.moved && Math.abs(e.clientY - d.y) > Math.abs(dx)) {
-      dragRef.current = null
-      return
-    }
-    if (!d.moved) {
-      d.moved = true
-      draggedRef.current = true
-      trackRef.current?.setPointerCapture(e.pointerId)
-    }
-    setDrag(dx)
+    if (e.pointerType === 'touch' || !d || d.id !== e.pointerId) return
+    const claimed = d.moved
+    if (follow(e.clientX, e.clientY) && !claimed) trackRef.current?.setPointerCapture(e.pointerId)
   }
 
   const onPointerUp = (e: ReactPointerEvent<HTMLDivElement>) => {
-    const d = dragRef.current
-    dragRef.current = null
-    if (!d || d.id !== e.pointerId || !d.moved) return
-    const dx = e.clientX - d.x
-    setDrag(0)
-    if (Math.abs(dx) < SWIPE) return
-    const card = trackRef.current?.querySelector<HTMLElement>('.reels_card')
-    const step = card ? card.offsetWidth * 0.78 : 240
-    go(-Math.sign(dx) * Math.max(1, Math.round(Math.abs(dx) / step)))
+    if (e.pointerType === 'touch' || dragRef.current?.id !== e.pointerId) return
+    release(e.type !== 'pointercancel')
   }
+
+  /*
+   * Touch is bound natively, because the move has to be cancellable: once a
+   * swipe is claimed the page is held still under it, so a thumb that drifts
+   * up or down on its way across does not also scroll the page away. A touch
+   * the browser is already scrolling with is left to it.
+   */
+  useEffect(() => {
+    const track = trackRef.current
+    if (!track) return
+
+    const touchOf = (e: TouchEvent) =>
+      Array.from(e.changedTouches).find((t) => t.identifier === dragRef.current?.id)
+
+    const onStart = (e: TouchEvent) => {
+      // A second finger makes it a pinch.
+      if (e.touches.length > 1) return release(false)
+      const t = e.changedTouches[0]
+      begin(t.clientX, t.clientY, t.identifier)
+    }
+
+    const onMove = (e: TouchEvent) => {
+      const t = touchOf(e)
+      if (!t) return
+      if (!e.cancelable) return release(false)
+      if (follow(t.clientX, t.clientY)) e.preventDefault()
+    }
+
+    const onEnd = (e: TouchEvent) => {
+      if (touchOf(e)) release(true)
+    }
+
+    const onCancel = () => release(false)
+
+    track.addEventListener('touchstart', onStart, { passive: true })
+    track.addEventListener('touchmove', onMove, { passive: false })
+    track.addEventListener('touchend', onEnd)
+    track.addEventListener('touchcancel', onCancel)
+    return () => {
+      track.removeEventListener('touchstart', onStart)
+      track.removeEventListener('touchmove', onMove)
+      track.removeEventListener('touchend', onEnd)
+      track.removeEventListener('touchcancel', onCancel)
+    }
+  }, [begin, follow, release])
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowLeft') go(-1)
