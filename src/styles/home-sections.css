@@ -786,10 +786,24 @@
   -webkit-user-drag: none;
 }
 
+/* Room for the centred reel and both neighbours whole, at a larger size. */
 @media screen and (max-width: 767px) {
   .reels_track {
-    --card-w: 62vw;
-    --gap: calc(var(--card-w) * 0.9);
+    --card-w: clamp(13rem, 36vw, 22rem);
+  }
+}
+
+/*
+ * A phone has room for one reel. Instagram draws its play button and label in
+ * the middle of every embed, so neighbours that sat half on the screen showed
+ * theirs cut through by its edge. They are set far enough out that only a
+ * clean sliver of each shows: the 72px is the half-width of that label, at
+ * the neighbours' scale, with some to spare.
+ */
+@media screen and (max-width: 479px) {
+  .reels_track {
+    --card-w: 70vw;
+    --gap: calc(50vw + 72px);
   }
 }
 
