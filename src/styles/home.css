@@ -66,6 +66,25 @@
   white-space: nowrap;
 }
 
+/* The day's line, under the arch and clear of the arrows below it. */
+.testimonial1_slider_line {
+  max-width: 24ch;
+  margin: 0;
+  font-family: var(--font--body);
+  font-size: var(--step-0, 1rem);
+  font-style: italic;
+  line-height: 1.5;
+  text-align: center;
+  opacity: 0.85;
+}
+
+/* On a phone the arch sits over the photograph; the title alone names it there. */
+@media screen and (max-width: 767px) {
+  .testimonial1_slider_line {
+    display: none;
+  }
+}
+
 .testimonial1_slider_control_btn.left,
 .testimonial1_slider_control_btn.right {
   flex: none;

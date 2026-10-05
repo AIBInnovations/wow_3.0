@@ -1,11 +1,12 @@
 export type Voice = {
   /**
-   * Whose celebration this is. Shown on its own between the arrows — the band
-   * carries the studio's photographs and the couple's name, and no words: the
-   * studio's statements are its own, and are never signed by a couple who did
-   * not say them. Null until a name is to hand.
+   * The day this frame is from, shown between the arrows. The band names the
+   * days of a celebration rather than couples: its photographs show the work
+   * and no client's face, so there is no couple to sign them.
    */
-  credit: string | null
+  title: string
+  /** The line beneath the arch: that day's own statement on the Celebrations page. */
+  line: string
   /** The arch, in its tall crop. */
   portrait: string
   /** The full-height photograph beside it. */
@@ -13,27 +14,27 @@ export type Voice = {
 }
 
 /**
- * The celebrations band: three celebrations, each an arch and a photograph, the
- * couple's name beneath.
- *
- * The photographs are the studio's own, supplied for these three weddings.
+ * The celebrations band: three days of a celebration, each an arch, a
+ * photograph and a line. Titles and lines are the Celebrations page's own, so
+ * the two never say different things.
  */
 export const voices: Voice[] = [
   {
-    credit: 'Anvita & Vishal',
-    portrait: '/images/wow-anvita-vishal-800.jpg',
-    right: '/images/wow-fireworks-aisle.jpg',
+    title: 'The Wedding',
+    line: 'The mandap, the procession, the vows.',
+    portrait: '/wow/lib-fireworks-couple-800.jpg',
+    right: '/wow/lib-fireworks-aisle.jpg',
   },
   {
-    credit: 'Ronak & Sanya',
-    portrait: '/images/wow-ronak-sanya-800.jpg',
-    right: '/images/wow-haldi-stage.jpg',
+    title: 'Haldi & Phoolon ki Holi',
+    line: 'Turmeric, marigold and the morning that begins it.',
+    portrait: '/wow/lib-floral-arch-lawn-800.jpg',
+    right: '/wow/lib-tented-lounge.jpg',
   },
   {
-    // Named by the client for this photograph; set with "&" as the two above
-    // are, and as the trailer in ./home titles the same couple's film.
-    credit: 'Rajvi & Karan',
-    portrait: '/images/wow-green-couple-800.jpg',
-    right: '/images/wow-sangeet-floor.jpg',
+    title: 'Mehendi & Sangeet',
+    line: 'Henna, rehearsal and an evening that runs long.',
+    portrait: '/wow/lib-feather-stage.jpg',
+    right: '/wow/lib-stage-crowd.jpg',
   },
 ]

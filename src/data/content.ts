@@ -7,7 +7,7 @@ export const site = {
   title: 'WOW Weddings & Events — Celebrations, Composed With Intention',
   description:
     'WOW Weddings & Events creates carefully composed luxury celebrations through '
-    + 'design, hospitality, cuisine, invitations and entertainment.',
+    + 'design, welcome experiences, cuisine, invitations and entertainment.',
   email: 'enquiries@woweventsandweddings.com',
 }
 

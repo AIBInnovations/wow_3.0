@@ -13,6 +13,8 @@
  * frame takes its aspect ratio before the file arrives.
  */
 
+import { lib } from './library'
+
 export type Photo = {
   src: string
   src800: string
@@ -103,11 +105,11 @@ export const CHAPTERS: CelebrationChapter[] = [
       },
     ],
     photos: {
-      rail: p(10847851075, 1600, 1067, 800),
-      open: p(11819641049, 1600, 1066, 800),
-      cols: p(11819641550, 1067, 1600, 533),
-      wide: p(10847851197, 1600, 1067, 800),
-      narrow: p(10847851230, 1066, 1600, 533),
+      rail: lib('tented-lounge'),
+      open: lib('red-canopy'),
+      cols: lib('marigold-pots'),
+      wide: lib('palm-walk'),
+      narrow: lib('floral-arch-lawn'),
     },
   },
   {
@@ -152,11 +154,11 @@ export const CHAPTERS: CelebrationChapter[] = [
       },
     ],
     photos: {
-      rail: p(10847848190, 1600, 1280, 800),
-      open: p(11819639779, 1600, 900, 800),
-      cols: p(10847848035, 1188, 1600, 594),
-      wide: p(11819639409, 1600, 1066, 800),
-      narrow: p(10847847620, 1066, 1600, 533),
+      rail: lib('mehendi-lounge'),
+      open: lib('stage-crowd'),
+      cols: lib('ice-florals'),
+      wide: lib('stage-dancers'),
+      narrow: lib('palace-dance'),
     },
   },
   {
@@ -200,11 +202,11 @@ export const CHAPTERS: CelebrationChapter[] = [
       },
     ],
     photos: {
-      rail: p(11819641701, 1600, 1067, 800),
-      open: p(11819642293, 1600, 1067, 800),
-      cols: p(11819642012, 1067, 1600, 533),
-      wide: p(10847852480, 1600, 1066, 800),
-      narrow: p(10847851856, 1066, 1600, 533),
+      rail: lib('rose-arch'),
+      open: lib('fireworks-aisle'),
+      cols: lib('fireworks-couple'),
+      wide: lib('aisle-dusk'),
+      narrow: lib('floral-corridor'),
     },
   },
   {
@@ -243,17 +245,13 @@ export const CHAPTERS: CelebrationChapter[] = [
         title: 'The floor',
         text: 'Room to dance without a stage between the guests and it, and sound built for a space that fills after midnight.',
       },
-      {
-        title: 'Getting home',
-        text: 'Transport held through the night, so the celebration ends when the family decides rather than when the cars leave.',
-      },
     ],
     photos: {
-      rail: p(10847849656, 1600, 1280, 800),
-      open: p(10847849666, 1600, 1066, 800),
-      cols: p(10847849694, 1067, 1600, 533),
-      wide: p(10847849738, 1600, 1520, 800),
-      narrow: p(10847849719, 1067, 1600, 533),
+      rail: lib('ice-sculpture'),
+      open: lib('palace-lit'),
+      cols: lib('red-archway'),
+      wide: lib('city-night'),
+      narrow: lib('red-wall'),
     },
   },
 ]

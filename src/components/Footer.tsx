@@ -12,7 +12,7 @@ export default function Footer() {
   useLetterAnimation(logoRef)
 
   return (
-    <footer data-theme="light" className="footernn_wrap">
+    <footer data-theme="dark" className="footernn_wrap">
       <div className="u-container" data-padding-top="small" data-padding-bottom="none">
         <div className="logo-footer-wrap">
           <div ref={logoRef} className="footernn_logo" js-letter-animation="">

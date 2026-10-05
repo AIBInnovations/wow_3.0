@@ -174,10 +174,10 @@ export default function Voices() {
                           <div className="testimonial1_slider_left_content_layout u-vflex-center-center u-gap-main">
                             {t.portrait && (
                               <div className="testimonial1_slider_img_wrap">
-                                <img src={t.portrait} alt={`${t.credit ?? 'A WOW couple'}, wedding portrait`} loading="lazy" className="testimonial1_slider_img" />
+                                <img src={t.portrait} alt={`${t.title}, from a WOW celebration`} loading="lazy" className="testimonial1_slider_img" />
                               </div>
                             )}
-
+                            <p className="testimonial1_slider_line">{t.line}</p>
                           </div>
 
                           <div className="testimonial1_slider_controls">
@@ -192,7 +192,7 @@ export default function Voices() {
                               </button>
                               <div className="testimonial1_slider_name_wrap">
                                 <h3 className="testimonial1_slider_name">–</h3>
-                                <h3 className="testimonial1_slider_name">{t.credit ?? ''}</h3>
+                                <h3 className="testimonial1_slider_name">{t.title}</h3>
                               </div>
                               <button
                                 type="button"
@@ -210,7 +210,7 @@ export default function Voices() {
                       <div className="testimonial1_slider_right_wrap">
                         <div className="testimonial1_slider_right_visual_wrap">
                           {t.right && (
-                            <img src={t.right} alt={`${t.credit ?? 'WOW'}, celebration setting`} loading="lazy" className="testimonial1_slider_right_image" />
+                            <img src={t.right} alt={`${t.title}, the setting`} loading="lazy" className="testimonial1_slider_right_image" />
                           )}
                         </div>
                       </div>

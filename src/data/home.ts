@@ -56,7 +56,6 @@ export const homeStats = {
   stats: [
     { value: 50, suffix: '+', label: 'Weddings & milestone celebrations' },
     { value: 8, suffix: '+', label: 'Years of experience' },
-    { value: 90, suffix: '+', label: 'Operational & hospitality checkpoints' },
     { value: 5, label: 'Disciplines, as one' },
   ] as Stat[],
 }
@@ -100,9 +99,9 @@ export type WallItem = {
 /**
  * The films.
  *
- * All five are the client's own. The four from Drive and the one from the
- * client's machine are re-encoded for the web and hosted here, so each plays in
- * its tile; the trailer stays on Vimeo and opens over the page.
+ * All four are the client's own. The three from Drive are re-encoded for the
+ * web and hosted here, so each plays in its tile; the trailer stays on Vimeo
+ * and opens over the page.
  */
 export const homeFilms = {
   heading: 'The Celebration, In Motion',
@@ -116,16 +115,6 @@ export const homeFilms = {
       video: '/videos/highlight.mp4',
       poster: '/videos/highlight-poster.jpg',
       alt: 'Geet and Heena, from their highlight film',
-    },
-    {
-      id: 'geet-heena-reel',
-      title: 'Geet & Heena | Reel',
-      duration: '0:34',
-      // REEL.m4v from the same folder, shot upright at 4K; 76 MB became 6 MB.
-      video: '/videos/reel.mp4',
-      poster: '/videos/reel-poster.jpg',
-      alt: 'Geet and Heena, from their reel',
-      vertical: true,
     },
     {
       id: 'show-reel',

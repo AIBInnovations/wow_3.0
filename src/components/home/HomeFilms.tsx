@@ -58,7 +58,7 @@ export default function HomeFilms() {
   }, [reduced])
 
   const { still, items } = homeFilms
-  // Two rows of three: the films in order, the photograph closing the second.
+  // Two rows: three films, then the fourth with the photograph closing the row.
   const rows = [items.slice(0, 3), items.slice(3)]
 
   return (

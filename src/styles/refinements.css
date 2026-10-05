@@ -18,12 +18,13 @@
 
 /* Keep the existing wordmark and link groups; use both sides of small screens. */
 .footernn_wrap {
-  background: var(--wow-beige);
-  color: var(--wow-olive);
-  --theme--text: var(--wow-olive);
-  --theme--border: var(--wow-olive);
-  --swatch--light-fade: rgb(38 45 32 / 20%);
-  --swatch--brand: #71332b;
+  background: var(--wow-wine-deep);
+  color: var(--wow-cream);
+  border-top: 1px solid var(--swatch--light-fade);
+  --theme--text: var(--wow-cream);
+  --theme--border: var(--wow-cream);
+  --swatch--light-fade: rgb(251 244 233 / 16%);
+  --swatch--brand: var(--wow-gold);
 }
 .footernn_wrap a { color: inherit; }
 .footernn_link_text { opacity: 1; }

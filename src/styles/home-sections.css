@@ -167,7 +167,7 @@
 
 .home-stats_grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   list-style: none;
   margin: 0;
   padding: 0;
@@ -657,6 +657,11 @@
   .home-stats_item:nth-child(n + 3) {
     padding-top: var(--rhythm-md);
     border-top: 1px solid var(--light-fade-2);
+  }
+
+  /* Three figures: the third has the second row to itself. */
+  .home-stats_item:nth-child(3):last-child {
+    grid-column: 1 / -1;
   }
 }
 

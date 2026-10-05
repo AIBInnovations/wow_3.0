@@ -20,13 +20,13 @@ export const heroMarquee: Media[] = [...heroFrames, ...heroFrames]
 /**
  * Three scroll-gallery columns; className preserves the original column modifiers.
  *
- * Candid frames only — the people and the moments, not the rooms: the entrance,
- * the dance floor, the mehendi, the applause. Nothing here is a photograph of an
- * empty set.
+ * The work only: the stages, the arches, the light and the details. No guest is
+ * in any of these, and where a couple appears they are small within the scene —
+ * the client's condition for every photograph on the site.
  *
- * Every one is cropped to the same 2:3 portrait, so the columns read as a
- * single run of frames rather than a mix of shapes. The grain and the wash over
- * them are in styles/home.css.
+ * The columns crop every frame to the same portrait, so they read as a single
+ * run rather than a mix of shapes. The grain and the wash over them are in
+ * styles/home.css.
  */
 export type GalleryImage = Media & {
   /** Shown in black and white. */
@@ -35,88 +35,40 @@ export type GalleryImage = Media & {
 
 export const galleryColumns: { className: string; images: GalleryImage[] }[] = [
   {
-    "className": "_3-col-wrapper col-1-s hide-mob",
-    "images": [
-      {
-        "src": "/images/wow-gal-singer.jpg",
-        "alt": "A singer on a darkened stage"
-      },
-      {
-        "src": "/images/wow-gal-glass-mandap.jpg",
-        "alt": "The couple beneath a glasshouse mandap"
-      },
-      {
-        "src": "/images/wow-gal-palace-dance.jpg",
-        "alt": "A dancer turning in the palace hall"
-      },
-      {
-        "src": "/images/wow-gal-palace-entrance.jpg",
-        "alt": "The bride at the palace entrance"
-      },
-      {
-        "src": "/images/wow-gal-mehendi-detail.jpg",
-        "alt": "Mehendi and embroidery, hand in hand"
-      }
-    ]
+    className: '_3-col-wrapper col-1-s hide-mob',
+    images: [
+      { src: '/wow/lib-singer.jpg', alt: 'A singer on a darkened stage' },
+      { src: '/wow/lib-pastel-canopy.jpg', alt: 'A pastel canopy over a floral welcome display' },
+      { src: '/wow/lib-palace-dance.jpg', alt: 'A dancer turning in the palace hall' },
+      { src: '/wow/lib-red-archway.jpg', alt: 'A carved archway washed in red light' },
+      { src: '/wow/lib-mehendi-detail.jpg', alt: 'Mehendi and embroidery, hand in hand' },
+    ],
   },
   {
-    "className": "_3-col-wrapper col-s-2",
-    "images": [
-      {
-        "src": "/images/wow-gal-feather-stage.jpg",
-        "alt": "A white stage dressed with feathered plumes"
-      },
-      {
-        "src": "/images/wow-gal-couple-gate.jpg",
-        "alt": "The couple at a lantern-lit gate"
-      },
-      {
-        "src": "/images/wow-gal-arms-raised.jpg",
-        "alt": "Arms up as the fireworks break"
-      },
-      {
-        "src": "/images/wow-gal-applause.jpg",
-        "alt": "Applause from the front row"
-      },
-      {
-        "src": "/images/wow-gal-floral-corridor.jpg",
-        "alt": "A corridor of florals and hanging lanterns"
-      },
-      {
-        "src": "/images/wow-gal-haldi-joy.jpg",
-        "alt": "Haldi, and the laughter through it"
-      }
-    ]
+    className: '_3-col-wrapper col-s-2',
+    images: [
+      { src: '/wow/lib-feather-stage.jpg', alt: 'A white stage dressed with feathered plumes' },
+      { src: '/wow/lib-fireworks-couple.jpg', alt: 'Fireworks breaking over the mandap' },
+      { src: '/wow/lib-ice-florals.jpg', alt: 'An ice sculpture crowned with florals' },
+      { src: '/wow/lib-arch-night.jpg', alt: 'A floral arch lit at night' },
+      { src: '/wow/lib-floral-corridor.jpg', alt: 'A corridor of florals and hanging lanterns' },
+      { src: '/wow/lib-entry-fog.jpg', alt: 'An entrance through low fog beneath a chandelier' },
+    ],
   },
   {
-    "className": "_3-col-wrapper col-1-s off-set",
-    "images": [
-      {
-        "src": "/images/wow-gal-couple-portrait.jpg",
-        "alt": "The couple, close, in black and white"
-      },
-      {
-        "src": "/images/wow-gal-celebration.jpg",
-        "alt": "Napkins in the air as the celebration breaks"
-      },
-      {
-        "src": "/images/wow-gal-family-portrait.jpg",
-        "alt": "The groom seated, family either side"
-      },
-      {
-        "src": "/images/wow-gal-group-portrait.jpg",
-        "alt": "The party gathered under the arches"
-      },
-      {
-        "src": "/images/wow-gal-mother-daughter.jpg",
-        "alt": "A mother and daughter, cheek to cheek"
-      }
-    ]
-  }
+    className: '_3-col-wrapper col-1-s off-set',
+    images: [
+      { src: '/wow/lib-blue-arch.jpg', alt: 'A floral arch at the entrance to the celebration' },
+      { src: '/wow/lib-red-ballroom.jpg', alt: 'A ballroom lit red, candles on every table' },
+      { src: '/wow/lib-floral-arch-lawn.jpg', alt: 'A flowering arch on the palace lawn' },
+      { src: '/wow/lib-night-garden.jpg', alt: 'A garden lit violet at night' },
+      { src: '/wow/lib-palace-day.jpg', alt: 'The palace above its gardens' },
+    ],
+  },
 ]
 
 /** Full-bleed ground behind the "five disciplines" statement. */
-export const atelierBackground = '/images/atelier-bg.jpg'
+export const atelierBackground = '/wow/lib-night-mandap.jpg'
 
 /** Closing enquiry band: the 2:1 card image and the full-bleed ground behind it. */
 export const closing = {
@@ -126,7 +78,7 @@ export const closing = {
 
 /** "Four days, one celebration" — one wide frame and two tilted cards. */
 export const celebrationImages = {
-  "bg": "/images/celebration-bg.jpg",
-  "a": "/images/celebration-a.jpg",
-  "b": "/images/celebration-b.jpg"
+  "bg": "/wow/lib-rose-arch.jpg",
+  "a": "/wow/lib-palace-dance.jpg",
+  "b": "/wow/lib-ice-florals.jpg"
 }

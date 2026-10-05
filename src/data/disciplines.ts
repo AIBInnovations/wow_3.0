@@ -4,6 +4,8 @@
  * Existing five-service navigation and supplied photographs are retained.
  */
 
+import { lib, type LibraryName } from './library'
+
 export type Photo = { src: string; src800: string; w: number; h: number; alt: string }
 export type Card = { title: string; text: string }
 export type List = { title: string; items: string[] }
@@ -41,13 +43,11 @@ export const disciplinesIndex = {
   lead: 'Decor, guest experience, invitations, cuisine and entertainment — conceived together, never in isolation.',
 }
 
-const photo = (file: string, w: number, h: number, alt: string): Photo => ({
-  src: `/wow/${file}.jpg`,
-  src800: `/wow/${file}-800.jpg`,
-  w,
-  h,
-  alt,
-})
+/** A photograph from the library, with the words that describe it. */
+const photo = (name: LibraryName, alt: string): Photo => {
+  const { src, src800, w, h } = lib(name)
+  return { src, src800, w, h, alt }
+}
 
 export const disciplines: Discipline[] = [
   {
@@ -74,7 +74,7 @@ export const disciplines: Discipline[] = [
         "title": "Execution framework",
         "items": [
           "Vendor alignment",
-          "Timelines and logistics",
+          "Timelines and production",
           "Production and guest management"
         ]
       }
@@ -112,18 +112,18 @@ export const disciplines: Discipline[] = [
     ],
     background: '#262d20',
     photos: {
-      index: photo('decor-index', 710, 1066, 'The couple beneath a glasshouse mandap'),
-      open: photo('decor-open', 1600, 1066, 'The couple entering their ceremony between fireworks'),
-      wide: photo('decor-wide', 1600, 1067, 'A floral pavilion beneath palms'),
-      narrow: photo('decor-narrow', 1066, 1599, 'Florals and lanterns lining the ceremony aisle'),
+      index: photo('pastel-canopy', 'A pastel canopy over a floral welcome display'),
+      open: photo('fireworks-aisle', 'The couple at the end of their aisle as the fireworks rise'),
+      wide: photo('palm-walk', 'A floral walkway beneath palms'),
+      narrow: photo('floral-corridor', 'Florals and lanterns lining the ceremony aisle'),
     },
   },
   {
     slug: 'guest-experience',
     number: '02',
     name: 'Guest Experience',
-    caption: "Hospitality & guest experience",
-    statement: ['Hospitality,', 'redefined'],
+    caption: "Welcome & guest experience",
+    statement: ['The welcome,', 'composed'],
     intro: "Because how your guests feel matters just as much as how the wedding looks.",
     feature: {
       "title": "Thoughtful. Personal. Invisible.",
@@ -133,42 +133,33 @@ export const disciplines: Discipline[] = [
       {
         "title": "Arrivals that feel cinematic",
         "items": [
-          "Airport hospitality & logistics",
-          "Curated luxury transport",
-          "Porter & baggage coordination",
-          "Traditional welcome rituals"
+          "Traditional welcome rituals",
+          "Floral welcomes",
+          "Live instrumental performances",
+          "Thematic arrival experiences"
         ]
       },
       {
-        "title": "After check-in",
+        "title": "Keepsakes",
         "items": [
-          "Concierge assistance",
-          "Personalised communication",
-          "Room coordination",
-          "Real-time guest support"
+          "Curated keepsakes",
+          "Gifting experiences",
+          "Personalised arrival branding"
         ]
       }
     ],
     cards: [
       {
-        "title": "Arrival assistance",
-        "text": "Dedicated arrival assistance, floral welcomes and escorts."
-      },
-      {
-        "title": "Guest movement",
-        "text": "Guest movement management and hotel arrival experiences."
+        "title": "Welcome rituals",
+        "text": "Traditional welcome rituals and floral welcomes, set at the threshold."
       },
       {
         "title": "Welcome experiences",
         "text": "Live instrumental performances, curated entertainment moments and thematic arrival experiences."
       },
       {
-        "title": "Hospitality desks",
-        "text": "Signature hospitality desks and personalised arrival branding."
-      },
-      {
-        "title": "During the stay",
-        "text": "Post check-in experiences, concierge assistance and experience updates."
+        "title": "Arrival branding",
+        "text": "Personalised arrival branding that carries the celebration's own identity."
       },
       {
         "title": "Hampers & gifting",
@@ -182,10 +173,10 @@ export const disciplines: Discipline[] = [
     ],
     background: '#10264a',
     photos: {
-      index: photo('guest-experience-index', 1600, 1066, 'Family and guests celebrating beneath a floral arch'),
-      open: photo('guest-experience-open', 1600, 1066, 'Drummers welcoming wedding guests'),
-      wide: photo('guest-experience-wide', 1600, 1067, 'Family gathered on the wedding lawn'),
-      narrow: photo('guest-experience-narrow', 710, 1066, 'A mother and daughter sharing a quiet moment'),
+      index: photo('drummers', 'A band of drummers lined up to welcome the celebration'),
+      open: photo('welcome-procession', 'A welcome procession waiting along the palace drive'),
+      wide: photo('red-canopy', 'Low seating beneath a red canopy on the lawn'),
+      narrow: photo('blue-arch', 'A floral arch at the entrance to the celebration'),
     },
   },
   {
@@ -252,10 +243,10 @@ export const disciplines: Discipline[] = [
     ],
     background: '#49262d',
     photos: {
-      index: photo('invites-index', 1600, 1066, 'Wedding gifts arranged in presentation trays'),
-      open: photo('invites-open', 1600, 1189, 'A ceremonial tray presented to the family'),
-      wide: photo('invites-wide', 1600, 1066, 'Family sharing gifts and wedding rituals'),
-      narrow: photo('invites-narrow', 1000, 1500, 'Personalised monogram details at the celebration'),
+      index: photo('gift-boxes', 'Wedding gifts arranged in presentation trays'),
+      open: photo('carnival-entrance', 'A hand-lettered welcome board at the carnival entrance'),
+      wide: photo('mandala-pavilion', 'A pavilion of hanging strands beside a patterned screen'),
+      narrow: photo('glass-tags', 'Personalised monogram details at the celebration'),
     },
   },
   {
@@ -320,10 +311,10 @@ export const disciplines: Discipline[] = [
     ],
     background: '#842522',
     photos: {
-      index: photo('food-beverage-index', 1067, 1600, 'A floral wedding table set for guests'),
-      open: photo('food-beverage-open', 1066, 1600, 'A sculpted ice bar at the evening celebration'),
-      wide: photo('food-beverage-wide', 1600, 1066, 'Wedding dining beneath a floral canopy'),
-      narrow: photo('food-beverage-narrow', 1500, 1001, 'The couple beside their celebration cake'),
+      index: photo('dessert-tent', 'A dessert counter beneath a tent of lights, the sea behind it'),
+      open: photo('counter-day', 'A live food counter beneath a pink and orange canopy'),
+      wide: photo('bar-night', 'A lit bar counter on the lawn at night'),
+      narrow: photo('banquet-florals', 'A banquet table under a floral canopy, the counters behind it'),
     },
   },
   {
@@ -388,10 +379,10 @@ export const disciplines: Discipline[] = [
     ],
     background: '#a44818',
     photos: {
-      index: photo('entertainment-index', 1600, 1066, 'The couple and guests dancing at the sangeet'),
-      open: photo('entertainment-open', 1067, 1600, 'Live performers on the sangeet stage'),
-      wide: photo('entertainment-wide', 1600, 1067, 'The wedding party dancing in the palace hall'),
-      narrow: photo('entertainment-narrow', 853, 1280, 'A singer performing on stage'),
+      index: photo('stage-magenta', 'A singer and band on a magenta-lit stage'),
+      open: photo('stage-dancers', 'Two dancers on stage under crossing beams of light'),
+      wide: photo('stage-ensemble', 'An ensemble performing on the sangeet stage'),
+      narrow: photo('singer', 'A singer performing on stage'),
     },
   },
 ]
