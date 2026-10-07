@@ -13,7 +13,11 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  height: 100svh;
+  /* A fixed overlay should match the screen as it is now. The menu holds the
+     page still while it is open, so the address bar does not move under it;
+     100svh left a strip of page showing beneath it whenever the bar happened
+     to be collapsed when the menu opened. */
+  height: 100dvh;
 }
 
 .nav_drop_link,

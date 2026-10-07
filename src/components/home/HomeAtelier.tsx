@@ -39,12 +39,22 @@ export default function HomeAtelier() {
     }
     const observer = new ResizeObserver(schedule)
     cards.forEach(card => observer.observe(card.querySelector('.deets_card_wrap')!))
-    window.addEventListener('resize', schedule)
+    // The cards' content only reflows when the width changes. A phone's address
+    // bar sliding in and out changes the height alone, and fires this on every
+    // scroll; re-measuring then is wasted work. Content changes are already
+    // caught by the observer above.
+    let width = window.innerWidth
+    const onResize = () => {
+      if (window.innerWidth === width) return
+      width = window.innerWidth
+      schedule()
+    }
+    window.addEventListener('resize', onResize)
     measure()
     return () => {
       cancelAnimationFrame(frame)
       observer.disconnect()
-      window.removeEventListener('resize', schedule)
+      window.removeEventListener('resize', onResize)
       stack.style.removeProperty('--stack-height')
     }
   }, [])
