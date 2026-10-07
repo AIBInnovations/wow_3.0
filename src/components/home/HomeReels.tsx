@@ -230,8 +230,9 @@ function ReelCard({ item, offset, onSelect }: { item: Reel; offset: number; onSe
       data-far={Math.abs(offset) > 2 || undefined}
       onClick={onSelect}
     >
-      {/* Only the centre reel and its neighbours load a player; the rest wait. */}
-      {Math.abs(offset) <= 1 ? (
+      {/* Every reel that can be seen loads its player: the centre, its
+          neighbours and the two at the edges. Only the hidden one waits. */}
+      {Math.abs(offset) <= 2 ? (
         <iframe
           className="reels_embed"
           src={`https://www.instagram.com/reel/${item.instagram}/embed/`}

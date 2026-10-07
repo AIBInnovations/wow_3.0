@@ -14,6 +14,11 @@ export function registerGsap() {
   if (registered || typeof window === 'undefined') return
   gsap.registerPlugin(ScrollTrigger, CustomEase)
 
+  // A phone's address bar slides away as the page scrolls, and the window
+  // reports a new height. Recalculating every scroll animation then, mid-swipe,
+  // is what made the page jump on phones; only a real width change refreshes.
+  ScrollTrigger.config({ ignoreMobileResize: true })
+
   // Frames are never dropped to catch up, and transforms always go to the GPU.
   gsap.ticker.lagSmoothing(0)
   gsap.config({ force3D: true })

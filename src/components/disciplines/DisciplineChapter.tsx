@@ -195,15 +195,6 @@ export default function DisciplineChapter({ discipline, next }: { discipline: Di
           <p className="disc-chapter_intro hw">{intro}</p>
         </div>
 
-        <div className="disc-double">
-          <figure className="disc-double_wide">
-            <Frame photo={photos.wide} sizes="(max-width: 767px) 100vw, 60vw" />
-          </figure>
-          <figure className="disc-double_narrow">
-            <Frame photo={photos.narrow} sizes="(max-width: 767px) 70vw, 34vw" />
-          </figure>
-        </div>
-
         <div className="disc-feature hw">
           <div className="disc-feature_text">
             <h3 className="u-text-h4">{feature.title}</h3>

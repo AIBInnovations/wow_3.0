@@ -182,16 +182,10 @@ export default function Chapter({ chapter, index }: { chapter: CelebrationChapte
                   </p>
                 ))}
               </div>
-              <Frame photo={photos.cols} className="cel-chapter_cols_frame" sizes="(max-width: 767px) 60vw, 22vw" />
+              <Frame photo={photos.wide} className="cel-chapter_cols_frame" sizes="(max-width: 767px) 70vw, 32vw" />
             </div>
 
-            <div className="cel-chapter_pair">
-              <div className="cel-chapter_pair_left">
-                <Frame photo={photos.wide} sizes="(max-width: 767px) 100vw, 32vw" />
-                <h3 className="cel-chapter_middle u-text-h4">{middle}</h3>
-              </div>
-              <Frame photo={photos.narrow} className="cel-chapter_pair_narrow" parallax sizes="(max-width: 767px) 70vw, 22vw" />
-            </div>
+            <h3 className="cel-chapter_middle u-text-h4">{middle}</h3>
 
             {lists ? (
               <div className="cel-lists">

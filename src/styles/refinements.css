@@ -82,8 +82,16 @@
  */
 .home-gal_wrap { height: auto; background: #10100e; }
 .home-gal_wrap .div-block-31 { position: relative; top: auto; height: 100svh; isolation: isolate; }
-.home-gal_wrap .home-gal_contain { padding-top: 0; padding-bottom: 0; }
-.home-gal_wrap .grid-child { aspect-ratio: 2 / 3; flex-shrink: 0; }
+.home-gal_media { position: absolute; inset: 0; overflow: hidden; }
+.home-gal_video {
+  position: absolute;
+  left: 0;
+  top: -8%;
+  width: 100%;
+  height: 116%;
+  object-fit: cover;
+  display: block;
+}
 .home-gal_scrim {
   position: absolute;
   inset: 0;
@@ -122,7 +130,6 @@
   .home-gal_copy h2, .home-gal_copy-title { font-size: clamp(2rem, 8.4vw, 3.7rem); }
   .home-gal_copy-right { max-width: 90%; }
   .home-gal_copy-note { max-width: 25ch; margin-top: 14px; }
-  .home-gal_wrap .home-gal_contain { padding-inline: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .home-gal_scroll-bar { display: none; }
@@ -183,7 +190,7 @@
   }
   .testimonial1_slider_left_content_layout.u-vflex-center-center {
     position: absolute;
-    top: 11%;
+    top: 7%;
     left: 0;
     width: 100%;
   }
@@ -198,7 +205,7 @@
   .testimonial1_slider_right_wrap {
     display: block;
     position: absolute;
-    inset: 37% 0 76px;
+    inset: 44% 0 76px;
     width: 100%;
     z-index: 0;
   }
@@ -285,4 +292,25 @@
   .content-lo1_content_layout { align-items: center; }
   .content-lo1_content_bg_wrap { height: 36vw; }
   .content-lo1_content_right_wrap { margin-top: 0; justify-content: center; }
+}
+
+/*
+ * The page stops at its ends instead of bouncing past them, and a drag at the
+ * top no longer pulls the whole site down to refresh it.
+ */
+html,
+body {
+  overscroll-behavior-y: none;
+}
+
+/*
+ * On a phone the drawing and statement sit in the band above the photograph.
+ * The running banner gives way to them there: it crossed straight through the
+ * statement, and the statement is now the band's large type.
+ */
+@media screen and (max-width: 479px) {
+  .testimonial1_wrap .voices-scroll-text { display: none; }
+  .voices-art { row-gap: 14px; padding-inline: 24px; }
+  .voices-draw { width: 34vw; }
+  .voices-headline { font-size: 8.2vw; }
 }

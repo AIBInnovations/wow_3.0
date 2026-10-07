@@ -7,18 +7,20 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { voices } from '@/data/voices'
 import { voicesMarquee } from '@/data/content'
 import { ArrowSlider } from './svg'
+import { drawings } from './VoiceDrawings'
 
 /**
  * The celebrations band.
  *
  * - Desktop retains the side-by-side composition and running headline.
- * - Mobile layers the arch over the large photograph, with upward portrait
+ * - Mobile layers the drawing and statement over the large photograph, with an upward
  *   drift and oversized type moving left to right as the section scrolls.
  * - Slides change instantly — no crossfade. What reads as the transition is the
- *   incoming slide's own entrance: its portrait fades in while settling from 1.1
- *   to 1, its name rises from below, and the large photograph settles from 1.1.
- * - The arch sits centred in the column; the couple's name lives in the controls
- *   row at the foot, between the two arrows.
+ *   incoming slide's own entrance: its line drawing draws itself in, its
+ *   statement rises line by line, its name rises from below, and the large
+ *   photograph settles from 1.1.
+ * - The drawing and statement sit centred in the column; the day's name lives
+ *   in the controls row at the foot, between the two arrows.
  * - The first slide's photograph is wiped in from the right, over 2s, the first
  *   time the band reaches mid-viewport, and wiped back out if you scroll above.
  * - Arrows, arrow keys and horizontal swipes all change slide; it loops.
@@ -33,38 +35,48 @@ export default function Voices() {
 
   const go = useCallback((delta: number) => setIndex((i) => (i + delta + count) % count), [count])
 
-  // Incoming slide's entrance.
+  // Incoming slide's entrance: the drawing draws itself in stroke by stroke,
+  // the statement rises line by line, the name rises between the arrows and
+  // the photograph settles. The first slide does the same the first time the
+  // band comes into view.
   useEffect(() => {
     registerGsap()
     const slide = slidesRef.current[index]
     if (!slide || reduced) return
 
     const q = gsap.utils.selector(slide)
-    const portrait = q('.testimonial1_slider_img')
+    const strokes = Array.from(slide.querySelectorAll<SVGGeometryElement>('.voices-draw path, .voices-draw circle, .voices-draw ellipse'))
+    const lines = q('.voices-headline_inner')
     const names = q('.testimonial1_slider_name')
     const photo = q('.testimonial1_slider_right_image')
 
-    // The page opens on slide one already composed; only a real change animates.
-    if (firstRun.current) {
-      firstRun.current = false
-      gsap.set(photo, { scale: 1.1 })
-      gsap.to(photo, { scale: 1, duration: 1, ease: EASE.outQuad })
-      return
-    }
+    strokes.forEach((el) => {
+      const length = el.getTotalLength()
+      gsap.set(el, { strokeDasharray: length, strokeDashoffset: length })
+    })
+    gsap.set(lines, { yPercent: 110 })
 
-    const tl = gsap.timeline()
-    tl.fromTo(portrait, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'none' }, 0)
-    tl.fromTo(portrait, { scale: 1.1 }, { scale: 1, duration: 1, ease: EASE.outQuad }, 0)
-    tl.fromTo(names, { yPercent: 107 }, { yPercent: 0, duration: 1, ease: EASE.inOutQuad }, 0)
-    tl.fromTo(names, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'none' }, 0)
+    const tl = gsap.timeline({ paused: true })
+    tl.to(strokes, { strokeDashoffset: 0, duration: 1.6, ease: 'power2.inOut', stagger: 0.05 }, 0)
+    tl.to(lines, { yPercent: 0, duration: 1.1, ease: 'power3.out', stagger: 0.12 }, 0.15)
     tl.fromTo(photo, { scale: 1.1 }, { scale: 1, duration: 1, ease: EASE.outQuad }, 0)
 
+    let trigger: ScrollTrigger | undefined
+    if (firstRun.current) {
+      firstRun.current = false
+      trigger = ScrollTrigger.create({ trigger: slide, start: 'top 75%', once: true, onEnter: () => tl.play() })
+    } else {
+      tl.fromTo(names, { yPercent: 107, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1, ease: EASE.inOutQuad }, 0)
+      tl.play()
+    }
+
     return () => {
+      trigger?.kill()
       tl.kill()
     }
   }, [index, reduced])
 
-  // Desktop photo reveal; mobile overlapping portrait and scroll-driven type.
+  // Desktop photo reveal; mobile overlapping statement and scroll-driven type.
   useIsomorphicLayoutEffect(() => {
     const root = rootRef.current
     if (!root || reduced) return
@@ -93,7 +105,7 @@ export default function Voices() {
           ease: 'none',
           scrollTrigger: { trigger: root, start: 'top bottom', end: 'bottom top', scrub: true },
         })
-        gsap.fromTo('.testimonial1_slider_img_wrap', { y: 32 }, {
+        gsap.fromTo('.voices-art', { y: 32 }, {
           y: -24,
           ease: 'none',
           scrollTrigger: { trigger: root, start: 'top bottom', end: 'bottom top', scrub: true },
@@ -147,9 +159,10 @@ export default function Voices() {
             <div className="testimonial1_slider_mask w-slider-mask">
               {voices.map((t, i) => {
                 const current = i === index
+                const Drawing = drawings[t.drawing]
                 return (
                   <div
-                    key={t.portrait}
+                    key={t.title}
                     ref={(el) => {
                       if (el) slidesRef.current[i] = el
                     }}
@@ -172,12 +185,16 @@ export default function Voices() {
                       <div className="testimonial1_slider_left_wrap">
                         <div className="testimonial1_slider_left_contain u-container">
                           <div className="testimonial1_slider_left_content_layout u-vflex-center-center u-gap-main">
-                            {t.portrait && (
-                              <div className="testimonial1_slider_img_wrap">
-                                <img src={t.portrait} alt={`${t.title}, from a WOW celebration`} loading="lazy" className="testimonial1_slider_img" />
-                              </div>
-                            )}
-                            <p className="testimonial1_slider_line">{t.line}</p>
+                            <div className="voices-art">
+                              <Drawing />
+                              <p className="voices-headline">
+                                {t.headline.map((line, j) => (
+                                  <span key={j} className={`voices-headline_line${j === 1 ? ' is-italic' : ''}`}>
+                                    <span className="voices-headline_inner">{line}</span>
+                                  </span>
+                                ))}
+                              </p>
+                            </div>
                           </div>
 
                           <div className="testimonial1_slider_controls">

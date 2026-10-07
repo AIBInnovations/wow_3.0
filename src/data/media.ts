@@ -18,48 +18,14 @@ const heroFrames: Media[] = [
 export const heroMarquee: Media[] = [...heroFrames, ...heroFrames]
 
 /**
- * Three scroll-gallery columns; className preserves the original column modifiers.
- *
- * The work only: the stages, the arches, the light and the details. No guest is
- * in any of these, and where a couple appears they are small within the scene —
- * the client's condition for every photograph on the site.
- *
- * Three to a column, and none that appears anywhere else on the home page.
- * The columns crop every frame to the same portrait, so they read as a single
- * run rather than a mix of shapes. The grain and the wash over them are in
- * styles/home.css.
+ * The film behind "Immersive celebrations", after the hero: twenty-odd shots
+ * of venues, décor, stages and fireworks cut from the show reel — no close
+ * faces — into a 19-second silent loop, 4.5 MB.
  */
-export type GalleryImage = Media & {
-  /** Shown in black and white. */
-  mono?: boolean
+export const ambience = {
+  video: '/videos/ambience.mp4',
+  poster: '/videos/ambience-poster.jpg',
 }
-
-export const galleryColumns: { className: string; images: GalleryImage[] }[] = [
-  {
-    className: '_3-col-wrapper col-1-s hide-mob',
-    images: [
-      { src: '/wow/lib-red-archway.jpg', alt: 'A carved archway washed in red light' },
-      { src: '/wow/lib-mehendi-detail.jpg', alt: 'Mehendi and embroidery, hand in hand' },
-      { src: '/wow/lib-palace-day.jpg', alt: 'The palace above its gardens' },
-    ],
-  },
-  {
-    className: '_3-col-wrapper col-s-2',
-    images: [
-      { src: '/wow/lib-arch-night.jpg', alt: 'A floral arch lit at night' },
-      { src: '/wow/lib-floral-corridor.jpg', alt: 'A corridor of florals and hanging lanterns' },
-      { src: '/wow/lib-entry-fog.jpg', alt: 'An entrance through low fog beneath a chandelier' },
-    ],
-  },
-  {
-    className: '_3-col-wrapper col-1-s off-set',
-    images: [
-      { src: '/wow/lib-blue-arch.jpg', alt: 'A floral arch at the entrance to the celebration' },
-      { src: '/wow/lib-red-ballroom.jpg', alt: 'A ballroom lit red, candles on every table' },
-      { src: '/wow/lib-night-garden.jpg', alt: 'A garden lit violet at night' },
-    ],
-  },
-]
 
 /** Full-bleed ground behind the "five disciplines" statement. */
 export const atelierBackground = '/wow/lib-night-mandap.jpg'

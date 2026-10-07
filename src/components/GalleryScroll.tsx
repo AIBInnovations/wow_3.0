@@ -4,10 +4,14 @@ import { useRef } from 'react'
 import { gsap, registerGsap } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import { galleryColumns } from '@/data/media'
+import { ambience } from '@/data/media'
 import { scrollGallery } from '@/data/content'
 
-/** Opposing photo columns and left/right copy, driven by scroll on every screen. */
+/**
+ * One silent film behind the left and right copy: the venues, the décor and
+ * the light, cut from the show reel. It scrolls with the page; the words rise
+ * through it in parallax.
+ */
 export default function GalleryScroll() {
   const wrapRef = useRef<HTMLElement>(null)
   const reduced = useReducedMotion()
@@ -35,13 +39,8 @@ export default function GalleryScroll() {
         },
       })
       const frame = wrap.querySelector<HTMLElement>('.div-block-31')!
-      wrap.querySelectorAll<HTMLElement>('._3-col-wrapper').forEach((column) => {
-        const travel = () => Math.max(0, column.scrollHeight - frame.clientHeight)
-        const reverse = column.classList.contains('col-1-s')
-        tl.fromTo(column,
-          { y: () => reverse ? -travel() : 0 },
-          { y: () => reverse ? 0 : -travel(), ease: 'none' }, 0)
-      })
+      // The film drifts a little slower than the page, under the words.
+      tl.fromTo('.home-gal_video', { yPercent: -6 }, { yPercent: 6, ease: 'none' }, 0)
       // Parallax: the words rise through the frame faster than the page, for
       // as long as any of the band is on screen. Nothing pins.
       gsap.fromTo(['.home-gal_copy-left', '.home-gal_copy-right'],
@@ -68,23 +67,18 @@ export default function GalleryScroll() {
     <section ref={wrapRef} data-theme="dark" className="home-gal_wrap" aria-label="Immersive celebrations">
       <div className="home-gal_fade-trigger">
         <div className="div-block-31">
-          <div className="u-container home-gal_contain" data-padding-top="main" data-padding-bottom="main">
-            <div className="home-gal_grid u-gap-main">
-              {galleryColumns.map((col, i) => (
-                <div key={i} className={col.className}>
-                  {col.images.map((img, j) => (
-                    <div key={j} className="grid-child">
-                      <img
-                        src={img.src}
-                        alt={img.alt}
-                        loading="lazy"
-                        className={`grid-img${img.mono ? ' is-mono' : ''}`}
-                      />
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
+          <div className="home-gal_media">
+            <video
+              className="home-gal_video"
+              src={ambience.video}
+              poster={ambience.poster}
+              autoPlay={!reduced}
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-hidden="true"
+            />
           </div>
           <div className="home-gal_scrim" aria-hidden="true" />
           <div className="home-gal_copy">
