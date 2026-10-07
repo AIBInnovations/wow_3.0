@@ -75,9 +75,13 @@
   .footernn_credits_layout > :last-child { text-align: right; }
 }
 
-/* A neutral black overlay keeps photographs true to their supplied colours. */
-.home-gal_wrap { height: 200svh; background: #10100e; }
-.home-gal_wrap .div-block-31 { height: 100svh; isolation: isolate; }
+/*
+ * The band scrolls with the page rather than pinning: one screen tall, the
+ * columns sliding against each other and the words rising through it as it
+ * passes. A neutral black overlay keeps photographs true to their colours.
+ */
+.home-gal_wrap { height: auto; background: #10100e; }
+.home-gal_wrap .div-block-31 { position: relative; top: auto; height: 100svh; isolation: isolate; }
 .home-gal_wrap .home-gal_contain { padding-top: 0; padding-bottom: 0; }
 .home-gal_wrap .grid-child { aspect-ratio: 2 / 3; flex-shrink: 0; }
 .home-gal_scrim {
@@ -121,7 +125,6 @@
   .home-gal_wrap .home-gal_contain { padding-inline: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .home-gal_wrap { height: 100svh; }
   .home-gal_scroll-bar { display: none; }
 }
 
@@ -238,9 +241,10 @@
     grid-column: 1 / -1;
     aspect-ratio: 16 / 9;
   }
+  /* With four films the photograph takes the place beside the last one,
+     rather than a row of its own under a half-empty one. */
   .films-wall_row:nth-child(2) .films-wall_cell-still:last-child {
-    grid-column: 1 / -1;
-    aspect-ratio: 16 / 8;
+    aspect-ratio: 4 / 5;
   }
   .films-wall_caption {
     flex-direction: column;

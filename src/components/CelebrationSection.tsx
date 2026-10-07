@@ -12,8 +12,7 @@ import HomeStats from './home/HomeStats'
 /**
  * "Four Days / One Celebration".
  *
- * The heading flips in character by character. Everything else here is static:
- * the two frames are tilted by the stylesheet and do not move on scroll.
+ * The heading flips in character by character. Everything else here is static.
  */
 export default function CelebrationSection() {
   const headingRef = useRef<HTMLHeadingElement>(null)
@@ -51,15 +50,6 @@ export default function CelebrationSection() {
 
             <div className="btn-wrap content-lo1_content_right">
               <MainButton href={celebration.cta.href} label={celebration.cta.label} />
-            </div>
-
-            <div className="content-lo1_imgs_flex">
-              <div className="content-lo1_imgs_wrapper first-img">
-                <img src={celebrationImages.a} alt="" loading="lazy" className="content-lo1_imgs_img" />
-              </div>
-              <div className="content-lo1_imgs_wrapper second-img">
-                <img src={celebrationImages.b} alt="" loading="lazy" className="content-lo1_imgs_img" />
-              </div>
             </div>
           </div>
         </div>

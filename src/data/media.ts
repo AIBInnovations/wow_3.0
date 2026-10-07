@@ -24,6 +24,7 @@ export const heroMarquee: Media[] = [...heroFrames, ...heroFrames]
  * in any of these, and where a couple appears they are small within the scene —
  * the client's condition for every photograph on the site.
  *
+ * Three to a column, and none that appears anywhere else on the home page.
  * The columns crop every frame to the same portrait, so they read as a single
  * run rather than a mix of shapes. The grain and the wash over them are in
  * styles/home.css.
@@ -37,19 +38,14 @@ export const galleryColumns: { className: string; images: GalleryImage[] }[] = [
   {
     className: '_3-col-wrapper col-1-s hide-mob',
     images: [
-      { src: '/wow/lib-singer.jpg', alt: 'A singer on a darkened stage' },
-      { src: '/wow/lib-pastel-canopy.jpg', alt: 'A pastel canopy over a floral welcome display' },
-      { src: '/wow/lib-palace-dance.jpg', alt: 'A dancer turning in the palace hall' },
       { src: '/wow/lib-red-archway.jpg', alt: 'A carved archway washed in red light' },
       { src: '/wow/lib-mehendi-detail.jpg', alt: 'Mehendi and embroidery, hand in hand' },
+      { src: '/wow/lib-palace-day.jpg', alt: 'The palace above its gardens' },
     ],
   },
   {
     className: '_3-col-wrapper col-s-2',
     images: [
-      { src: '/wow/lib-feather-stage.jpg', alt: 'A white stage dressed with feathered plumes' },
-      { src: '/wow/lib-fireworks-couple.jpg', alt: 'Fireworks breaking over the mandap' },
-      { src: '/wow/lib-ice-florals.jpg', alt: 'An ice sculpture crowned with florals' },
       { src: '/wow/lib-arch-night.jpg', alt: 'A floral arch lit at night' },
       { src: '/wow/lib-floral-corridor.jpg', alt: 'A corridor of florals and hanging lanterns' },
       { src: '/wow/lib-entry-fog.jpg', alt: 'An entrance through low fog beneath a chandelier' },
@@ -60,9 +56,7 @@ export const galleryColumns: { className: string; images: GalleryImage[] }[] = [
     images: [
       { src: '/wow/lib-blue-arch.jpg', alt: 'A floral arch at the entrance to the celebration' },
       { src: '/wow/lib-red-ballroom.jpg', alt: 'A ballroom lit red, candles on every table' },
-      { src: '/wow/lib-floral-arch-lawn.jpg', alt: 'A flowering arch on the palace lawn' },
       { src: '/wow/lib-night-garden.jpg', alt: 'A garden lit violet at night' },
-      { src: '/wow/lib-palace-day.jpg', alt: 'The palace above its gardens' },
     ],
   },
 ]
@@ -76,9 +70,7 @@ export const closing = {
   "bg": "/images/cta-bg.jpg"
 }
 
-/** "Four days, one celebration" — one wide frame and two tilted cards. */
+/** "Four days, one celebration" — one wide frame. */
 export const celebrationImages = {
-  "bg": "/wow/lib-rose-arch.jpg",
-  "a": "/wow/lib-palace-dance.jpg",
-  "b": "/wow/lib-ice-florals.jpg"
+  "bg": "/wow/lib-rose-arch.jpg"
 }

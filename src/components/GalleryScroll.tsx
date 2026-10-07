@@ -42,16 +42,17 @@ export default function GalleryScroll() {
           { y: () => reverse ? -travel() : 0 },
           { y: () => reverse ? 0 : -travel(), ease: 'none' }, 0)
       })
-      // Start only once the frame pins. Both blocks travel straight upward.
+      // Parallax: the words rise through the frame faster than the page, for
+      // as long as any of the band is on screen. Nothing pins.
       gsap.fromTo(['.home-gal_copy-left', '.home-gal_copy-right'],
-        { y: () => frame.clientHeight * 0.12 },
+        { y: () => frame.clientHeight * 0.25 },
         {
-          y: () => -frame.clientHeight * 0.12,
+          y: () => -frame.clientHeight * 0.25,
           ease: 'none',
           scrollTrigger: {
             trigger: wrap,
-            start: 'top top',
-            end: 'bottom bottom',
+            start: 'top bottom',
+            end: 'bottom top',
             scrub: true,
             invalidateOnRefresh: true,
           },
