@@ -497,10 +497,10 @@
 
 .films-player_frame.is-vertical {
   width: auto;
-  height: min(88vh, 60rem);
+  height: min(calc(88 * var(--vh-l)), 60rem);
   /* The upright film fits the screen with the browser's bars showing, so it
      never runs under the bottom toolbar. */
-  height: min(88svh, 60rem);
+  height: min(calc(88 * var(--vh-s)), 60rem);
   aspect-ratio: 9 / 16;
 }
 

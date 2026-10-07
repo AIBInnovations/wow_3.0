@@ -103,7 +103,7 @@
 
 .cel-hero {
   position: relative;
-  height: 100svh;
+  height: calc(100 * var(--vh-s));
   min-height: 34rem;
   display: flex;
   align-items: flex-end;
@@ -204,7 +204,7 @@
 
 .cel-rail {
   position: relative;
-  height: 100svh;
+  height: calc(100 * var(--vh-s));
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -223,7 +223,7 @@
 .cel-rail_day {
   position: relative;
   flex: none;
-  height: 70svh;
+  height: calc(70 * var(--vh-s));
   aspect-ratio: 3 / 2;
   overflow: hidden;
   color: var(--wow-cream);

@@ -1,0 +1,36 @@
+/*
+ * Stable viewport heights.
+ *
+ * A phone's browser bars slide away as the page scrolls. In Safari that only
+ * changes the visible area, and svh / lvh stay put. Brave, Chrome and other
+ * browsers on an iPhone, and some Android browsers, instead resize the whole
+ * page area, which changes every vh, svh and lvh at once: each full-screen
+ * section grew or shrank by the toolbar's height and pushed everything below
+ * it — the home page moved 400px each time the bar came or went.
+ *
+ * So every viewport-based size in the stylesheets reads one of these two
+ * units instead:
+ *
+ *   --vh-s  one hundredth of the screen with the bars showing (svh)
+ *   --vh-l  one hundredth of the screen with the bars hidden  (lvh)
+ *
+ * On a touch device the inline script in app/layout.tsx sets both in pixels
+ * as the page loads, and again only when the width changes (the phone is
+ * turned). A height-only change — the bars moving — never touches them, so
+ * the layout holds still. Everywhere else, desktop included, they are simply
+ * the CSS units, so nothing there changes.
+ *
+ * Fixed overlays (the menu, the gallery, the film player) sit outside the
+ * page flow and keep live units: tracking the screen moves nothing else.
+ */
+:root {
+  --vh-s: 1vh;
+  --vh-l: 1vh;
+}
+
+@supports (height: 1svh) {
+  :root {
+    --vh-s: 1svh;
+    --vh-l: 1lvh;
+  }
+}

@@ -79,8 +79,8 @@
   display: flex;
   flex-flow: column;
   justify-content: center;
-  min-height: 88svh;
-  padding-top: clamp(7rem, 16vh, 10rem);
+  min-height: calc(88 * var(--vh-s));
+  padding-top: clamp(7rem, calc(16 * var(--vh-l)), 10rem);
   padding-bottom: var(--rhythm-lg);
 }
 
@@ -254,8 +254,8 @@
    hold against while it scrolls. */
 .disc-opener {
   position: relative;
-  height: min(66vw, 120vh);
-  min-height: 70svh;
+  height: min(66vw, calc(120 * var(--vh-l)));
+  min-height: calc(70 * var(--vh-s));
 }
 
 .disc-opener_media {
@@ -550,7 +550,7 @@
 
 @media screen and (max-width: 767px) {
   .u-container.disc-hero_contain {
-    min-height: 80svh;
+    min-height: calc(80 * var(--vh-s));
   }
 
   .disc-index_head {
@@ -576,7 +576,7 @@
 
   .disc-opener {
     height: auto;
-    min-height: 70svh;
+    min-height: calc(70 * var(--vh-s));
   }
 
   .disc-opener_title {

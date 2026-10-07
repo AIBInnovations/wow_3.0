@@ -468,15 +468,15 @@
  * viewport, with its padding eased so the content always has room.
  */
 .testimonial1_slider_left_contain.u-container {
-  height: 100svh;
+  height: calc(100 * var(--vh-s));
   min-height: 0;
-  max-height: 100vh;
-  padding-top: clamp(4.5rem, 9vh, 7rem);
-  padding-bottom: clamp(5rem, 11vh, 8rem);
+  max-height: calc(100 * var(--vh-l));
+  padding-top: clamp(4.5rem, calc(9 * var(--vh-l)), 7rem);
+  padding-bottom: clamp(5rem, calc(11 * var(--vh-l)), 8rem);
 }
 
 .testimonial1_slider_left_content_layout.u-gap-main {
-  row-gap: clamp(1rem, 2.6vh, 1.75rem);
+  row-gap: clamp(1rem, calc(2.6 * var(--vh-l)), 1.75rem);
 }
 
 /*
@@ -486,17 +486,17 @@
  */
 .testimonial1_slider_img_wrap {
   width: auto;
-  height: clamp(13rem, 36vh, 22rem);
+  height: clamp(13rem, calc(36 * var(--vh-l)), 22rem);
 }
 
 @media (max-width: 767px) {
   .testimonial1_slider_left_contain.u-container {
-    padding-top: clamp(5rem, 14vh, 7rem);
-    padding-bottom: clamp(5rem, 14vh, 7rem);
+    padding-top: clamp(5rem, calc(14 * var(--vh-l)), 7rem);
+    padding-bottom: clamp(5rem, calc(14 * var(--vh-l)), 7rem);
   }
 
   .testimonial1_slider_img_wrap {
-    height: clamp(11rem, 30vh, 16rem);
+    height: clamp(11rem, calc(30 * var(--vh-l)), 16rem);
   }
 }
 

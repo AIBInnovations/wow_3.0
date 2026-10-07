@@ -34,7 +34,7 @@
  */
 .testimonial1_slider_img_wrap {
   width: auto;
-  height: clamp(20rem, 52vh, 34rem);
+  height: clamp(20rem, calc(52 * var(--vh-l)), 34rem);
   aspect-ratio: 2 / 2.7;
   isolation: isolate;
   transform: translateZ(0);
@@ -162,13 +162,13 @@
 
 @media screen and (max-width: 991px) {
   .testimonial1_slider_img_wrap {
-    height: clamp(18rem, 40vh, 26rem);
+    height: clamp(18rem, calc(40 * var(--vh-l)), 26rem);
   }
 }
 
 @media screen and (max-width: 479px) {
   .testimonial1_slider_img_wrap {
-    height: min(52vh, 22rem);
+    height: min(calc(52 * var(--vh-l)), 22rem);
     max-width: 68vw;
   }
 
@@ -270,7 +270,7 @@
   .tall-img_wrap {
     position: relative;
     min-height: 0;
-    height: 100svh;
+    height: calc(100 * var(--vh-s));
     display: flex;
     flex-direction: column;
     justify-content: center;

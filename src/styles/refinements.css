@@ -81,7 +81,7 @@
  * passes. A neutral black overlay keeps photographs true to their colours.
  */
 .home-gal_wrap { height: auto; background: #10100e; }
-.home-gal_wrap .div-block-31 { position: relative; top: auto; height: 100svh; isolation: isolate; }
+.home-gal_wrap .div-block-31 { position: relative; top: auto; height: calc(100 * var(--vh-s)); isolation: isolate; }
 .home-gal_media { position: absolute; inset: 0; overflow: hidden; }
 .home-gal_video {
   position: absolute;
@@ -103,7 +103,7 @@
   position: absolute;
   inset: 0;
   z-index: 3;
-  padding: 12svh 5vw;
+  padding: calc(12 * var(--vh-s)) 5vw;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -126,7 +126,7 @@
 .home-gal_scroll-bar { z-index: 4; height: 36px; }
 .home-gal_scroll-progress-wrap { height: 3px; }
 @media (max-width: 767px) {
-  .home-gal_copy { padding: 12svh 24px; }
+  .home-gal_copy { padding: calc(12 * var(--vh-s)) 24px; }
   .home-gal_copy h2, .home-gal_copy-title { font-size: clamp(2rem, 8.4vw, 3.7rem); }
   .home-gal_copy-right { max-width: 90%; }
   .home-gal_copy-note { max-width: 25ch; margin-top: 14px; }
@@ -172,7 +172,7 @@
   .testimonial1_slider_layout.u-hflex-center-stretch {
     position: relative;
     display: block;
-    height: clamp(660px, 100svh, 860px);
+    height: clamp(660px, calc(100 * var(--vh-s)), 860px);
   }
   .testimonial1_slider_left_wrap {
     position: absolute;
@@ -316,37 +316,16 @@ body {
 }
 
 /*
- * Mobile browser bars.
- *
- * Safari and Chrome on a phone slide their address bar and toolbar away as
- * the page scrolls down and back as it scrolls up. That changes the visible
- * area (the visual viewport) but must not change the page's layout. The rule
- * for each kind of element:
- *
- * - A section in the flow that is one screen tall uses svh: the screen with
- *   the bars showing. It never changes size, so nothing below it moves.
- * - A sticky backdrop that must cover the screen in both states uses lvh: the
- *   screen with the bars hidden. Also fixed; with the bars showing, its foot
- *   simply sits under the toolbar.
- * - A fixed overlay uses dvh (in nav.css): it is out of the flow, so tracking
- *   the live screen moves nothing else.
- *
- * Plain vh is already the large viewport in current browsers; lvh says so
- * explicitly, and the vh line before it is the fallback for older ones.
+ * Full-screen blocks, in the stable units from viewport.css: a sticky backdrop
+ * that must cover the screen with the bars hidden takes the large height; a
+ * section in the flow that is one screen tall takes the small one.
  */
 .sticky-gallery_bg_wrap,
 .div-block-29 {
-  height: 100vh;
-  height: 100lvh;
+  height: calc(100 * var(--vh-l));
 }
 
-/* Full-screen sections in the flow: one screen with the bars showing. */
-.cta24_wrap {
-  min-height: 100vh;
-  min-height: 100svh;
-}
-
+.cta24_wrap,
 .marquee_grid_wrap {
-  min-height: 100vh;
-  min-height: 100svh;
+  min-height: calc(100 * var(--vh-s));
 }

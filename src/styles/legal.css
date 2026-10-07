@@ -17,7 +17,7 @@
   margin-left: auto;
   margin-right: auto;
   /* Clears the fixed navigation bar. */
-  padding-top: clamp(8rem, 18vh, 12rem);
+  padding-top: clamp(8rem, calc(18 * var(--vh-l)), 12rem);
 }
 
 /* ═══ Title block ════════════════════════════════════════════════════════ */
@@ -78,7 +78,7 @@
 
 .legal_index {
   position: sticky;
-  top: clamp(6rem, 14vh, 8rem);
+  top: clamp(6rem, calc(14 * var(--vh-l)), 8rem);
 }
 
 .legal_index_list {
@@ -137,7 +137,7 @@
 }
 
 .legal_section {
-  scroll-margin-top: clamp(6rem, 14vh, 8rem);
+  scroll-margin-top: clamp(6rem, calc(14 * var(--vh-l)), 8rem);
   padding-top: var(--rhythm-md);
   border-top: 1px solid rgb(251 244 233 / 20%);
 }
