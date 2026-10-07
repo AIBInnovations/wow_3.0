@@ -274,3 +274,15 @@
 @media (prefers-reduced-motion: reduce) {
   .sticky-gallery_item .sticky-gallery_bg_img { transition: none; transform: none; }
 }
+
+/*
+ * "Four days": with the two tilted cards gone, the photograph no longer needs
+ * to stand a full 60vw tall beside the text, which left a screen of empty
+ * ground under the button. It is a landscape now, and the words sit level with
+ * its middle.
+ */
+@media (min-width: 768px) {
+  .content-lo1_content_layout { align-items: center; }
+  .content-lo1_content_bg_wrap { height: 36vw; }
+  .content-lo1_content_right_wrap { margin-top: 0; justify-content: center; }
+}
