@@ -2,6 +2,7 @@
 
 import Lenis from 'lenis'
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
+import { usePathname } from 'next/navigation'
 import { gsap, ScrollTrigger, registerGsap } from '@/lib/gsap'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 
@@ -23,6 +24,17 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null)
   const reduced = useReducedMotion()
   const [api, setApi] = useState<SmoothScrollApi>({ start: () => {}, stop: () => {} })
+  const pathname = usePathname()
+
+  // A new page opens at its top. Lenis keeps gliding toward wherever the last
+  // page was headed, so a link followed mid-glide could land partway down the
+  // next page; its target is reset the moment the page changes. A link to an
+  // anchor (#…) is left to land on its anchor.
+  useEffect(() => {
+    if (window.location.hash) return
+    lenisRef.current?.scrollTo(0, { immediate: true, force: true })
+    window.scrollTo(0, 0)
+  }, [pathname])
 
   useEffect(() => {
     registerGsap()

@@ -32,8 +32,8 @@ export const atelier = {
    * form of this line from /disciplines runs well past the fold.
    */
   statement: 'Nothing is incidental. Everything is intentional.',
-  /** The About page's own atelier section: "Get To Know The Atelier". */
-  cta: { href: '/about#atelier', label: 'Get to know the atelier' },
+  /** The About page — the atelier — from its hero at the top. */
+  cta: { href: '/about', label: 'Get to know the atelier' },
   circleText: 'GET TO KNOW THE ATELIER · OUR PHILOSOPHY · ',
 }
 
