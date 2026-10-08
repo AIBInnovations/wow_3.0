@@ -55,8 +55,11 @@ const SIZES = {
   'drummers': [1600, 1066, 800],
   'gift-boxes': [1600, 1066, 800],
   'glass-tags': [1000, 1500, 800],
-  'dessert-tent': [1122, 1402, 800],
   'banquet-florals': [768, 1067, 768],
+  // A reception buffet: Saile Ilyas on Unsplash (unsplash.com/photos/SiwrpBnxDww),
+  // free under the Unsplash License. A stand-in until the client's own counter
+  // photographs arrive; the rest of the library is the studio's own.
+  'buffet-table': [1600, 1066, 800],
 } as const
 
 export type LibraryName = keyof typeof SIZES

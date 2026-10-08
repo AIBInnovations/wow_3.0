@@ -311,8 +311,8 @@ export const disciplines: Discipline[] = [
     ],
     background: '#842522',
     photos: {
-      index: photo('dessert-tent', 'A dessert counter beneath a tent of lights, the sea behind it'),
-      open: photo('counter-day', 'A live food counter beneath a pink and orange canopy'),
+      index: photo('counter-day', 'A live food counter beneath a pink and orange canopy'),
+      open: photo('buffet-table', 'A reception buffet of silver chafing dishes, dressed with white roses'),
       wide: photo('bar-night', 'A lit bar counter on the lawn at night'),
       narrow: photo('banquet-florals', 'A banquet table under a floral canopy, the counters behind it'),
     },

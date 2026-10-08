@@ -31,15 +31,16 @@ export type AtelierCard = {
  * page can never drift: each card takes a discipline's number, its name and
  * the paragraph that opens its chapter, and links to that chapter's anchor.
  * Each card's photograph shows the discipline itself. Décor and entertainment
- * come from the client's new set; the client's new set has no food, gifting or
- * welcome photograph, so those three are the studio's own from the
- * Disciplines page.
+ * come from the client's new set; it has no gifting or welcome photograph, so
+ * those are the studio's own from the Disciplines page. Food & Beverage is a
+ * reception buffet from Unsplash (see data/library.ts) until the client's own
+ * counter photographs arrive.
  */
 const homeCardImages: Record<string, { image: string; alt: string }> = {
   decor: { image: '/home/lantern-corridor-800.jpg', alt: 'A corridor of blue florals and woven lanterns' },
   'guest-experience': { image: '/wow/lib-drummers-800.jpg', alt: 'A band of drummers lined up to welcome the celebration' },
   invites: { image: '/wow/lib-gift-boxes-800.jpg', alt: 'Wedding gifts arranged in presentation trays' },
-  'food-beverage': { image: '/wow/lib-counter-day-800.jpg', alt: 'A live food counter beneath a pink and orange canopy' },
+  'food-beverage': { image: '/wow/lib-buffet-table-800.jpg', alt: 'A reception buffet of silver chafing dishes, dressed with white roses' },
   entertainment: { image: '/home/stage-duet-800.jpg', alt: 'Two singers performing live on a purple-lit stage' },
 }
 
