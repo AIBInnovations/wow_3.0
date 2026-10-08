@@ -28,17 +28,26 @@ export type AtelierCard = {
  * The five disciplines, as the staircase of cards.
  *
  * Read from `./disciplines` rather than copied, so the band and the Disciplines
- * page can never drift: each card takes a discipline's number, its name, the
- * paragraph that opens its chapter and its index photograph, and links to that
- * chapter's anchor.
+ * page can never drift: each card takes a discipline's number, its name and
+ * the paragraph that opens its chapter, and links to that chapter's anchor.
+ * The photograph is the home page's own, from the client's set below; the
+ * Disciplines page keeps its own.
  */
+const homeCardImages: Record<string, { image: string; alt: string }> = {
+  decor: { image: '/home/lantern-corridor-800.jpg', alt: 'A corridor of blue florals and woven lanterns' },
+  'guest-experience': { image: '/home/feather-welcome-800.jpg', alt: 'Performers in white feathered fans welcoming the celebration' },
+  invites: { image: '/home/floral-arch-800.jpg', alt: 'A branded arch dressed in blue and white florals' },
+  'food-beverage': { image: '/home/palace-dusk-800.jpg', alt: 'The palace lit for the evening at dusk' },
+  entertainment: { image: '/home/stage-duet-800.jpg', alt: 'Two singers performing live on a purple-lit stage' },
+}
+
 export const homeAtelierCards: AtelierCard[] = disciplines.map((discipline) => ({
   number: discipline.number,
   background: discipline.background,
   title: discipline.name,
   body: discipline.intro,
-  image: discipline.photos.index.src,
-  alt: discipline.photos.index.alt,
+  image: homeCardImages[discipline.slug]?.image ?? discipline.photos.index.src,
+  alt: homeCardImages[discipline.slug]?.alt ?? discipline.photos.index.alt,
   href: `/disciplines#${discipline.slug}`,
 }))
 
@@ -155,9 +164,9 @@ export const homeFilms = {
   ] as WallItem[],
   /** The still that closes the wall. */
   still: {
-    src: '/images/wow-films-still.jpg',
-    alt: 'The couple beneath a glasshouse mandap, low mist at their feet',
-    caption: 'The glasshouse mandap',
+    src: '/home/band-trellis.jpg',
+    alt: 'A band playing beneath a white trellis and turquoise arches',
+    caption: 'The live set',
   },
 }
 
@@ -165,6 +174,8 @@ export type Reel = {
   id: string
   /** The Instagram reel's shortcode (instagram.com/reel/<code>). */
   instagram: string
+  /** The reel's own cover frame, saved from Instagram into public/reels/. */
+  cover: string
 }
 
 /** The client's Instagram reels, by shortcode. */
@@ -174,5 +185,6 @@ const reelCodes = ['DXRlgyNglRb', 'DXLemBjAoqx', 'DXJ23uuAsPo', 'DW-kql2gllj', '
 export const homeReels = {
   kicker: 'In Motion',
   heading: 'The Reels',
-  items: reelCodes.map((code) => ({ id: code, instagram: code })) as Reel[],
+  note: 'Tap a reel to watch it on Instagram',
+  items: reelCodes.map((code) => ({ id: code, instagram: code, cover: `/reels/${code}.jpg` })) as Reel[],
 }

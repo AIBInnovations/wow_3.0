@@ -329,3 +329,20 @@ body {
 .marquee_grid_wrap {
   min-height: calc(100 * var(--vh-s));
 }
+
+/*
+ * The hero's words over its moving photographs. The flat 59% black let the
+ * bright frames — the singer, the glasshouse — show through the lines. A
+ * deeper wash where the words sit, and a soft shadow on the type itself.
+ */
+.home-marquee_wrap .cta-marquee_overlay {
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgb(0 0 0 / 55%), rgb(0 0 0 / 0%) 75%),
+    linear-gradient(rgb(0 0 0 / 55%), rgb(0 0 0 / 70%));
+}
+
+.home-marquee_wrap .home-hero_title,
+.home-marquee_wrap .home-hero_p,
+.home-marquee_wrap .hk {
+  text-shadow: 0 2px 24px rgb(0 0 0 / 55%), 0 1px 3px rgb(0 0 0 / 45%);
+}

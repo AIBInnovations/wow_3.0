@@ -1,6 +1,12 @@
 export type Media = { src: string; alt: string }
 
 /**
+ * Every photograph on the home page is one of the thirteen the client chose
+ * for it, in public/home/. The destinations band keeps its own photographs
+ * of the places it names.
+ */
+
+/**
  * Hero marquee track — one panel, rendered twice for a seamless loop.
  *
  * Three frames: the fireworks over the mandap, the couple's entrance through
@@ -10,9 +16,9 @@ export type Media = { src: string; alt: string }
  * screens.
  */
 const heroFrames: Media[] = [
-  { src: '/images/hero-fireworks-mandap.jpg', alt: 'Fireworks and cold pyro over a floral mandap as the couple meet beneath it' },
-  { src: '/images/hero-couple-bubbles.jpg', alt: 'The couple entering beneath a glass arch through falling bubbles and low fog' },
-  { src: '/images/hero-singer-stage.jpg', alt: 'A singer in a sequinned jacket performing on a smoke-lit stage' },
+  { src: '/home/fireworks-mandap.jpg', alt: 'Fireworks and cold pyro over a floral mandap as the couple meet beneath it' },
+  { src: '/home/glasshouse-entry.jpg', alt: 'The couple entering beneath a glass arch through falling bubbles and low fog' },
+  { src: '/home/singer-mono.jpg', alt: 'A singer in a velvet jacket performing on a smoke-lit stage' },
 ]
 
 export const heroMarquee: Media[] = [...heroFrames, ...heroFrames]
@@ -27,16 +33,13 @@ export const ambience = {
   poster: '/videos/ambience-poster.jpg',
 }
 
-/** Full-bleed ground behind the "five disciplines" statement. */
-export const atelierBackground = '/wow/lib-night-mandap.jpg'
-
 /** Closing enquiry band: the 2:1 card image and the full-bleed ground behind it. */
 export const closing = {
-  "card": "/images/cta-card.jpg",
-  "bg": "/images/cta-bg.jpg"
+  "card": "/home/stage-red.jpg",
+  "bg": "/home/fireworks-groom.jpg"
 }
 
 /** "Four days, one celebration" — one wide frame. */
 export const celebrationImages = {
-  "bg": "/wow/lib-rose-arch.jpg"
+  "bg": "/home/mandap-night.jpg"
 }

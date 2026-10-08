@@ -758,8 +758,9 @@
   width: var(--card-w);
   aspect-ratio: 9 / 16;
   overflow: hidden;
-  border-radius: 4px;
+  border-radius: 6px;
   background-color: #000;
+  box-shadow: 0 24px 60px rgb(0 0 0 / 45%);
   transform:
     translateX(calc(-50% + var(--offset) * var(--gap) + var(--drag, 0px)))
     scale(calc(1 - var(--abs) * 0.14));
@@ -787,20 +788,171 @@
   transition: none;
 }
 
-/*
- * Instagram's embed: a 54px header, then the reel's 4:5 box with the 9:16 video
- * centred in it, then the footer. Scaled to 64/45 of the card, the video strip
- * is exactly the card's width; shifted left by half the surplus and up by the
- * header, it fills the card and everything else falls outside.
- */
-.reels_embed {
+/* The reel's cover fills its card. */
+.reels_cover {
   position: absolute;
-  top: -54px;
-  left: calc(-100% * 19 / 90);
-  width: calc(100% * 64 / 45);
-  height: calc(100% + 108px);
-  border: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reels_card.is-active:hover .reels_cover {
+  transform: scale(1.04);
+}
+
+/* A small play mark in the corner of the centred reel, not a button over it. */
+.reels_play {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid rgb(251 244 233 / 55%);
+  border-radius: 50%;
+  background-color: rgb(0 0 0 / 25%);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.reels_play svg {
+  width: 1.1rem;
+  fill: var(--wow-cream);
+}
+
+.reels_card.is-active .reels_play {
+  opacity: 1;
+}
+
+/* A soft shade at the foot of each card, under the play mark. */
+.reels_card::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 35%;
+  background: linear-gradient(transparent, rgb(0 0 0 / 45%));
+  pointer-events: none;
+}
+
+/* The current reel's cover, blurred and dimmed behind the whole band. */
+.home-reels_wrap {
+  isolation: isolate;
+}
+
+.reels_backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background-color: var(--swatch--dark);
+}
+
+.reels_backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 75% 60% at 50% 55%, rgb(43 13 15 / 0%), rgb(43 13 15 / 55%) 85%),
+    linear-gradient(rgb(43 13 15 / 60%), rgb(43 13 15 / 10%) 35%, rgb(43 13 15 / 15%) 65%, rgb(43 13 15 / 80%));
+}
+
+.reels_backdrop_img {
+  position: absolute;
+  inset: -10%;
+  width: 120%;
+  height: 120%;
+  object-fit: cover;
+  filter: blur(32px) saturate(1.3) brightness(0.85);
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.reels_backdrop_img.is-active {
+  opacity: 1;
+}
+
+/* Beneath the carousel: arrows either side of a counter and its rule. */
+.reels_bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 1.25rem;
+  margin-top: var(--rhythm-md, 2rem);
+}
+
+.reels_arrow {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgb(251 244 233 / 35%);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--wow-cream);
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.reels_arrow:hover,
+.reels_arrow:focus-visible {
+  border-color: var(--wow-gold);
+  background-color: rgb(201 162 77 / 15%);
+}
+
+.reels_arrow svg {
+  width: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+.reels_count {
+  display: flex;
+  align-items: center;
+  column-gap: 0.75rem;
+  font-family: var(--font--primary-family);
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  color: var(--wow-cream);
+}
+
+.reels_count_all {
+  opacity: 0.5;
+}
+
+.reels_count_line {
+  position: relative;
+  display: block;
+  width: 4.5rem;
+  height: 1px;
+  background-color: rgb(251 244 233 / 25%);
+}
+
+.reels_count_line span {
+  position: absolute;
+  inset: 0;
+  background-color: var(--wow-gold);
+  transform-origin: left center;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reels_note {
+  margin: 1rem 0 0;
+  font-family: var(--font--body);
+  font-size: 0.95rem;
+  font-style: italic;
+  text-align: center;
+  color: rgb(251 244 233 / 60%);
 }
 
 /* Laid over the centred reel: a click opens it on Instagram. */
@@ -837,4 +989,296 @@
   .reels_card {
     transition: none;
   }
+}
+
+/* ═══ The atelier statement ══════════════════════════════════════════════ */
+
+/*
+ * Type alone on the dark ground. Phone first: the large words are sized from
+ * the screen's width so "EVERYTHING" spans it without breaking; from 768px they
+ * settle to a fixed scale. HomeStatement.tsx runs the fills and the ring.
+ */
+.statement_wrap {
+  position: relative;
+  overflow: hidden;
+  background-color: #0d0607;
+  padding-block: clamp(5rem, 18vw, 10rem) clamp(3rem, 10vw, 6rem);
+  text-align: center;
+}
+
+.statement_ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(150vw, 70rem);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  fill: none;
+  stroke: var(--wow-gold);
+  stroke-width: 0.35;
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+.statement_ring_inner {
+  stroke-dasharray: 1 3;
+}
+
+.statement_contain {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: clamp(2rem, 7vw, 3.5rem);
+}
+
+.statement_kicker {
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
+  margin: 0;
+  color: var(--wow-gold-soft);
+}
+
+.statement_rule {
+  display: block;
+  width: clamp(2.5rem, 12vw, 6rem);
+  height: 1px;
+  background-color: currentColor;
+  transform-origin: right center;
+}
+
+.statement_rule--right {
+  transform-origin: left center;
+}
+
+.statement_lines {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  font-weight: 400;
+}
+
+.statement_big {
+  position: relative;
+  display: block;
+  font-family: var(--font--primary-family);
+  font-size: 13.4vw;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.statement_outline {
+  display: block;
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(201 162 77 / 70%);
+}
+
+.statement_fill {
+  position: absolute;
+  inset: 0;
+  color: var(--wow-cream);
+}
+
+.statement_quiet {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.15em 0.3em;
+  font-family: var(--font--body);
+  font-size: 7.2vw;
+  font-style: italic;
+  line-height: 1.1;
+  color: var(--wow-gold-soft);
+}
+
+.statement_quiet span {
+  display: inline-block;
+}
+
+.statement_btn {
+  margin-top: clamp(0.5rem, 3vw, 1.5rem);
+}
+
+@media screen and (min-width: 768px) {
+  .statement_big { font-size: clamp(5.5rem, 11vw, 10rem); }
+  .statement_quiet { font-size: clamp(2.2rem, 4vw, 3.6rem); }
+}
+
+/* Under reduced motion the words are simply filled. */
+@media (prefers-reduced-motion: reduce) {
+  .statement_fill { clip-path: none; }
+}
+
+/* ═══ Day by day ═════════════════════════════════════════════════════════ */
+
+/*
+ * Phone first: the days stack, with the line running down their left edge and
+ * a dot where each one starts. From 992px they sit four across and the line
+ * runs above them. HomeDays.tsx draws the line and the drawings.
+ */
+.days_wrap {
+  position: relative;
+  background-color: var(--wow-blue, #10264a);
+  padding-block: clamp(5rem, 16vw, 9rem);
+  overflow: hidden;
+}
+
+.days_head {
+  text-align: center;
+  margin-bottom: clamp(3rem, 10vw, 5rem);
+}
+
+.days_head .kicker {
+  margin-bottom: 0.75rem;
+  color: var(--wow-gold-soft);
+}
+
+.days_title {
+  margin: 0 auto;
+  font-family: var(--font--primary-family);
+  font-size: var(--step-6);
+  font-weight: 400;
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-heading);
+  text-transform: uppercase;
+}
+
+.days_list {
+  --days-dot: 11px;
+  position: relative;
+  display: grid;
+  row-gap: clamp(3rem, 12vw, 4.5rem);
+  margin: 0;
+  padding: 0 0 0 2.25rem;
+  list-style: none;
+}
+
+.days_track {
+  position: absolute;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  left: calc(var(--days-dot) / 2 - 0.5px);
+  width: 1px;
+  background-color: rgb(251 244 233 / 18%);
+}
+
+.days_track_fill {
+  position: absolute;
+  inset: 0;
+  background-color: var(--wow-gold);
+  transform-origin: top center;
+}
+
+.days_item {
+  position: relative;
+}
+
+.days_dot {
+  position: absolute;
+  top: 0.4rem;
+  left: -2.25rem;
+  width: var(--days-dot);
+  height: var(--days-dot);
+  border-radius: 50%;
+  background-color: var(--wow-gold);
+  box-shadow: 0 0 0 6px rgb(201 162 77 / 18%);
+}
+
+.days_link {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  row-gap: 0.5rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.days_link .voices-draw {
+  width: clamp(7.5rem, 34vw, 10rem);
+  margin-bottom: 0.75rem;
+}
+
+.days_clip {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+}
+
+.days_rise {
+  display: block;
+}
+
+.days_num {
+  font-family: var(--font--primary-family);
+  font-size: 0.85rem;
+  letter-spacing: 0.25em;
+  color: var(--wow-gold);
+}
+
+.days_name {
+  font-family: var(--font--primary-family);
+  font-size: clamp(1.7rem, 7.4vw, 2.4rem);
+  line-height: 1.1;
+  letter-spacing: var(--tracking-h3, 0.02em);
+  text-transform: uppercase;
+}
+
+.days_lines {
+  max-width: 22ch;
+  font-family: var(--font--body);
+  font-size: 1.15rem;
+  font-style: italic;
+  line-height: 1.45;
+  color: rgb(251 244 233 / 80%);
+}
+
+.days_more {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--wow-gold-soft);
+  transition: color 0.3s ease;
+}
+
+.days_link:hover .days_more,
+.days_link:focus-visible .days_more {
+  color: var(--wow-cream);
+}
+
+/* Four across, the line running above them. */
+@media screen and (min-width: 992px) {
+  .days_list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: 3vw;
+    padding: 2.75rem 0 0;
+  }
+
+  .days_track {
+    top: calc(var(--days-dot) / 2 - 0.5px);
+    bottom: auto;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: 1px;
+  }
+
+  .days_track_fill {
+    transform-origin: left center;
+  }
+
+  .days_dot {
+    top: -2.75rem;
+    left: 0;
+  }
+
+  .days_name {
+    font-size: clamp(1.6rem, 2.2vw, 2.2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .days_track_fill { transform: none; }
 }

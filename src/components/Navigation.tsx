@@ -150,9 +150,11 @@ export default function Navigation() {
             aria-label={open ? 'Close menu' : 'Open menu'}
             className="nav_btn_wrap w-inline-block"
           >
-            <div className="nav-txt">
-              <div className="right">MENU</div>
-            </div>
+            {/* Two lines that cross into an × while the menu is open. */}
+            <span className={`nav_burger${open ? ' is-open' : ''}`} aria-hidden="true">
+              <span className="nav_burger_line" />
+              <span className="nav_burger_line" />
+            </span>
           </a>
         </div>
       </div>

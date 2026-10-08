@@ -24,12 +24,12 @@ function strideOf(track: HTMLElement | null) {
 /**
  * The reels, as a carousel that never ends in either direction.
  *
- * Each reel is Instagram's own embed, framed so only the upright video shows:
- * the embed sets the reel in a 4:5 box under a 54px header, with the 9:16 video
- * centred in it, so the frame is scaled and shifted until that 9:16 strip fills
- * the card and the header, footer and side bars fall outside it.
+ * Each reel is shown by its own cover frame, saved from Instagram, with a small
+ * play mark in the corner rather than Instagram's player and its large button.
+ * The current reel's cover, blurred, fills the band behind the carousel, and a
+ * counter and arrows sit beneath it.
  *
- * The embeds take no pointer events. A click on the centred reel opens it on
+ * A click on the centred reel opens it on
  * Instagram in a new tab; a click on a side reel centres it. Drag or swipe
  * either way to bring the next one in, or use the arrow keys. A swipe that
  * starts sideways belongs to the carousel and one that starts up or down
@@ -173,6 +173,14 @@ export default function HomeReels() {
 
   return (
     <section ref={sectionRef} data-theme="inherit" className="home-reels_wrap">
+      {/* The current reel's cover, blurred and dimmed across the whole band, so
+          the carousel sits in its colour rather than on an empty ground. */}
+      <div className="reels_backdrop" aria-hidden="true">
+        {items.map((item, i) => (
+          <img key={item.id} src={item.cover} alt="" className={`reels_backdrop_img${i === active ? ' is-active' : ''}`} />
+        ))}
+      </div>
+
       <div className="u-container home-reels_contain" data-padding-top="main" data-padding-bottom="none">
         <div className="home-reels_head">
           <p className="kicker">{homeReels.kicker}</p>
@@ -217,6 +225,22 @@ export default function HomeReels() {
         })}
       </div>
 
+      <div className="reels_bar">
+        <button type="button" className="reels_arrow" onClick={() => go(-1)} aria-label="Previous reel">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7" /></svg>
+        </button>
+        <div className="reels_count" aria-live="polite">
+          <span className="reels_count_now">{String(active + 1).padStart(2, '0')}</span>
+          <span className="reels_count_line" aria-hidden="true">
+            <span style={{ transform: `scaleX(${(active + 1) / count})` }} />
+          </span>
+          <span className="reels_count_all">{String(count).padStart(2, '0')}</span>
+        </div>
+        <button type="button" className="reels_arrow" onClick={() => go(1)} aria-label="Next reel">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" /></svg>
+        </button>
+      </div>
+      <p className="reels_note">{homeReels.note}</p>
     </section>
   )
 }
@@ -230,20 +254,10 @@ function ReelCard({ item, offset, onSelect }: { item: Reel; offset: number; onSe
       data-far={Math.abs(offset) > 2 || undefined}
       onClick={onSelect}
     >
-      {/* Every reel that can be seen loads its player: the centre, its
-          neighbours and the two at the edges. Only the hidden one waits. */}
-      {Math.abs(offset) <= 2 ? (
-        <iframe
-          className="reels_embed"
-          src={`https://www.instagram.com/reel/${item.instagram}/embed/`}
-          title=""
-          aria-hidden="true"
-          tabIndex={-1}
-          loading="lazy"
-          scrolling="no"
-          allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-        />
-      ) : null}
+      <img className="reels_cover" src={item.cover} alt="" loading="lazy" draggable={false} />
+      <span className="reels_play" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M9 7v10l8-5z" /></svg>
+      </span>
 
       {offset === 0 ? (
         <a

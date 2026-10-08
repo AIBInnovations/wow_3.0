@@ -1,5 +1,5 @@
 /**
- * The line drawings in the celebrations band, one for each day. Every stroke is
+ * The line drawings for the four days of a celebration, one for each day. Every stroke is
  * a separate path so it can be drawn in on its own when the slide changes; the
  * colour is the band's gold, taken from `currentColor`.
  */
@@ -77,5 +77,54 @@ export function PaisleyDrawing() {
   )
 }
 
-export const drawings = { mandap: MandapDrawing, paisley: PaisleyDrawing }
+/** Haldi: a marigold in full bloom, with a petal falling. */
+export function MarigoldDrawing() {
+  const petals = Array.from({ length: 12 }, (_, i) => {
+    const a = (i / 12) * Math.PI * 2
+    const x = 120 + Math.cos(a) * 34
+    const y = 92 + Math.sin(a) * 34
+    const cx = 120 + Math.cos(a) * 62
+    const cy = 92 + Math.sin(a) * 62
+    const x2 = 120 + Math.cos(a + 0.5) * 34
+    const y2 = 92 + Math.sin(a + 0.5) * 34
+    return <path key={i} d={`M${x.toFixed(1)} ${y.toFixed(1)} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}`} />
+  })
+  return (
+    <svg {...common}>
+      <circle cx="120" cy="92" r="16" />
+      <circle cx="120" cy="92" r="26" />
+      {petals}
+      <path d="M120 158 C118 172 122 182 120 196" />
+      <path d="M120 176 C108 168 98 170 92 178 C102 182 112 182 120 176 Z" />
+      <path d="M190 40 C196 48 194 56 186 58 C180 52 182 44 190 40 Z" />
+      <path d="M46 150 C52 156 50 164 42 166 C36 160 38 152 46 150 Z" />
+    </svg>
+  )
+}
+
+/** Beyond the wedding: a burst of fireworks over a lit skyline. */
+export function NightDrawing() {
+  return (
+    <svg {...common}>
+      <Burst x={120} y={64} r={46} />
+      <Burst x={56} y={44} r={22} />
+      <Burst x={190} y={52} r={26} />
+      <circle cx="120" cy="64" r="4" />
+      <path d="M10 190 H230" />
+      <path d="M24 190 V160 H52 V146 H72 V190" />
+      <path d="M86 190 V150 C86 132 116 132 116 150 V190" />
+      <path d="M101 132 V122" />
+      <path d="M130 190 V142 H162 V190" />
+      <path d="M176 190 V156 H210 V190" />
+      <path d="M140 156 H152 M140 170 H152 M186 168 H200" />
+    </svg>
+  )
+}
+
+export const drawings = {
+  mandap: MandapDrawing,
+  paisley: PaisleyDrawing,
+  marigold: MarigoldDrawing,
+  night: NightDrawing,
+}
 export type DrawingName = keyof typeof drawings
