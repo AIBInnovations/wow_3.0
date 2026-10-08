@@ -1325,6 +1325,103 @@
   transform-origin: top center;
 }
 
+/*
+ * Phones and tablets: a compact timeline. Each day's drawing sits in a small
+ * gold-ringed circle on a line down the left, its number, name, lines and link
+ * beside it, so the four days take about half the height of a centred stack.
+ * The line runs from each circle to the next.
+ */
+@media screen and (max-width: 991px) {
+  .days_wrap {
+    --node: 68px;
+    --days-gap: 2.25rem;
+    padding-block: clamp(3.5rem, 12vw, 5rem);
+  }
+
+  .days_head {
+    margin-bottom: 2.5rem;
+  }
+
+  .days_list {
+    align-items: stretch;
+    row-gap: var(--days-gap);
+    max-width: 34rem;
+    margin-inline: auto;
+  }
+
+  .days_item {
+    display: block;
+    text-align: left;
+  }
+
+  .days_dot {
+    display: none;
+  }
+
+  .days_link {
+    display: grid;
+    grid-template-columns: var(--node) minmax(0, 1fr);
+    column-gap: 1.1rem;
+    align-items: start;
+  }
+
+  .days_art {
+    position: relative;
+    z-index: 1;
+    grid-row: 1 / span 4;
+    display: grid;
+    place-items: center;
+    width: var(--node);
+    height: var(--node);
+    margin: 0;
+    border: 1px solid rgb(201 162 77 / 45%);
+    border-radius: 50%;
+    background-color: var(--wow-blue, #10264a);
+  }
+
+  .days_art svg {
+    width: auto;
+    max-width: 74%;
+    height: 58%;
+  }
+
+  .days_link > .days_clip {
+    grid-column: 2;
+  }
+
+  .days_num {
+    margin-bottom: 0.2rem;
+  }
+
+  .days_name {
+    max-width: none;
+    margin-bottom: 0.35rem;
+    font-size: clamp(1.2rem, 5.2vw, 1.5rem);
+  }
+
+  .days_lines {
+    max-width: 30ch;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  .days_more {
+    font-size: 0.72rem;
+  }
+
+  /* From the bottom of this day's circle down to the top of the next. */
+  .days_seg {
+    position: absolute;
+    top: var(--node);
+    bottom: calc(-1 * var(--days-gap));
+    left: calc(var(--node) / 2 - 0.5px);
+    width: 1px;
+    height: auto;
+    margin: 0;
+  }
+}
+
 /* Four across, rows shared, the line running from dot to dot. */
 @media screen and (min-width: 992px) {
   .days_list {

@@ -22,10 +22,11 @@ const DRAWING: Record<string, DrawingName> = {
  * The four days of a celebration, joined by a gold line.
  *
  * No photographs: each day is a line drawing, its number, its name and the
- * three lines the Celebrations page opens it with, all centred. On a phone the
- * days stack and a short line runs down from each to the next; from 992px they
- * sit four across, the line runs between their dots, and their rows line up
- * whatever the length of each name. Each day links to its chapter.
+ * three lines the Celebrations page opens it with. On a phone it is a compact
+ * timeline: each drawing in a small circle on a line down the left, the words
+ * beside it. From 992px the days sit four across, centred, the line runs
+ * between their dots, and their rows line up whatever the length of each
+ * name. Each day links to its chapter.
  *
  * As a day reaches the screen its dot appears, its drawing traces itself in
  * and its words rise. On a phone each joining line draws as it is scrolled
@@ -76,8 +77,10 @@ export default function HomeDays() {
         })
       } else {
         days.forEach((day) => {
-          const tl = gsap.timeline({ scrollTrigger: { trigger: day.item, start: 'top 82%', once: true } })
-          reveal(tl, day, 0)
+          const tl = gsap.timeline({ scrollTrigger: { trigger: day.item, start: 'top 85%', once: true } })
+          // The circle that holds the drawing opens first.
+          tl.from(day.item.querySelector('.days_art'), { scale: 0.6, autoAlpha: 0, duration: 0.6, ease: 'back.out(2.2)' }, 0)
+          reveal(tl, day, 0.1)
           if (day.seg) {
             gsap.to(day.seg, {
               scaleY: 1,
