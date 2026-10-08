@@ -589,3 +589,6 @@
   .about-hero_layout.top { margin-top: 38vw; }
   .layout417_card { padding: var(--rhythm-md) var(--rhythm-sm) var(--rhythm-sm); }
 }
+
+/* Landed on from the home page's atelier button. */
+#atelier { scroll-margin-top: 4.5rem; }

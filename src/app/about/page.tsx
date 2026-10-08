@@ -4,6 +4,7 @@ import AboutHero from '@/components/about/AboutHero'
 import AboutDetails from '@/components/about/AboutDetails'
 import AboutLetters from '@/components/about/AboutLetters'
 import AboutDestinations from '@/components/about/AboutDestinations'
+import DisciplinesAnchor from '@/components/disciplines/DisciplinesAnchor'
 import FinalCta from '@/components/FinalCta'
 import Footer from '@/components/Footer'
 import { site } from '@/data/content'
@@ -24,6 +25,8 @@ export default function About() {
         <AboutDetails />
         <AboutLetters />
         <AboutDestinations />
+        {/* Lands /about#atelier — the home page's atelier button — once the fonts settle. */}
+        <DisciplinesAnchor />
         <FinalCta />
       </main>
       <Footer />

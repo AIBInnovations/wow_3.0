@@ -17,7 +17,7 @@ const PANELS = 4
  */
 export default function AboutDetails() {
   return (
-    <section data-theme="inherit" className="deets_wrap">
+    <section id="atelier" data-theme="inherit" className="deets_wrap">
       <div className="u-container deets_contain" data-padding-top="main" data-padding-bottom="main">
         <div className="deets_marquee_wrap" aria-label={aboutMarquee}>
           {Array.from({ length: PANELS }, (_, panel) => (

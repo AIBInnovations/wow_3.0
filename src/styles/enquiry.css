@@ -1,0 +1,295 @@
+/*
+ * The enquiry form (EnquiryForm.tsx), set as the closing card is: the wine
+ * ground, the script-initialled heading, the italic note, cream type with gold
+ * details, and the site's pill button.
+ *
+ * Phone first: the panel is a full-screen sheet that scrolls on its own. From
+ * 768px it is a card centred over a darkened page. Fields are a single
+ * hairline each, turning gold when in use. Closed, the whole layer is hidden
+ * and inert; it fades in with the panel rising into place.
+ */
+.enquiry {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.45s ease, visibility 0s linear 0.45s;
+}
+
+.enquiry.is-open {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.45s ease, visibility 0s;
+}
+
+.enquiry_scrim {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background-color: rgb(13 6 7 / 82%);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+}
+
+.enquiry_panel {
+  position: relative;
+  width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 4.5rem var(--padding-horizontal--main, 1.25rem) 3rem;
+  background-color: var(--wow-wine-deep);
+  color: var(--wow-cream);
+  transform: translateY(2.5rem);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.enquiry.is-open .enquiry_panel {
+  transform: none;
+}
+
+/* The ×, drawn as the menu button's two lines. */
+.enquiry_close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--wow-cream);
+  cursor: pointer;
+}
+
+.enquiry_close span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 1.5px;
+  border-radius: 2px;
+  background-color: currentColor;
+  transition: background-color 0.3s ease;
+}
+
+.enquiry_close span:first-child { transform: translate(-50%, -50%) rotate(45deg); }
+.enquiry_close span:last-child { transform: translate(-50%, -50%) rotate(-45deg); }
+.enquiry_close:hover span,
+.enquiry_close:focus-visible span { background-color: var(--wow-gold); }
+
+.enquiry_head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 0.75rem;
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.enquiry_kicker {
+  flex: none;
+  margin: 0;
+  color: var(--wow-gold-soft);
+  opacity: 1;
+}
+
+/* The script S rises above its line; the padding holds it inside the heading. */
+.enquiry_title {
+  margin: 0;
+  padding-top: 0.45em;
+  font-family: var(--font--primary-family);
+  font-size: var(--step-4);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: var(--tracking-heading, 0.02em);
+  text-transform: uppercase;
+}
+
+.enquiry_note {
+  max-width: 36ch;
+  margin: 0;
+  font-family: var(--font--body);
+  font-size: var(--step-0);
+  font-style: italic;
+  line-height: var(--leading-body, 1.5);
+  color: rgb(251 244 233 / 78%);
+}
+
+.enquiry_form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: 2rem;
+  row-gap: 1.6rem;
+}
+
+.enquiry_field {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.35rem;
+}
+
+.enquiry_field label {
+  font-family: var(--font--inherit);
+  font-size: var(--step-n1);
+  line-height: var(--leading-label, 1.4);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--wow-gold-soft);
+}
+
+.enquiry_field input,
+.enquiry_field select,
+.enquiry_field textarea {
+  width: 100%;
+  margin: 0;
+  padding: 0.45rem 0 0.55rem;
+  border: 0;
+  border-bottom: 1px solid rgb(251 244 233 / 30%);
+  border-radius: 0;
+  background: transparent;
+  color: var(--wow-cream);
+  font-family: var(--font--body);
+  /* 16px or more, so a phone does not zoom into the field. */
+  font-size: max(1rem, var(--step-0));
+  font-style: italic;
+  line-height: 1.4;
+  outline: none;
+  transition: border-color 0.3s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.enquiry_field textarea {
+  min-height: 6.5rem;
+  resize: vertical;
+}
+
+.enquiry_field select {
+  padding-right: 1.5rem;
+  background-image: linear-gradient(45deg, transparent 50%, var(--wow-gold) 50%), linear-gradient(135deg, var(--wow-gold) 50%, transparent 50%);
+  background-position: calc(100% - 9px) 55%, calc(100% - 4px) 55%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+/* Nothing chosen yet: dimmed, as the placeholders are. */
+.enquiry_field select:has(option[value='']:checked) {
+  color: rgb(251 244 233 / 40%);
+}
+
+.enquiry_field option {
+  background-color: var(--wow-wine-deep);
+  color: var(--wow-cream);
+  font-style: normal;
+}
+
+.enquiry_field input::placeholder,
+.enquiry_field textarea::placeholder {
+  color: rgb(251 244 233 / 40%);
+}
+
+.enquiry_field input:focus,
+.enquiry_field select:focus,
+.enquiry_field textarea:focus {
+  border-bottom-color: var(--wow-gold);
+}
+
+.enquiry_field input:-webkit-autofill {
+  -webkit-text-fill-color: var(--wow-cream);
+  transition: background-color 9999s ease 0s;
+}
+
+.enquiry_actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 1rem;
+  margin-top: 0.75rem;
+  text-align: center;
+}
+
+/* The pill button, as the hero's, on a real <button>. */
+.enquiry_button.btn_main_wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: var(--wow-cream);
+  cursor: pointer;
+  transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+}
+
+.enquiry_button.btn_main_wrap:hover,
+.enquiry_button.btn_main_wrap:focus-visible {
+  background-color: var(--wow-gold);
+  color: var(--wow-wine-deep);
+  border-color: var(--wow-gold);
+}
+
+.enquiry_button.btn_main_wrap:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.enquiry_alt,
+.enquiry_error {
+  margin: 0;
+  font-family: var(--font--body);
+  font-size: 0.95rem;
+  font-style: italic;
+  color: rgb(251 244 233 / 60%);
+}
+
+.enquiry_error {
+  color: #f0b3a8;
+}
+
+.enquiry_alt a,
+.enquiry_error a {
+  color: var(--wow-gold-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media screen and (min-width: 768px) {
+  .enquiry {
+    align-items: center;
+    padding: 2rem;
+  }
+
+  .enquiry_panel {
+    width: min(100%, 46rem);
+    max-height: calc(100dvh - 4rem);
+    padding: 3.5rem 3.5rem 3rem;
+    border: 1px solid rgb(201 162 77 / 22%);
+    border-radius: var(--radius--small, 6px);
+    box-shadow: 0 40px 120px rgb(0 0 0 / 55%);
+  }
+
+  .enquiry_form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .enquiry_field.is-wide,
+  .enquiry_actions.is-wide {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enquiry,
+  .enquiry.is-open,
+  .enquiry_panel {
+    transition: none;
+  }
+}

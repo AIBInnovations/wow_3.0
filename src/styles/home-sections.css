@@ -1108,6 +1108,38 @@
   .statement_line { font-size: clamp(3.5rem, 7vw, 7.25rem); }
 }
 
+/*
+ * On a desktop the section is exactly one screen tall. The type is sized from
+ * both the width and the height, so the kicker, the four lines and the button
+ * always fit inside it, and the mandala is sized to the screen's height.
+ */
+@media screen and (min-width: 992px) {
+  .statement_wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100 * var(--vh-s));
+    min-height: 36rem;
+    padding-block: clamp(2rem, 6vh, 4rem);
+  }
+
+  .statement_contain {
+    row-gap: clamp(1.25rem, 4.5vh, 3rem);
+  }
+
+  .statement_line {
+    font-size: min(7vw, calc(10.5 * var(--vh-s)), 7.25rem);
+  }
+
+  .statement_btn {
+    margin-top: 0;
+  }
+
+  .statement_mandala {
+    width: min(66rem, calc(118 * var(--vh-s)));
+  }
+}
+
 /* Under reduced motion the words are simply filled. */
 @media (prefers-reduced-motion: reduce) {
   .statement_fill { clip-path: none; }

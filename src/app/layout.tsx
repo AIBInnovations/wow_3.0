@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { SmoothScrollProvider } from '@/providers/SmoothScrollProvider'
 import { site } from '@/data/content'
+import EnquiryForm from '@/components/EnquiryForm'
 
 export const metadata: Metadata = {
   title: site.title,
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body data-theme="dark">
         <SmoothScrollProvider>
           <div className="page_wrap">{children}</div>
+          <EnquiryForm />
         </SmoothScrollProvider>
       </body>
     </html>
