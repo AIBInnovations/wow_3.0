@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import Initial from '@/components/Initial'
 import { MainButton } from '@/components/HeroMarquee'
@@ -112,64 +112,138 @@ export default function HomeAtelier() {
   )
 }
 
+/** How far a swipe has to travel, in px, before it moves the ring. */
+const SWIPE = 40
+/** How far a finger moves before it is read as a sideways drag or the page scrolling. */
+const SLOP = 8
+
 /**
- * A discipline's photographs on a phone, in place of its one image: a strip
- * that is swiped sideways and settles on each photograph in turn, the next one
- * showing at the edge so it is plain there is more. The photograph in view is
- * at full brightness and the others are dimmed, as in the reels; a counter and
- * a gold line beneath it say which of how many is showing. Tapping the
- * neighbour brings it in. Hidden from 768px, where the card keeps its single
+ * A discipline's photographs on a phone, set as the reels are: a ring with the
+ * photograph in view large at the centre and its neighbours smaller, dimmed and
+ * tucked behind it either side, looping without an end. Swipe either way, tap a
+ * neighbour, or use the arrows at its edges; the counter and its gold line
+ * beneath say which of how many is showing. Hidden from 768px, where the card keeps its single
  * photograph.
  *
- * The strip scrolls natively, so a sideways swipe moves it and an upward one
- * still scrolls the page.
+ * A swipe that starts sideways moves the ring and holds the page still under
+ * it; one that starts up or down is left to scroll the page.
  */
 function CardCarousel({ images, label }: { images: GalleryImage[]; label: string }) {
-  const trackRef = useRef<HTMLDivElement>(null)
-  const [index, setIndex] = useState(0)
+  const ringRef = useRef<HTMLDivElement>(null)
+  const [active, setActive] = useState(0)
+  const [drag, setDrag] = useState(0)
   const count = images.length
+  const dragRef = useRef<{ x: number; y: number; dx: number; moved: boolean } | null>(null)
+  const draggedRef = useRef(false)
 
-  const stride = () => {
-    const track = trackRef.current
-    const first = track?.children[0] as HTMLElement | undefined
-    const second = track?.children[1] as HTMLElement | undefined
-    if (!first) return 1
-    return second ? second.offsetLeft - first.offsetLeft : first.offsetWidth
+  const go = useCallback((step: number) => setActive((a) => (((a + step) % count) + count) % count), [count])
+
+  /** A photograph's place relative to the centre, wrapped so the ring has no ends. */
+  const offsetOf = (i: number) => {
+    let d = (((i - active) % count) + count) % count
+    if (d > count / 2) d -= count
+    return d
   }
 
-  const onScroll = () => {
-    const track = trackRef.current
-    if (!track) return
-    const i = Math.round(track.scrollLeft / stride())
-    setIndex(Math.max(0, Math.min(count - 1, i)))
-  }
+  useEffect(() => {
+    const ring = ringRef.current
+    if (!ring) return
 
-  const goTo = (i: number) => {
-    const track = trackRef.current
-    if (!track) return
-    track.scrollTo({ left: i * stride(), behavior: 'smooth' })
-  }
+    const onStart = (e: TouchEvent) => {
+      if (e.touches.length > 1) {
+        dragRef.current = null
+        return
+      }
+      const t = e.touches[0]
+      dragRef.current = { x: t.clientX, y: t.clientY, dx: 0, moved: false }
+      draggedRef.current = false
+    }
+
+    const onMove = (e: TouchEvent) => {
+      const d = dragRef.current
+      if (!d) return
+      const t = e.touches[0]
+      const dx = t.clientX - d.x
+      const dy = t.clientY - d.y
+      if (!d.moved) {
+        if (Math.abs(dx) < SLOP && Math.abs(dy) < SLOP) return
+        // Mostly up or down: the page is scrolling, not the ring.
+        if (Math.abs(dy) > Math.abs(dx) || !e.cancelable) {
+          dragRef.current = null
+          return
+        }
+        d.moved = true
+        draggedRef.current = true
+      }
+      e.preventDefault()
+      d.dx = dx
+      setDrag(dx)
+    }
+
+    const onEnd = () => {
+      const d = dragRef.current
+      dragRef.current = null
+      if (!d?.moved) return
+      setDrag(0)
+      if (Math.abs(d.dx) >= SWIPE) go(d.dx < 0 ? 1 : -1)
+    }
+
+    ring.addEventListener('touchstart', onStart, { passive: true })
+    ring.addEventListener('touchmove', onMove, { passive: false })
+    ring.addEventListener('touchend', onEnd)
+    ring.addEventListener('touchcancel', onEnd)
+    return () => {
+      ring.removeEventListener('touchstart', onStart)
+      ring.removeEventListener('touchmove', onMove)
+      ring.removeEventListener('touchend', onEnd)
+      ring.removeEventListener('touchcancel', onEnd)
+    }
+  }, [go])
 
   return (
     <div className="card-carousel" role="region" aria-roledescription="carousel" aria-label={`${label}, photographs`}>
-      <div ref={trackRef} className="card-carousel_track" onScroll={onScroll}>
-        {images.map((img, i) => (
-          <figure
-            key={img.src}
-            className={`card-carousel_slide${i === index ? ' is-active' : ''}`}
-            aria-label={`${i + 1} of ${count}`}
-            onClick={() => i !== index && goTo(i)}
-          >
-            <img src={img.src} alt={img.alt} loading="lazy" draggable={false} />
-          </figure>
-        ))}
+      <div className="card-ring_wrap">
+        <div
+          ref={ringRef}
+          className={`card-ring${drag ? ' is-dragging' : ''}`}
+          style={{ '--drag': `${drag}px` } as React.CSSProperties}
+          onClickCapture={(e) => {
+            if (!draggedRef.current) return
+            draggedRef.current = false
+            e.preventDefault()
+            e.stopPropagation()
+          }}
+        >
+          {images.map((img, i) => {
+            const offset = offsetOf(i)
+            return (
+              <figure
+                key={img.src}
+                className={`card-ring_slide${offset === 0 ? ' is-active' : ''}`}
+                style={{ '--offset': offset, '--abs': Math.abs(offset) } as React.CSSProperties}
+                data-far={Math.abs(offset) > 1 || undefined}
+                aria-hidden={offset !== 0 || undefined}
+                onClick={() => offset !== 0 && go(offset)}
+              >
+                <img src={img.src} alt={img.alt} loading="lazy" draggable={false} />
+              </figure>
+            )
+          })}
+        </div>
+        <button type="button" className="reels_arrow card-ring_arrow is-prev" onClick={() => go(-1)} aria-label="Previous photograph">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7" /></svg>
+        </button>
+        <button type="button" className="reels_arrow card-ring_arrow is-next" onClick={() => go(1)} aria-label="Next photograph">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" /></svg>
+        </button>
       </div>
-      <div className="card-carousel_bar" aria-hidden="true">
-        <span className="card-carousel_now">{String(index + 1).padStart(2, '0')}</span>
-        <span className="card-carousel_line">
-          <span style={{ transform: `scaleX(${(index + 1) / count})` }} />
+
+      <div className="card-ring_bar reels_count" aria-live="polite">
+        <span className="reels_count_now">{String(active + 1).padStart(2, '0')}</span>
+        <span className="reels_count_line" aria-hidden="true">
+          <span style={{ transform: `scaleX(${(active + 1) / count})` }} />
         </span>
-        <span className="card-carousel_all">{String(count).padStart(2, '0')}</span>
+        <span className="reels_count_all">{String(count).padStart(2, '0')}</span>
       </div>
     </div>
   )

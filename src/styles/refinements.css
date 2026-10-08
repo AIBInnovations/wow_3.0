@@ -162,7 +162,9 @@
 .voices-scroll-text { display: none; }
 
 @media (max-width: 767px) {
-  .home-atelier_cards { --card-strip: 44px; --card-pin-top: 64px; }
+  /* A slimmer strip per stacked card, so each card's photographs and arrows
+     stay on screen while it is on top, even on a short phone. */
+  .home-atelier_cards { --card-strip: 36px; --card-pin-top: 64px; }
   .home-atelier_card_header { padding-inline: 4vw; }
   .home-atelier_card .deets_card_wrap { row-gap: 20px; }
   .home-atelier_card .deets_card_text-wrap.u-column.u-vflex-left-top.u-gap-large { gap: 16px; }

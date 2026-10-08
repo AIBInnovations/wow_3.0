@@ -1382,10 +1382,12 @@
 /* ═══ The discipline cards' carousel (phones) ═════════════════════════════ */
 
 /*
- * Below 768px each card shows its photographs as a sideways strip in place of
- * its single image. Each photograph takes most of the width, the next one
- * showing at the edge; the strip settles on one at a time. From 768px the
- * carousel is hidden and the single image returns.
+ * Below 768px each card shows its photographs as a ring, set as the reels are:
+ * every photograph sits at the centre and is moved out by its --offset from
+ * the one in view, scaled down, dimmed and stacked behind it, so wrapping from
+ * the last to the first is only a change of number. Those more than one place
+ * out are hidden. The carousel runs to the card's edges, which clip the
+ * neighbours to slivers. From 768px it is hidden and the single image returns.
  */
 .card-carousel {
   display: none;
@@ -1398,80 +1400,100 @@
 
   .card-carousel {
     display: block;
-    width: 100%;
+    width: calc(100% + 8vw);
     min-width: 0;
-  }
-
-  .card-carousel_track {
-    display: flex;
-    column-gap: 10px;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    scroll-padding-inline: 0;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .card-carousel_track::-webkit-scrollbar {
-    display: none;
-  }
-
-  .card-carousel_slide {
-    flex: 0 0 84%;
-    margin: 0;
-    aspect-ratio: 4 / 3;
+    margin-inline: -4vw;
     overflow: hidden;
-    border-radius: 4px;
-    scroll-snap-align: start;
-    background-color: rgb(0 0 0 / 25%);
-    filter: brightness(0.55);
-    transition: filter 0.6s ease;
   }
 
-  .card-carousel_slide.is-active {
+  .card-ring_wrap {
+    position: relative;
+  }
+
+  .card-ring {
+    --slide-w: 44%;
+    position: relative;
+    width: 100%;
+    /* One photograph tall: 44% of the width at 4:5. */
+    aspect-ratio: 20 / 11;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .card-ring_slide {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: var(--slide-w);
+    aspect-ratio: 4 / 5;
+    margin: 0;
+    overflow: hidden;
+    border-radius: 6px;
+    background-color: #000;
+    box-shadow: 0 18px 40px rgb(0 0 0 / 40%);
+    transform:
+      translateX(calc(-50% + var(--offset) * 78% + var(--drag, 0px)))
+      scale(calc(1 - var(--abs) * 0.18));
+    opacity: calc(1 - var(--abs) * 0.25);
+    z-index: calc(10 - var(--abs));
+    filter: brightness(0.5);
+    cursor: pointer;
+    transition:
+      transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.8s ease;
+  }
+
+  .card-ring_slide.is-active {
     filter: none;
+    cursor: default;
   }
 
-  .card-carousel_slide img {
+  .card-ring_slide[data-far] {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .card-ring.is-dragging .card-ring_slide {
+    transition: none;
+  }
+
+  .card-ring_slide img {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
     pointer-events: none;
-    user-select: none;
     -webkit-user-drag: none;
   }
 
-  /* 01 — the gold line — 05, as under the reels. */
-  .card-carousel_bar {
-    display: flex;
-    align-items: center;
-    column-gap: 0.75rem;
-    margin-top: 0.9rem;
-    font-family: var(--font--primary-family);
-    font-size: 0.8rem;
-    letter-spacing: 0.15em;
-    color: var(--wow-cream);
-  }
-
-  .card-carousel_all {
-    opacity: 0.5;
-  }
-
-  .card-carousel_line {
-    position: relative;
-    display: block;
-    width: 4rem;
-    height: 1px;
-    background-color: rgb(251 244 233 / 25%);
-  }
-
-  .card-carousel_line span {
+  /* The reels' arrows, at the ring's edges over the dimmed neighbours. */
+  .card-ring_arrow {
     position: absolute;
-    inset: 0;
-    background-color: var(--wow-gold);
-    transform-origin: left center;
-    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    top: 50%;
+    z-index: 20;
+    width: 38px;
+    height: 38px;
+    translate: 0 -50%;
+    background-color: rgb(0 0 0 / 35%);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+  }
+
+  .card-ring_arrow.is-prev { left: calc(4vw - 4px); }
+  .card-ring_arrow.is-next { right: calc(4vw - 4px); }
+
+  /* The counter and its gold line beneath. */
+  .card-ring_bar {
+    justify-content: center;
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-ring_slide {
+    transition: none;
   }
 }
