@@ -27,9 +27,14 @@ export default function HomeAtelier() {
       const strip = parseFloat(getComputedStyle(stack).getPropertyValue('--card-strip'))
       // Equal pinned bottom edges make every card release at the same scroll
       // position. Measuring the content, not the stretched card, avoids feedback.
+      // The last card also carries the button, which counts as its content: left
+      // out, that card ran past the others' shared bottom edge and slid on up
+      // over their strips while the first ones were still pinned.
       const bottom = Math.ceil(Math.max(...cards.map((card, i) => {
         const content = card.querySelector<HTMLElement>('.deets_card_wrap')!
-        return strip + content.getBoundingClientRect().height + i * strip
+        const cta = card.querySelector<HTMLElement>('.home-atelier_card_cta')
+        const extra = cta ? cta.getBoundingClientRect().height : 0
+        return strip + content.getBoundingClientRect().height + extra + i * strip
       })))
       stack.style.setProperty('--stack-height', `${bottom}px`)
     }
@@ -38,7 +43,11 @@ export default function HomeAtelier() {
       frame = requestAnimationFrame(measure)
     }
     const observer = new ResizeObserver(schedule)
-    cards.forEach(card => observer.observe(card.querySelector('.deets_card_wrap')!))
+    cards.forEach(card => {
+      observer.observe(card.querySelector('.deets_card_wrap')!)
+      const cta = card.querySelector('.home-atelier_card_cta')
+      if (cta) observer.observe(cta)
+    })
     // The cards' content only reflows when the width changes. A phone's address
     // bar sliding in and out changes the height alone, and fires this on every
     // scroll; re-measuring then is wasted work. Content changes are already
