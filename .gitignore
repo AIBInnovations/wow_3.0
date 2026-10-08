@@ -7,3 +7,7 @@ out
 # Brand deck — reference material, not a site asset. Anything under public/ is
 # served at a public URL, so this must not ship with the build.
 public/*.pdf
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
