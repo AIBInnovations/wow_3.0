@@ -97,16 +97,17 @@ export default function HomeAtelier() {
                   {card.gallery.length > 1 ? <CardCarousel images={card.gallery} label={card.title} /> : null}
                 </div>
               </div>
+              {/* The button closes the last card, on its own colour, rather than
+                  sitting on a band of its own beneath the stack. */}
+              {i === homeAtelierCards.length - 1 ? (
+                <div className="btn-wrap home-atelier_cta home-atelier_card_cta">
+                  <MainButton href={homeAtelier.cta.href} label={homeAtelier.cta.label} />
+                </div>
+              ) : null}
             </div>
           ))}
         </div>
 
-        {/* Outside the stack so the final card is never trapped underneath it. */}
-        <div data-theme="inherit" className="press_wrap home-atelier_close">
-          <div className="btn-wrap home-atelier_cta">
-            <MainButton href={homeAtelier.cta.href} label={homeAtelier.cta.label} />
-          </div>
-        </div>
       </div>
     </section>
   )
@@ -120,9 +121,9 @@ const SLOP = 8
 /**
  * A discipline's photographs on a phone, set as the reels are: a ring with the
  * photograph in view large at the centre and its neighbours smaller, dimmed and
- * tucked behind it either side, looping without an end. Swipe either way, tap a
- * neighbour, or use the arrows at its edges; the counter and its gold line
- * beneath say which of how many is showing. Hidden from 768px, where the card keeps its single
+ * tucked behind it either side, looping without an end. Swipe either way or tap
+ * a neighbour; the counter and its gold line beneath say which of how many is
+ * showing. Hidden from 768px, where the card keeps its single
  * photograph.
  *
  * A swipe that starts sideways moves the ring and holds the page still under
@@ -230,12 +231,6 @@ function CardCarousel({ images, label }: { images: GalleryImage[]; label: string
             )
           })}
         </div>
-        <button type="button" className="reels_arrow card-ring_arrow is-prev" onClick={() => go(-1)} aria-label="Previous photograph">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7" /></svg>
-        </button>
-        <button type="button" className="reels_arrow card-ring_arrow is-next" onClick={() => go(1)} aria-label="Next photograph">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" /></svg>
-        </button>
       </div>
 
       <div className="card-ring_bar reels_count" aria-live="polite">

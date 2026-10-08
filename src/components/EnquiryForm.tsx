@@ -36,7 +36,8 @@ type Status = 'idle' | 'sending' | 'sent' | 'drafted' | 'failed'
  *
  * It is set the way the closing card is: the script-initialled heading, the
  * italic note, then fields drawn as a single hairline each, and the site's
- * pill button. The page beneath holds still while it is open; Escape, the ×
+ * pill button. It is a compact card that fits the screen without scrolling:
+ * two fields to a row on a phone, three on a desktop. The page beneath holds still while it is open; Escape, the ×
  * and a click outside the panel all close it.
  */
 export default function EnquiryForm() {
@@ -188,7 +189,7 @@ export default function EnquiryForm() {
           <h2 id={field('title')} className="enquiry_title">
             <Initial>{done ? 'Thank You' : closing.heading}</Initial>
           </h2>
-          <p className="enquiry_note">
+          <p className={`enquiry_note${done || status === 'failed' ? '' : ' is-intro'}`}>
             {status === 'sent'
               ? 'Your enquiry is with our studio. We will write to you shortly.'
               : status === 'drafted'
@@ -233,10 +234,6 @@ export default function EnquiryForm() {
               <input id={field('date')} name="date" type="text" placeholder="e.g. February 2027" />
             </div>
             <div className="enquiry_field">
-              <label htmlFor={field('place')}>Destination</label>
-              <input id={field('place')} name="place" type="text" placeholder="City or venue" />
-            </div>
-            <div className="enquiry_field">
               <label htmlFor={field('guests')}>Guests</label>
               <select id={field('guests')} name="guests" defaultValue="">
                 <option value="" disabled>
@@ -248,8 +245,12 @@ export default function EnquiryForm() {
               </select>
             </div>
             <div className="enquiry_field is-wide">
+              <label htmlFor={field('place')}>Destination</label>
+              <input id={field('place')} name="place" type="text" placeholder="City or venue" />
+            </div>
+            <div className="enquiry_field is-wide">
               <label htmlFor={field('message')}>Tell us about it</label>
-              <textarea id={field('message')} name="message" rows={4} />
+              <textarea id={field('message')} name="message" rows={2} />
             </div>
 
             <div className="enquiry_actions is-wide">
