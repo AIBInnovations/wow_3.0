@@ -5,50 +5,20 @@ import { gsap, registerGsap } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import CircleTextButton from '../CircleTextButton'
+import Mandala from './Mandala'
 import { atelier } from '@/data/content'
 
-/** The statement, as the four lines it is set in: two words held large, two said quietly. */
-const LINES = [
-  { text: 'Nothing', big: true },
-  { text: 'is incidental.', big: false },
-  { text: 'Everything', big: true },
-  { text: 'is intentional.', big: false },
-]
-
-/** A compass ring of 48 ticks, every sixth one long. */
-function Ring() {
-  const ticks = Array.from({ length: 48 }, (_, i) => {
-    const a = (i / 48) * Math.PI * 2
-    const long = i % 6 === 0
-    const r1 = long ? 86 : 91
-    const r2 = 96
-    return (
-      <line
-        key={i}
-        x1={100 + Math.cos(a) * r1}
-        y1={100 + Math.sin(a) * r1}
-        x2={100 + Math.cos(a) * r2}
-        y2={100 + Math.sin(a) * r2}
-      />
-    )
-  })
-  return (
-    <svg className="statement_ring" viewBox="0 0 200 200" aria-hidden="true">
-      <circle cx="100" cy="100" r="98" />
-      <circle cx="100" cy="100" r="70" className="statement_ring_inner" />
-      {ticks}
-    </svg>
-  )
-}
+/** The statement in the four lines it is set in, all one size. */
+const LINES = ['Nothing', 'is incidental.', 'Everything', 'is intentional.']
 
 /**
  * The atelier statement, without a photograph.
  *
- * Set as type alone on the dark ground. The two large words arrive as gold
- * outlines and fill in solid from the left as the section scrolls up the
- * screen; the quiet lines between them rise into place; a compass ring behind
- * them turns with the scroll and the hairlines either side of the kicker draw
- * outward. Nothing pins — it all runs while the section passes.
+ * Type alone on the dark ground, over a lotus mandala. Every line arrives as a
+ * gold outline and fills in solid from the left, one after another, as the
+ * section scrolls up the screen. The mandala draws itself in from the centre
+ * outward the first time the section is reached, and its three rings then turn
+ * against each other as the page scrolls. Nothing pins.
  */
 export default function HomeStatement() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -60,41 +30,35 @@ export default function HomeStatement() {
     registerGsap()
 
     const ctx = gsap.context(() => {
-      const read = { trigger: section, start: 'top 75%', end: 'center 45%', scrub: 0.6 }
-
-      gsap.fromTo('.statement_rule', { scaleX: 0 }, { scaleX: 1, ease: 'none', scrollTrigger: { ...read, end: 'top 35%' } })
-
-      gsap.utils.toArray<HTMLElement>('.statement_fill').forEach((fill, i) => {
-        gsap.fromTo(
-          fill,
-          { clipPath: 'inset(0 100% 0 0)' },
-          {
-            clipPath: 'inset(0 0% 0 0)',
-            ease: 'none',
-            scrollTrigger: { ...read, start: `top ${70 - i * 18}%`, end: `top ${20 - i * 18}%` },
-          }
-        )
-      })
-
-      gsap.utils.toArray<HTMLElement>('.statement_quiet span').forEach((line) => {
-        gsap.fromTo(
-          line,
-          { yPercent: 110, opacity: 0 },
-          {
-            yPercent: 0,
-            opacity: 1,
-            duration: 1.4,
-            ease: 'power3.out',
-            scrollTrigger: { trigger: line, start: 'top 88%', once: true },
-          }
-        )
-      })
-
       gsap.fromTo(
-        '.statement_ring',
-        { rotate: -40, scale: 0.85 },
-        { rotate: 80, scale: 1.05, ease: 'none', scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: true } }
+        '.statement_rule',
+        { scaleX: 0 },
+        { scaleX: 1, ease: 'none', scrollTrigger: { trigger: section, start: 'top 80%', end: 'top 40%', scrub: 0.6 } }
       )
+
+      // The four lines fill one after another across the read.
+      const fill = gsap.timeline({
+        scrollTrigger: { trigger: '.statement_lines', start: 'top 80%', end: 'bottom 40%', scrub: 0.6 },
+      })
+      gsap.utils.toArray<HTMLElement>('.statement_fill').forEach((line, i) => {
+        fill.fromTo(line, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', ease: 'none', duration: 1 }, i * 0.85)
+      })
+
+      // The mandala draws itself in, centre outward.
+      const strokes = gsap.utils.toArray<SVGPathElement>('.mandala_line')
+      strokes.forEach((path) => {
+        const length = path.getTotalLength()
+        gsap.set(path, { strokeDasharray: length, strokeDashoffset: length })
+      })
+      const draw = gsap.timeline({ scrollTrigger: { trigger: section, start: 'top 70%', once: true } })
+      draw.fromTo('.mandala_bindu', { scale: 0, transformOrigin: '50% 50%' }, { scale: 1, duration: 0.6, ease: 'back.out(3)' }, 0)
+      draw.to(strokes, { strokeDashoffset: 0, duration: 2.4, ease: 'power2.inOut', stagger: 0.14 }, 0.1)
+
+      // Its rings turn against each other while the section passes.
+      const turn = { trigger: section, start: 'top bottom', end: 'bottom top', scrub: true }
+      gsap.fromTo('.mandala_inner', { rotate: -40 }, { rotate: 80, ease: 'none', scrollTrigger: turn })
+      gsap.fromTo('.mandala_middle', { rotate: 30 }, { rotate: -50, ease: 'none', scrollTrigger: turn })
+      gsap.fromTo('.mandala_outer', { rotate: -12 }, { rotate: 28, ease: 'none', scrollTrigger: turn })
     }, section)
 
     return () => ctx.revert()
@@ -102,9 +66,9 @@ export default function HomeStatement() {
 
   return (
     <section ref={sectionRef} data-theme="dark" className="statement_wrap" aria-label={atelier.statement}>
-      <Ring />
+      <Mandala className="statement_mandala" />
 
-      <div className="u-container statement_contain">
+      <div className="u-container statement_contain" data-padding-top="none" data-padding-bottom="none">
         <p className="statement_kicker">
           <span className="statement_rule statement_rule--left" aria-hidden="true" />
           <span className="kicker">{atelier.kicker}</span>
@@ -112,18 +76,12 @@ export default function HomeStatement() {
         </p>
 
         <h2 className="statement_lines">
-          {LINES.map((line) =>
-            line.big ? (
-              <span key={line.text} className="statement_big">
-                <span className="statement_outline" aria-hidden="true">{line.text}</span>
-                <span className="statement_fill">{line.text}</span>
-              </span>
-            ) : (
-              <span key={line.text} className="statement_quiet">
-                <span>{line.text}</span>
-              </span>
-            )
-          )}
+          {LINES.map((line) => (
+            <span key={line} className="statement_line">
+              <span className="statement_outline" aria-hidden="true">{line}</span>
+              <span className="statement_fill">{line}</span>
+            </span>
+          ))}
         </h2>
 
         <div className="statement_btn">

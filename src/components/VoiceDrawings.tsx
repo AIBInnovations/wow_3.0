@@ -4,15 +4,19 @@
  * colour is the band's gold, taken from `currentColor`.
  */
 
+/*
+ * Each drawing has its own viewBox, fitted to its outline and 180 units tall,
+ * so all four share one scale and one stroke weight, and each sits centred in
+ * its own box: set to the same height, they line up.
+ */
 const common = {
-  viewBox: '0 0 240 200',
   fill: 'none',
   stroke: 'currentColor',
   strokeWidth: 1.4,
   strokeLinecap: 'round' as const,
   strokeLinejoin: 'round' as const,
   'aria-hidden': true,
-  className: 'voices-draw',
+  className: 'day-draw',
 }
 
 /** Rays of a firework burst, centred on (x, y). */
@@ -31,7 +35,7 @@ function Burst({ x, y, r }: { x: number; y: number; r: number }) {
 /** The Wedding: a mandap beneath two bursts of fireworks. */
 export function MandapDrawing() {
   return (
-    <svg {...common}>
+    <svg {...common} viewBox="6 14 228 180">
       <path d="M10 190 H230" />
       <path d="M40 182 H200" />
       <path d="M55 174 V166 H185 V174" />
@@ -58,7 +62,7 @@ export function MandapDrawing() {
 /** Mehendi & Sangeet: a paisley in henna line, a vine and a note of music. */
 export function PaisleyDrawing() {
   return (
-    <svg {...common}>
+    <svg {...common} viewBox="27 16 197.2 180">
       <path d="M118 186 C62 186 44 130 74 96 C100 66 158 70 166 112 C172 146 140 162 122 146 C108 132 120 112 136 120" />
       <path d="M118 172 C80 170 68 134 88 110 C106 90 146 94 150 120" />
       <path d="M104 156 C88 150 84 132 96 120" />
@@ -90,7 +94,7 @@ export function MarigoldDrawing() {
     return <path key={i} d={`M${x.toFixed(1)} ${y.toFixed(1)} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}`} />
   })
   return (
-    <svg {...common}>
+    <svg {...common} viewBox="34.5 28 163 180">
       <circle cx="120" cy="92" r="16" />
       <circle cx="120" cy="92" r="26" />
       {petals}
@@ -105,7 +109,7 @@ export function MarigoldDrawing() {
 /** Beyond the wedding: a burst of fireworks over a lit skyline. */
 export function NightDrawing() {
   return (
-    <svg {...common}>
+    <svg {...common} viewBox="6 14 228 180">
       <Burst x={120} y={64} r={46} />
       <Burst x={56} y={44} r={22} />
       <Burst x={190} y={52} r={26} />

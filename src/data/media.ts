@@ -1,9 +1,10 @@
 export type Media = { src: string; alt: string }
 
 /**
- * Every photograph on the home page is one of the thirteen the client chose
- * for it, in public/home/. The destinations band keeps its own photographs
- * of the places it names.
+ * The home page's photographs are from the thirteen the client chose for it,
+ * in public/home/. Three discipline cards (food, gifting and the welcome) use
+ * the studio's own photographs of those, as the client's set has none; the
+ * destinations band keeps its photographs of the places it names.
  */
 
 /**

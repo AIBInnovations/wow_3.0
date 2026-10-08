@@ -994,34 +994,51 @@
 /* ═══ The atelier statement ══════════════════════════════════════════════ */
 
 /*
- * Type alone on the dark ground. Phone first: the large words are sized from
- * the screen's width so "EVERYTHING" spans it without breaking; from 768px they
- * settle to a fixed scale. HomeStatement.tsx runs the fills and the ring.
+ * Type alone on the dark ground, over a lotus mandala. All four lines share
+ * one face and one size. Phone first: the size is taken from the screen's
+ * width so the longest line, IS INTENTIONAL., fits with room to spare; from
+ * 768px it settles to a fixed scale. HomeStatement.tsx runs the fills, and the
+ * mandala's drawing-in and turning.
  */
 .statement_wrap {
   position: relative;
   overflow: hidden;
   background-color: #0d0607;
-  padding-block: clamp(5rem, 18vw, 10rem) clamp(3rem, 10vw, 6rem);
+  padding-block: clamp(5rem, 18vw, 9rem);
   text-align: center;
 }
 
-.statement_ring {
+/* Three stacked layers, so each can turn on its own; composited, so turning
+   them never repaints the page. */
+.statement_mandala {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(150vw, 70rem);
+  width: min(150vw, 66rem);
   aspect-ratio: 1;
   translate: -50% -50%;
-  fill: none;
-  stroke: var(--wow-gold);
-  stroke-width: 0.35;
-  opacity: 0.22;
+  color: var(--wow-gold);
+  opacity: 0.3;
   pointer-events: none;
 }
 
-.statement_ring_inner {
-  stroke-dasharray: 1 3;
+.mandala_layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 0.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  will-change: transform;
+}
+
+.mandala_bindu {
+  fill: currentColor;
+  stroke: none;
 }
 
 .statement_contain {
@@ -1060,20 +1077,21 @@
   font-weight: 400;
 }
 
-.statement_big {
+.statement_line {
   position: relative;
   display: block;
   font-family: var(--font--primary-family);
-  font-size: 13.4vw;
-  line-height: 1;
+  font-size: 10vw;
+  line-height: 1.06;
   letter-spacing: 0.01em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .statement_outline {
   display: block;
   color: transparent;
-  -webkit-text-stroke: 1px rgb(201 162 77 / 70%);
+  -webkit-text-stroke: 1px rgb(201 162 77 / 75%);
 }
 
 .statement_fill {
@@ -1082,28 +1100,12 @@
   color: var(--wow-cream);
 }
 
-.statement_quiet {
-  display: block;
-  overflow: hidden;
-  padding-block: 0.15em 0.3em;
-  font-family: var(--font--body);
-  font-size: 7.2vw;
-  font-style: italic;
-  line-height: 1.1;
-  color: var(--wow-gold-soft);
-}
-
-.statement_quiet span {
-  display: inline-block;
-}
-
 .statement_btn {
   margin-top: clamp(0.5rem, 3vw, 1.5rem);
 }
 
 @media screen and (min-width: 768px) {
-  .statement_big { font-size: clamp(5.5rem, 11vw, 10rem); }
-  .statement_quiet { font-size: clamp(2.2rem, 4vw, 3.6rem); }
+  .statement_line { font-size: clamp(3.5rem, 7vw, 7.25rem); }
 }
 
 /* Under reduced motion the words are simply filled. */
@@ -1114,29 +1116,44 @@
 /* ═══ Day by day ═════════════════════════════════════════════════════════ */
 
 /*
- * Phone first: the days stack, with the line running down their left edge and
- * a dot where each one starts. From 992px they sit four across and the line
- * runs above them. HomeDays.tsx draws the line and the drawings.
+ * Phone first. Everything is centred: a title and a line under it, then the
+ * four days stacked, each a dot, a drawing, its number, name, lines and link,
+ * with a short gold line running down to the next day's dot.
+ *
+ * From 992px the days sit four across. Each day is a subgrid of the list, so
+ * the drawings, numbers, names, lines and links share rows: a name that wraps
+ * to two lines moves every day's next row down with it, and nothing is left
+ * ragged. The joining line then runs across from dot to dot.
+ *
+ * The container's own padding is switched off in the markup; the section's
+ * padding below is the only space above and below it.
  */
 .days_wrap {
+  --days-dot: 11px;
   position: relative;
   background-color: var(--wow-blue, #10264a);
-  padding-block: clamp(5rem, 16vw, 9rem);
+  padding-block: clamp(4rem, 10vw, 7.5rem);
   overflow: hidden;
 }
 
 .days_head {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 0.85rem;
   margin-bottom: clamp(3rem, 10vw, 5rem);
+  text-align: center;
 }
 
-.days_head .kicker {
-  margin-bottom: 0.75rem;
-  color: var(--wow-gold-soft);
-}
-
+/*
+ * The script D rises about half its size above the line. A line with an
+ * initial is widened upward by 0.45em to hold it (typography.css); the
+ * padding gives that room inside the heading, so it can never reach what
+ * sits above.
+ */
 .days_title {
-  margin: 0 auto;
+  margin: 0;
+  padding-top: 0.45em;
   font-family: var(--font--primary-family);
   font-size: var(--step-6);
   font-weight: 400;
@@ -1145,42 +1162,42 @@
   text-transform: uppercase;
 }
 
-.days_list {
-  --days-dot: 11px;
-  position: relative;
-  display: grid;
-  row-gap: clamp(3rem, 12vw, 4.5rem);
+.days_intro {
+  max-width: 30ch;
+  text-wrap: balance;
   margin: 0;
-  padding: 0 0 0 2.25rem;
+  font-family: var(--font--body);
+  font-size: clamp(1.1rem, 4.4vw, 1.35rem);
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--wow-gold-soft);
+}
+
+.days_list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding: 0;
   list-style: none;
-}
-
-.days_track {
-  position: absolute;
-  top: 0.4rem;
-  bottom: 0.4rem;
-  left: calc(var(--days-dot) / 2 - 0.5px);
-  width: 1px;
-  background-color: rgb(251 244 233 / 18%);
-}
-
-.days_track_fill {
-  position: absolute;
-  inset: 0;
-  background-color: var(--wow-gold);
-  transform-origin: top center;
 }
 
 .days_item {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  text-align: center;
 }
 
 .days_dot {
-  position: absolute;
-  top: 0.4rem;
-  left: -2.25rem;
+  position: relative;
+  z-index: 1;
+  display: block;
   width: var(--days-dot);
   height: var(--days-dot);
+  margin-bottom: 1.5rem;
   border-radius: 50%;
   background-color: var(--wow-gold);
   box-shadow: 0 0 0 6px rgb(201 162 77 / 18%);
@@ -1189,21 +1206,28 @@
 .days_link {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  row-gap: 0.5rem;
+  align-items: center;
   color: inherit;
   text-decoration: none;
 }
 
-.days_link .voices-draw {
-  width: clamp(7.5rem, 34vw, 10rem);
-  margin-bottom: 0.75rem;
+.days_art {
+  display: block;
+  margin-bottom: 1.25rem;
+  color: var(--wow-gold);
+}
+
+.days_art svg {
+  display: block;
+  width: auto;
+  height: clamp(5.25rem, 23vw, 6.5rem);
+  overflow: visible;
 }
 
 .days_clip {
   display: block;
   overflow: hidden;
-  padding-bottom: 0.08em;
+  padding-bottom: 0.1em;
 }
 
 .days_rise {
@@ -1211,32 +1235,36 @@
 }
 
 .days_num {
+  margin-bottom: 0.4rem;
   font-family: var(--font--primary-family);
-  font-size: 0.85rem;
-  letter-spacing: 0.25em;
+  font-size: 0.8rem;
+  letter-spacing: 0.3em;
   color: var(--wow-gold);
 }
 
 .days_name {
+  max-width: 16ch;
+  margin-bottom: 0.55rem;
   font-family: var(--font--primary-family);
-  font-size: clamp(1.7rem, 7.4vw, 2.4rem);
-  line-height: 1.1;
-  letter-spacing: var(--tracking-h3, 0.02em);
+  font-size: clamp(1.55rem, 6.4vw, 2rem);
+  line-height: 1.12;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+  text-wrap: balance;
 }
 
 .days_lines {
-  max-width: 22ch;
+  max-width: 24ch;
+  margin-bottom: 0.9rem;
   font-family: var(--font--body);
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-style: italic;
   line-height: 1.45;
-  color: rgb(251 244 233 / 80%);
+  color: rgb(251 244 233 / 78%);
 }
 
 .days_more {
-  margin-top: 0.5rem;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--wow-gold-soft);
@@ -1248,37 +1276,73 @@
   color: var(--wow-cream);
 }
 
-/* Four across, the line running above them. */
+/* The line down to the next day's dot. */
+.days_seg {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: clamp(3rem, 13vw, 4.5rem);
+  margin-block: 1.75rem;
+  background-color: rgb(251 244 233 / 18%);
+}
+
+.days_seg_fill {
+  position: absolute;
+  inset: 0;
+  background-color: var(--wow-gold);
+  transform-origin: top center;
+}
+
+/* Four across, rows shared, the line running from dot to dot. */
 @media screen and (min-width: 992px) {
   .days_list {
+    --days-gap: 2.5vw;
+    display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    column-gap: 3vw;
-    padding: 2.75rem 0 0;
+    grid-template-rows: repeat(6, auto);
+    column-gap: var(--days-gap);
+    row-gap: 0;
+    align-items: start;
   }
 
-  .days_track {
-    top: calc(var(--days-dot) / 2 - 0.5px);
-    bottom: auto;
-    left: 0;
-    right: 0;
-    width: auto;
-    height: 1px;
-  }
-
-  .days_track_fill {
-    transform-origin: left center;
+  .days_item {
+    display: grid;
+    grid-row: span 6;
+    grid-template-rows: subgrid;
+    justify-items: center;
   }
 
   .days_dot {
-    top: -2.75rem;
-    left: 0;
+    margin-bottom: 2.5rem;
+  }
+
+  .days_link {
+    display: grid;
+    grid-row: span 5;
+    grid-template-rows: subgrid;
+    justify-items: center;
+    align-items: start;
   }
 
   .days_name {
-    font-size: clamp(1.6rem, 2.2vw, 2.2rem);
+    font-size: clamp(1.3rem, 1.8vw, 1.85rem);
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  .days_track_fill { transform: none; }
+  .days_lines {
+    font-size: 1.05rem;
+  }
+
+  /* From this day's dot across to the next one's. */
+  .days_seg {
+    position: absolute;
+    top: calc(var(--days-dot) / 2 - 0.5px);
+    left: 50%;
+    width: calc(100% + var(--days-gap));
+    height: 1px;
+    margin: 0;
+  }
+
+  .days_seg_fill {
+    transform-origin: left center;
+  }
 }

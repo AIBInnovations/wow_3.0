@@ -19,14 +19,18 @@ const DRAWING: Record<string, DrawingName> = {
 }
 
 /**
- * The four days of a celebration, as a line that runs through them.
+ * The four days of a celebration, joined by a gold line.
  *
- * No photographs: each day is a gold line drawing, its number, its name and
- * the three lines the Celebrations page opens it with. On a phone the days
- * stack and the line runs down beside them; from 992px they sit in a row and
- * the line runs across above them. The line draws itself as the section
- * scrolls; each day's drawing traces itself in, stroke by stroke, and its
- * words rise as the day reaches the screen. Each day links to its chapter.
+ * No photographs: each day is a line drawing, its number, its name and the
+ * three lines the Celebrations page opens it with, all centred. On a phone the
+ * days stack and a short line runs down from each to the next; from 992px they
+ * sit four across, the line runs between their dots, and their rows line up
+ * whatever the length of each name. Each day links to its chapter.
+ *
+ * As a day reaches the screen its dot appears, its drawing traces itself in
+ * and its words rise. On a phone each joining line draws as it is scrolled
+ * past; on a wide screen the four days arrive one after another, the line
+ * reaching each in turn.
  */
 export default function HomeDays() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -40,64 +44,94 @@ export default function HomeDays() {
     if (!section || reduced) return
     registerGsap()
 
-    const ctx = gsap.context(() => {
-      const list = section.querySelector('.days_list')
-      gsap.fromTo(
-        '.days_track_fill',
-        { scale: 0 },
-        { scale: 1, ease: 'none', scrollTrigger: { trigger: list, start: 'top 75%', end: 'bottom 60%', scrub: 0.5 } }
-      )
-
-      gsap.utils.toArray<HTMLElement>('.days_item').forEach((item) => {
-        const strokes = Array.from(item.querySelectorAll<SVGGeometryElement>('.voices-draw path, .voices-draw circle, .voices-draw ellipse'))
+    const mm = gsap.matchMedia(section)
+    mm.add({ wide: '(min-width: 992px)', narrow: '(max-width: 991px)' }, (context) => {
+      const wide = Boolean(context.conditions?.wide)
+      const days = gsap.utils.toArray<HTMLElement>('.days_item').map((item) => {
+        const strokes = Array.from(item.querySelectorAll<SVGGeometryElement>('.day-draw path, .day-draw circle, .day-draw ellipse'))
         strokes.forEach((el) => {
           const length = el.getTotalLength()
           gsap.set(el, { strokeDasharray: length, strokeDashoffset: length })
         })
-        const tl = gsap.timeline({ scrollTrigger: { trigger: item, start: 'top 80%', once: true } })
-        tl.fromTo(item.querySelector('.days_dot'), { scale: 0 }, { scale: 1, duration: 0.6, ease: 'back.out(3)' }, 0)
-        tl.to(strokes, { strokeDashoffset: 0, duration: 1.8, ease: 'power2.inOut', stagger: 0.04 }, 0)
-        tl.fromTo(item.querySelectorAll('.days_rise'), { yPercent: 110 }, { yPercent: 0, duration: 1.2, ease: 'power3.out', stagger: 0.08 }, 0.2)
+        const rise = item.querySelectorAll('.days_rise')
+        const dot = item.querySelector('.days_dot')
+        const seg = item.querySelector('.days_seg_fill')
+        gsap.set(rise, { yPercent: 110 })
+        gsap.set(dot, { scale: 0 })
+        if (seg) gsap.set(seg, wide ? { scaleX: 0 } : { scaleY: 0 })
+        return { item, strokes, rise, dot, seg }
       })
-    }, section)
 
-    return () => ctx.revert()
+      const reveal = (tl: gsap.core.Timeline, day: (typeof days)[number], at: number) => {
+        tl.to(day.dot, { scale: 1, duration: 0.5, ease: 'back.out(3)' }, at)
+        tl.to(day.strokes, { strokeDashoffset: 0, duration: 1.6, ease: 'power2.inOut', stagger: 0.03 }, at)
+        tl.to(day.rise, { yPercent: 0, duration: 1.1, ease: 'power3.out', stagger: 0.07 }, at + 0.2)
+      }
+
+      if (wide) {
+        const tl = gsap.timeline({ scrollTrigger: { trigger: '.days_list', start: 'top 78%', once: true } })
+        days.forEach((day, i) => {
+          reveal(tl, day, i * 0.45)
+          if (day.seg) tl.to(day.seg, { scaleX: 1, duration: 0.6, ease: 'power2.inOut' }, i * 0.45 + 0.3)
+        })
+      } else {
+        days.forEach((day) => {
+          const tl = gsap.timeline({ scrollTrigger: { trigger: day.item, start: 'top 82%', once: true } })
+          reveal(tl, day, 0)
+          if (day.seg) {
+            gsap.to(day.seg, {
+              scaleY: 1,
+              ease: 'none',
+              scrollTrigger: { trigger: day.seg, start: 'top 88%', end: 'bottom 62%', scrub: 0.4 },
+            })
+          }
+        })
+      }
+    })
+
+    return () => mm.revert()
   }, [reduced])
 
   return (
     <section ref={sectionRef} data-theme="dark" className="days_wrap">
-      <div className="u-container days_contain">
+      <div className="u-container days_contain" data-padding-top="none" data-padding-bottom="none">
         <div className="days_head">
-          <p className="kicker">{INTRO.caption}</p>
           <h2 ref={headingRef} className="days_title" js-line-animation="">
             <Initial>Day By Day</Initial>
           </h2>
+          <p className="days_intro">{INTRO.caption}.</p>
         </div>
 
         <ol className="days_list">
-          <li className="days_track" aria-hidden="true">
-            <span className="days_track_fill" />
-          </li>
-          {CHAPTERS.map((day) => {
+          {CHAPTERS.map((day, i) => {
             const Drawing = drawings[DRAWING[day.slug] ?? 'mandap']
             return (
               <li key={day.slug} className="days_item">
                 <span className="days_dot" aria-hidden="true" />
                 <Link href={`/celebrations#${day.slug}`} className="days_link">
-                  <Drawing />
-                  <span className="days_clip">
-                    <span className="days_num days_rise">{day.numeral}</span>
+                  <span className="days_art">
+                    <Drawing />
                   </span>
                   <span className="days_clip">
-                    <span className="days_name days_rise">{day.name}</span>
+                    <span className="days_rise days_num">{day.numeral}</span>
                   </span>
                   <span className="days_clip">
-                    <span className="days_lines days_rise">{day.lines.join(' ')}</span>
+                    <span className="days_rise days_name">{day.name}</span>
                   </span>
                   <span className="days_clip">
-                    <span className="days_more days_rise">{day.discover} →</span>
+                    <span className="days_rise days_lines">{day.lines.join(' ')}</span>
+                  </span>
+                  <span className="days_clip">
+                    <span className="days_rise days_more">
+                      {day.discover} <span aria-hidden="true">→</span>
+                    </span>
                   </span>
                 </Link>
+                {i < CHAPTERS.length - 1 ? (
+                  <span className="days_seg" aria-hidden="true">
+                    <span className="days_seg_fill" />
+                  </span>
+                ) : null}
               </li>
             )
           })}
