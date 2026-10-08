@@ -1378,3 +1378,100 @@
     transform-origin: left center;
   }
 }
+
+/* ═══ The discipline cards' carousel (phones) ═════════════════════════════ */
+
+/*
+ * Below 768px each card shows its photographs as a sideways strip in place of
+ * its single image. Each photograph takes most of the width, the next one
+ * showing at the edge; the strip settles on one at a time. From 768px the
+ * carousel is hidden and the single image returns.
+ */
+.card-carousel {
+  display: none;
+}
+
+@media screen and (max-width: 767px) {
+  .home-atelier_card .home-atelier_single {
+    display: none;
+  }
+
+  .card-carousel {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .card-carousel_track {
+    display: flex;
+    column-gap: 10px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 0;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .card-carousel_track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .card-carousel_slide {
+    flex: 0 0 84%;
+    margin: 0;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 4px;
+    scroll-snap-align: start;
+    background-color: rgb(0 0 0 / 25%);
+    filter: brightness(0.55);
+    transition: filter 0.6s ease;
+  }
+
+  .card-carousel_slide.is-active {
+    filter: none;
+  }
+
+  .card-carousel_slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  /* 01 — the gold line — 05, as under the reels. */
+  .card-carousel_bar {
+    display: flex;
+    align-items: center;
+    column-gap: 0.75rem;
+    margin-top: 0.9rem;
+    font-family: var(--font--primary-family);
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    color: var(--wow-cream);
+  }
+
+  .card-carousel_all {
+    opacity: 0.5;
+  }
+
+  .card-carousel_line {
+    position: relative;
+    display: block;
+    width: 4rem;
+    height: 1px;
+    background-color: rgb(251 244 233 / 25%);
+  }
+
+  .card-carousel_line span {
+    position: absolute;
+    inset: 0;
+    background-color: var(--wow-gold);
+    transform-origin: left center;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}

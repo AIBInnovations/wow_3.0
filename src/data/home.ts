@@ -14,6 +14,8 @@ export const homeAtelier = {
   cta: { label: 'Explore the Disciplines', href: '/disciplines' },
 }
 
+export type GalleryImage = { src: string; alt: string }
+
 export type AtelierCard = {
   number: string
   background: string
@@ -21,6 +23,8 @@ export type AtelierCard = {
   body: string
   image: string
   alt: string
+  /** On a phone the card shows these as a carousel in place of the one image. */
+  gallery: GalleryImage[]
   href: string
 }
 
@@ -44,6 +48,43 @@ const homeCardImages: Record<string, { image: string; alt: string }> = {
   entertainment: { image: '/home/stage-duet-800.jpg', alt: 'Two singers performing live on a purple-lit stage' },
 }
 
+/** Four or five photographs of each discipline, for the phone's carousel. */
+const homeCardGalleries: Record<string, GalleryImage[]> = {
+  decor: [
+    { src: '/home/lantern-corridor-800.jpg', alt: 'A corridor of blue florals and woven lanterns' },
+    { src: '/wow/lib-pastel-canopy-800.jpg', alt: 'A pastel canopy over a floral welcome display' },
+    { src: '/wow/lib-rose-arch-800.jpg', alt: 'An arch of red roses framing the palace courtyard' },
+    { src: '/wow/lib-palm-walk-800.jpg', alt: 'A floral walkway beneath palms' },
+    { src: '/wow/lib-night-mandap-800.jpg', alt: 'A mandap lit on the lawn at night' },
+  ],
+  'guest-experience': [
+    { src: '/wow/lib-drummers-800.jpg', alt: 'A band of drummers lined up to welcome the celebration' },
+    { src: '/wow/lib-welcome-procession-800.jpg', alt: 'A welcome procession waiting along the palace drive' },
+    { src: '/home/feather-welcome-800.jpg', alt: 'Performers in white feathered fans welcoming the celebration' },
+    { src: '/wow/lib-blue-arch-800.jpg', alt: 'A floral arch at the entrance to the celebration' },
+  ],
+  invites: [
+    { src: '/wow/lib-gift-boxes-800.jpg', alt: 'Wedding gifts arranged in presentation trays' },
+    { src: '/wow/lib-glass-tags-800.jpg', alt: 'Personalised monogram tags on the glassware' },
+    { src: '/reels/DXRlgyNglRb.jpg', alt: 'A monogrammed sangeet welcome board among red florals' },
+    { src: '/wow/lib-carnival-entrance-800.jpg', alt: 'A hand-lettered welcome board at the carnival entrance' },
+  ],
+  'food-beverage': [
+    { src: '/wow/lib-buffet-table-800.jpg', alt: 'A reception buffet of silver chafing dishes, dressed with white roses' },
+    { src: '/wow/lib-counter-day-800.jpg', alt: 'A live food counter beneath a pink and orange canopy' },
+    { src: '/wow/lib-red-canopy-800.jpg', alt: 'Food counters beneath a red canopy on the lawn' },
+    { src: '/wow/lib-bar-night-800.jpg', alt: 'A lit bar counter on the lawn at night' },
+    { src: '/wow/lib-banquet-florals-800.jpg', alt: 'A banquet table under a floral canopy' },
+  ],
+  entertainment: [
+    { src: '/home/stage-duet-800.jpg', alt: 'Two singers performing live on a purple-lit stage' },
+    { src: '/wow/lib-stage-magenta-800.jpg', alt: 'A singer and band on a magenta-lit stage' },
+    { src: '/wow/lib-stage-dancers-800.jpg', alt: 'Two dancers on stage under crossing beams of light' },
+    { src: '/home/band-trellis-800.jpg', alt: 'A band playing beneath a white trellis' },
+    { src: '/wow/lib-stage-ensemble-800.jpg', alt: 'An ensemble performing on the sangeet stage' },
+  ],
+}
+
 export const homeAtelierCards: AtelierCard[] = disciplines.map((discipline) => ({
   number: discipline.number,
   background: discipline.background,
@@ -51,6 +92,7 @@ export const homeAtelierCards: AtelierCard[] = disciplines.map((discipline) => (
   body: discipline.intro,
   image: homeCardImages[discipline.slug]?.image ?? discipline.photos.index.src,
   alt: homeCardImages[discipline.slug]?.alt ?? discipline.photos.index.alt,
+  gallery: homeCardGalleries[discipline.slug] ?? [],
   href: `/disciplines#${discipline.slug}`,
 }))
 
