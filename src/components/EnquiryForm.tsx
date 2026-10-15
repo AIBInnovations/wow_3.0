@@ -16,15 +16,7 @@ const CELEBRATIONS = [
 
 const GUESTS = ['Under 100', '100 – 250', '250 – 500', '500 +']
 
-/**
- * Where a submitted enquiry goes. Set NEXT_PUBLIC_ENQUIRY_ENDPOINT in Vercel to
- * a form service's URL (Formspree, for one) and enquiries are posted there as
- * JSON and arrive in the studio's inbox directly. Until then the form writes
- * the enquiry out as an email to the studio, in the visitor's own mail app.
- */
-const ENDPOINT = process.env.NEXT_PUBLIC_ENQUIRY_ENDPOINT
-
-type Status = 'idle' | 'sending' | 'sent' | 'drafted' | 'failed'
+type Status = 'idle' | 'sending' | 'sent' | 'drafted'
 
 /**
  * The enquiry form, as a panel over the page.
@@ -134,19 +126,19 @@ export default function EnquiryForm() {
     e.preventDefault()
     const data = Object.fromEntries(new FormData(e.currentTarget).entries()) as Record<string, string>
 
-    if (ENDPOINT) {
-      setStatus('sending')
-      try {
-        const res = await fetch(ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({ ...data, _subject: `Enquiry from ${data.name}` }),
-        })
-        setStatus(res.ok ? 'sent' : 'failed')
-      } catch {
-        setStatus('failed')
+    setStatus('sending')
+    try {
+      const res = await fetch('/api/enquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+      if (res.ok) {
+        setStatus('sent')
+        return
       }
-      return
+    } catch {
+      // fall through to the mailto draft below
     }
 
     const details = [
@@ -189,7 +181,7 @@ export default function EnquiryForm() {
           <h2 id={field('title')} className="enquiry_title">
             <Initial>{done ? 'Thank You' : closing.heading}</Initial>
           </h2>
-          <p className={`enquiry_note${done || status === 'failed' ? '' : ' is-intro'}`}>
+          <p className={`enquiry_note${done ? '' : ' is-intro'}`}>
             {status === 'sent'
               ? 'Your enquiry is with our studio. We will write to you shortly.'
               : status === 'drafted'
@@ -262,16 +254,9 @@ export default function EnquiryForm() {
               >
                 <span className="btn_main_text">{status === 'sending' ? 'Sending…' : 'Send enquiry'}</span>
               </button>
-              {status === 'failed' ? (
-                <p className="enquiry_error" role="alert">
-                  It did not go through. Please try again, or write to us at{' '}
-                  <a href={`mailto:${site.email}`}>{site.email}</a>.
-                </p>
-              ) : (
-                <p className="enquiry_alt">
-                  Or write to us at <a href={`mailto:${site.email}`}>{site.email}</a>
-                </p>
-              )}
+              <p className="enquiry_alt">
+                Or write to us at <a href={`mailto:${site.email}`}>{site.email}</a>
+              </p>
             </div>
           </form>
         )}
