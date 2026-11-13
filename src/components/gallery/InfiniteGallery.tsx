@@ -13,8 +13,6 @@ import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useSmoothScroll } from '@/providers/SmoothScrollProvider'
 import {
   ALL_SHOTS,
-  GALLERY_CATEGORIES,
-  GALLERY_SHOTS,
   galleryCopy,
   categoryLabel,
   largeSrc,
@@ -23,7 +21,7 @@ import {
 } from '@/data/gallery'
 
 /**
- * The gallery: a flat, endless grid of photographs, filtered by event.
+ * The gallery: a flat, endless grid of every photograph, panned in any direction.
  *
  * Every cell is the same size — a 4:5 portrait — so the rows and columns line
  * up exactly, edge to edge, however far the reader pans. A photograph is
@@ -35,9 +33,14 @@ import {
  * reaches an edge. The plane is always two cells wider and taller than the
  * viewport, which is what guarantees every visible slot is covered exactly once.
  *
+ * Which photograph sits in which cell is a lattice (see chooseLattice), picked
+ * for the screen so that the same photograph is never on screen twice where the
+ * set is large enough to avoid it, and is as far from itself as possible where
+ * it is not.
+ *
  * The pan is not React state. The offset lives in a ref and the frame loop
  * writes `transform` straight onto the tile nodes; React renders the tiles once
- * per category.
+ * per grid size.
  *
  * The page has no document scroll: the plane is fixed to the viewport and owns
  * the wheel, so the site's smooth scrolling is stopped while this is mounted
@@ -49,56 +52,167 @@ import {
 const GAP = 12
 const FRICTION = 0.93
 const CELL_RATIO = 5 / 4 // height / width
-const ALL = 'all'
+/** A lattice whose plane would need more tiles than this is passed over. */
+const MAX_TILES = 400
 
-// How many categories sit in the bar before the rest move under "More", per
-// width band. The classes below carry this to the stylesheet; see
-// `.gal__tab--hide-*` in styles/gallery.css.
-const INLINE = { xl: 6, lg: 4, md: 2 } as const
-
-type Geo = { cw: number; ch: number; cols: number; rows: number }
+/**
+ * How the set repeats across the plane. One copy of the set fills a block `p`
+ * cells wide and `q` tall; copies sit side by side, and each band of `q` rows is
+ * slid `a` cells along from the band above. The copies of any one photograph
+ * are therefore exactly the steps m·(p, 0) + k·(a, q) apart.
+ */
+type Lattice = { p: number; q: number; a: number }
+type Geo = Lattice & { cw: number; ch: number; cols: number; rows: number }
 type Cell = { shot: GalleryShot; col: number; row: number }
 
 function gcd(a: number, b: number): number {
   return b ? gcd(b, a % b) : a
 }
 
+/** The block index of the photograph at a plane cell. */
+function blockIndex({ p, q, a }: Lattice, col: number, row: number) {
+  const band = Math.floor(row / q)
+  const r = row - band * q
+  const c = (((col - band * a) % p) + p) % p
+  return r * p + c
+}
+
 /**
- * Fill the plane's cells from the photographs. When there are more cells than
- * photographs the list is walked again, each pass with a different stride
- * through it (co-prime with its length, so every photograph still appears once
- * per pass): a repeat then never sits in the same arrangement as the pass
- * before, and the grid does not read as a tiled wallpaper.
+ * The plane must hold whole periods of the lattice in both directions or the
+ * wrap would show a seam: its width a multiple of p, and its height a multiple
+ * of the bands it takes for the slide to come back round to zero.
  */
-function buildCells(list: GalleryShot[], cols: number, rows: number): Cell[] {
+function planeSize({ p, q, a }: Lattice, needCols: number, needRows: number) {
+  const unitRows = q * (p / gcd(a, p))
+  return {
+    cols: Math.ceil(needCols / p) * p,
+    rows: Math.ceil(needRows / unitRows) * unitRows,
+  }
+}
+
+/**
+ * Picks the lattice that keeps each photograph furthest from its own copies,
+ * measured against the screen.
+ *
+ * `spanX` and `spanY` are how many columns and rows apart two cells can be and
+ * still both show, in part, on one screen (see measureGeo). A step of (dx, dy) cells is scored
+ * max(|dx| / spanX, |dy| / spanY): at 1 or more its two copies can never be on
+ * screen together. The lattice with the highest score for its shortest step
+ * wins; ties go to the longer straight-line step (copies diagonally apart rather
+ * than straight below), then to the smaller plane.
+ */
+function chooseLattice(n: number, spanX: number, spanY: number, needCols: number, needRows: number) {
+  let best: (Lattice & { reach: number; dist: number; tiles: number }) | null = null
+  for (let q = 1; q <= n; q++) {
+    if (n % q) continue
+    const p = n / q
+    for (let a = 0; a < p; a++) {
+      const { cols, rows } = planeSize({ p, q, a }, needCols, needRows)
+      const tiles = cols * rows
+      if (tiles > MAX_TILES && best) continue
+      // the step straight along, then one per band down; beyond the point where
+      // the vertical part alone outscores the shortest so far, none can be shorter
+      let reach = p / spanX
+      let dist = reach
+      for (let k = 1; (k * q) / spanY < dist; k++) {
+        const r = (k * a) % p
+        const fx = Math.min(r, p - r) / spanX
+        const fy = (k * q) / spanY
+        reach = Math.min(reach, Math.max(fx, fy))
+        dist = Math.min(dist, Math.hypot(fx, fy))
+      }
+      // past 1 nothing is ever on screen twice, so more distance buys nothing
+      reach = Math.min(reach, 1)
+      dist = Math.min(dist, 1)
+      const better =
+        !best ||
+        (best.tiles > MAX_TILES && tiles <= MAX_TILES) ||
+        reach > best.reach + 0.01 ||
+        (reach > best.reach - 0.01 &&
+          (dist > best.dist + 0.05 || (dist > best.dist - 0.05 && tiles < best.tiles)))
+      if (better) best = { p, q, a, reach, dist, tiles }
+    }
+  }
+  return { p: best!.p, q: best!.q, a: best!.a }
+}
+
+/**
+ * Orders the set within its block so that photographs from the same event touch
+ * as rarely as possible — across the block's edges too, since the block repeats.
+ * It starts from the list's own even spread and keeps any swap of two cells that
+ * lowers the number of same-event neighbours, until no swap does. Deterministic,
+ * so a given screen always gets the same arrangement.
+ */
+function arrange(list: GalleryShot[], lattice: Lattice): GalleryShot[] {
+  const { p } = lattice
   const n = list.length
-  if (!n) return []
-  const strides: number[] = []
-  for (let s = 1; strides.length < 8 && s <= n * 2 + 1; s++) if (gcd(s, n) === 1) strides.push(s)
+  const pairs: [number, number][] = []
+  for (let i = 0; i < n; i++) {
+    const col = i % p
+    const row = Math.floor(i / p)
+    pairs.push([i, blockIndex(lattice, col + 1, row)], [i, blockIndex(lattice, col, row + 1)])
+  }
+  const order = [...list]
+  const clashes = () => pairs.reduce((sum, [x, y]) => sum + (order[x].cat === order[y].cat ? 1 : 0), 0)
+  let current = clashes()
+  for (let improved = true; improved && current > 0; ) {
+    improved = false
+    for (let i = 0; i < n; i++) {
+      for (let j = i + 1; j < n; j++) {
+        if (order[i].cat === order[j].cat) continue
+        ;[order[i], order[j]] = [order[j], order[i]]
+        const next = clashes()
+        if (next < current) {
+          current = next
+          improved = true
+        } else {
+          ;[order[i], order[j]] = [order[j], order[i]]
+        }
+      }
+    }
+  }
+  return order
+}
+
+function buildCells(geo: Geo): Cell[] {
+  const order = arrange(ALL_SHOTS, geo)
   const cells: Cell[] = []
-  for (let i = 0; i < cols * rows; i++) {
-    const pass = Math.floor(i / n)
-    const stride = strides[pass % strides.length]
-    const j = ((i % n) * stride + pass * 3) % n
-    cells.push({ shot: list[j], col: i % cols, row: Math.floor(i / cols) })
+  for (let row = 0; row < geo.rows; row++) {
+    for (let col = 0; col < geo.cols; col++) {
+      cells.push({ shot: order[blockIndex(geo, col, row)], col, row })
+    }
   }
   return cells
 }
 
-function measureGeo(w: number, h: number, count: number): Geo {
-  const cw = w < 560 ? Math.floor((w - GAP * 3) / 2) : w < 951 ? 210 : w < 1440 ? 240 : 270
+function measureGeo(w: number, h: number): Geo {
+  // Larger screens get larger tiles rather than more of them: about four
+  // columns on a tablet and six to seven on a desktop, so the set fills a
+  // screen without any photograph needing to show twice.
+  const cw =
+    w < 560
+      ? Math.floor((w - GAP * 3) / 2)
+      : w < 951
+        ? Math.min(240, Math.max(210, Math.round(w / 3.4)))
+        : w < 1440
+          ? 240
+          : Math.max(270, Math.min(400, Math.round(w / 6.4)))
   const ch = Math.round(cw * CELL_RATIO)
-  const cols = Math.ceil(w / (cw + GAP)) + 2
-  // never fewer cells than photographs, or some of them would never be shown
-  const rows = Math.max(Math.ceil(h / (ch + GAP)) + 2, Math.ceil(count / cols))
-  return { cw, ch, cols, rows }
+  const stepX = cw + GAP
+  const stepY = ch + GAP
+  const needCols = Math.ceil(w / stepX) + 2
+  const needRows = Math.ceil(h / stepY) + 2
+  // How far apart two tiles can be and both show at least a quarter of their
+  // width (or height): a thinner sliver at the edge does not read as a repeat.
+  const spanX = (w + cw / 2) / stepX
+  const spanY = (h + ch / 2) / stepY
+  const lattice = chooseLattice(ALL_SHOTS.length, spanX, spanY, needCols, needRows)
+  return { cw, ch, ...lattice, ...planeSize(lattice, needCols, needRows) }
 }
 
 export default function InfiniteGallery() {
   const rootRef = useRef<HTMLDivElement>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
-  const tabsRef = useRef<HTMLElement>(null)
-  const moreRef = useRef<HTMLDivElement>(null)
   const nodes = useRef<(HTMLButtonElement | null)[]>([])
   const offset = useRef({ x: -GAP, y: -GAP })
   const painted = useRef({ x: NaN, y: NaN, key: '' })
@@ -111,28 +225,16 @@ export default function InfiniteGallery() {
   const last = useRef({ x: 0, y: 0 })
   const raf = useRef<number | null>(null)
 
-  const [cat, setCat] = useState<string>(ALL)
   const [geo, setGeo] = useState<Geo | null>(null)
   const [open, setOpen] = useState<number | null>(null)
-  const [moreOpen, setMoreOpen] = useState(false)
   const openRef = useRef<number | null>(null)
   openRef.current = open
 
   const { start, stop } = useSmoothScroll()
 
-  // "Gallery" interleaves the events, so the first screen shows a little of each
-  const list = useMemo(
-    () => (cat === ALL ? ALL_SHOTS : GALLERY_SHOTS.filter((s) => s.cat === cat)),
-    [cat]
-  )
-  const listRef = useRef(list)
-  listRef.current = list
-
-  const cells = useMemo(() => (geo ? buildCells(list, geo.cols, geo.rows) : []), [list, geo])
+  const cells = useMemo(() => (geo ? buildCells(geo) : []), [geo])
   const cellsRef = useRef(cells)
   cellsRef.current = cells
-
-  const catIndex = GALLERY_CATEGORIES.findIndex((c) => c.slug === cat)
 
   // The plane owns the wheel and the page has nothing to scroll, so the site's
   // smooth scrolling is paused and the document locked for as long as this
@@ -168,57 +270,35 @@ export default function InfiniteGallery() {
     return () => ro.disconnect()
   }, [])
 
-  // The category lives in the hash, so a link to /gallery#sufi-night opens on
-  // that event. Read before the first paint, so the plane never shows "Gallery"
-  // for a frame before switching.
-  useIsomorphicLayoutEffect(() => {
-    const fromHash = () => {
-      const h = decodeURIComponent(window.location.hash.slice(1))
-      setCat(GALLERY_CATEGORIES.some((c) => c.slug === h) ? h : ALL)
-    }
-    fromHash()
-    window.addEventListener('hashchange', fromHash)
-    return () => window.removeEventListener('hashchange', fromHash)
-  }, [])
-
-  const choose = useCallback((slug: string) => {
-    setMoreOpen(false)
-    setOpen(null)
-    offset.current = { x: -GAP, y: -GAP }
-    velocity.current = { x: 0, y: 0 }
-    setCat(slug)
-    const url = slug === ALL ? window.location.pathname : `#${slug}`
-    window.history.replaceState(null, '', url)
-  }, [])
-
-  // On a phone the tabs are one row that scrolls sideways: bring the chosen
-  // event into view, whether it was tapped or came from the hash.
-  useEffect(() => {
-    const tabs = tabsRef.current
-    const btn = tabs?.querySelector<HTMLElement>('.gal__tab.is-active')
-    if (!tabs || !btn || tabs.scrollWidth <= tabs.clientWidth) return
-    tabs.scrollTo({ left: Math.max(0, btn.offsetLeft - (tabs.clientWidth - btn.offsetWidth) / 2) })
-  }, [cat])
-
   useIsomorphicLayoutEffect(() => {
     const wrap = wrapRef.current
     if (!wrap) return
     const measure = () => {
-      const next = measureGeo(wrap.clientWidth, wrap.clientHeight, listRef.current.length)
+      const next = measureGeo(wrap.clientWidth, wrap.clientHeight)
       // only a real change re-renders: the observer also fires for sizes that land on the same grid
-      setGeo((g) => (g && g.cw === next.cw && g.cols === next.cols && g.rows === next.rows ? g : next))
+      setGeo((g) =>
+        g &&
+        g.cw === next.cw &&
+        g.cols === next.cols &&
+        g.rows === next.rows &&
+        g.p === next.p &&
+        g.q === next.q &&
+        g.a === next.a
+          ? g
+          : next
+      )
     }
     measure()
     const ro = new ResizeObserver(measure)
     ro.observe(wrap)
     return () => ro.disconnect()
-  }, [list.length])
+  }, [])
 
   /** Place every tile at its wrapped slot. Only runs when the offset or the grid changed. */
   const paint = useCallback(() => {
     if (!geo) return
     const { x: ox, y: oy } = offset.current
-    const key = `${cat}|${geo.cw}|${geo.cols}|${geo.rows}`
+    const key = `${geo.cw}|${geo.cols}|${geo.rows}`
     const p = painted.current
     if (p.x === ox && p.y === oy && p.key === key) return
     painted.current = { x: ox, y: oy, key }
@@ -237,7 +317,7 @@ export default function InfiniteGallery() {
       // rounded once, from the one shared offset, so every gap on screen is the same width
       node.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(y)}px, 0)`
     })
-  }, [geo, cat])
+  }, [geo])
 
   // the frame loop: momentum when not dragging, then paint
   useEffect(() => {
@@ -302,7 +382,7 @@ export default function InfiniteGallery() {
       if (idx < 0 || !cell || at - openedAt.current < 500) return
       openedAt.current = at
       velocity.current = { x: 0, y: 0 }
-      setOpen(listRef.current.indexOf(cell.shot))
+      setOpen(ALL_SHOTS.indexOf(cell.shot))
     }
     const move = (e: PointerEvent) => {
       if (!dragging.current) return
@@ -392,11 +472,11 @@ export default function InfiniteGallery() {
     }
   }, [])
 
-  // lightbox keys: Escape closes, the arrows step through the current event
+  // lightbox keys: Escape closes, the arrows step through the set
   useEffect(() => {
     if (open === null) return
     const onKey = (e: KeyboardEvent) => {
-      const n = listRef.current.length
+      const n = ALL_SHOTS.length
       if (e.key === 'Escape') setOpen(null)
       if (e.key === 'ArrowRight') setOpen((i) => (i === null ? i : (i + 1) % n))
       if (e.key === 'ArrowLeft') setOpen((i) => (i === null ? i : (i - 1 + n) % n))
@@ -405,59 +485,10 @@ export default function InfiniteGallery() {
     return () => window.removeEventListener('keydown', onKey)
   }, [open])
 
-  // the More menu closes on a press anywhere outside it, and on Escape
-  useEffect(() => {
-    if (!moreOpen) return
-    const away = (e: PointerEvent) => {
-      if (!moreRef.current?.contains(e.target as Node)) setMoreOpen(false)
-    }
-    const esc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setMoreOpen(false)
-    }
-    window.addEventListener('pointerdown', away)
-    window.addEventListener('keydown', esc)
-    return () => {
-      window.removeEventListener('pointerdown', away)
-      window.removeEventListener('keydown', esc)
-    }
-  }, [moreOpen])
-
-  const tabClass = (i: number) =>
-    [
-      'gal__tab',
-      i >= INLINE.xl ? 'gal__tab--hide-xl' : '',
-      i >= INLINE.lg ? 'gal__tab--hide-lg' : '',
-      i >= INLINE.md ? 'gal__tab--hide-md' : '',
-      GALLERY_CATEGORIES[i].slug === cat ? 'is-active' : '',
-    ]
-      .filter(Boolean)
-      .join(' ')
-
-  const itemClass = (i: number) =>
-    [
-      'gal__menu-item',
-      i < INLINE.xl ? 'gal__menu-item--in-xl' : '',
-      i < INLINE.lg ? 'gal__menu-item--in-lg' : '',
-      i < INLINE.md ? 'gal__menu-item--in-md' : '',
-    ]
-      .filter(Boolean)
-      .join(' ')
-
-  // "More" reads as active when the chosen event is one of those tucked inside it
-  const moreClass = [
-    'gal__tab gal__more-btn',
-    catIndex >= INLINE.xl ? 'is-active-xl' : '',
-    catIndex >= INLINE.lg ? 'is-active-lg' : '',
-    catIndex >= INLINE.md ? 'is-active-md' : '',
-    moreOpen ? 'is-open' : '',
-  ]
-    .filter(Boolean)
-    .join(' ')
-
-  const current = open !== null ? list[open] : null
+  const current = open !== null ? ALL_SHOTS[open] : null
   const step = (d: number) => (e: ReactMouseEvent) => {
     e.stopPropagation()
-    setOpen((i) => (i === null ? i : (i + d + list.length) % list.length))
+    setOpen((i) => (i === null ? i : (i + d + ALL_SHOTS.length) % ALL_SHOTS.length))
   }
 
   return (
@@ -469,63 +500,9 @@ export default function InfiniteGallery() {
           {galleryCopy.credit[1]}
         </p>
 
-        <nav ref={tabsRef} className="gal__tabs" aria-label="Events">
-          <button
-            type="button"
-            className={`gal__tab${cat === ALL ? ' is-active' : ''}`}
-            aria-pressed={cat === ALL}
-            onClick={() => choose(ALL)}
-          >
-            {galleryCopy.all}
-          </button>
-          {GALLERY_CATEGORIES.map((c, i) => (
-            <button
-              type="button"
-              key={c.slug}
-              className={tabClass(i)}
-              aria-pressed={c.slug === cat}
-              onClick={() => choose(c.slug)}
-            >
-              {i + 1}. {c.label}
-            </button>
-          ))}
+        <h1 className="gal__heading">{galleryCopy.title}</h1>
 
-          <div className="gal__more" ref={moreRef}>
-            <button
-              type="button"
-              className={moreClass}
-              aria-expanded={moreOpen}
-              aria-haspopup="true"
-              onClick={() => setMoreOpen((o) => !o)}
-            >
-              {galleryCopy.more}
-              <svg viewBox="0 0 12 8" aria-hidden="true" focusable="false">
-                <path d="M1 1.5 6 6.5l5-5" fill="none" stroke="currentColor" strokeWidth="1.2" />
-              </svg>
-            </button>
-            {moreOpen && (
-              <ul className="gal__menu">
-                {GALLERY_CATEGORIES.map((c, i) => (
-                  <li className={itemClass(i)} key={c.slug}>
-                    <button
-                      type="button"
-                      className={c.slug === cat ? 'is-active' : ''}
-                      onClick={() => choose(c.slug)}
-                    >
-                      {i + 1}. {c.label}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </nav>
-
-        <p className="gal__count">
-          {list.length} {galleryCopy.countNoun}
-          <span aria-hidden="true"> · </span>
-          {galleryCopy.hint}
-        </p>
+        <p className="gal__hint">{galleryCopy.hint}</p>
       </div>
 
       <div
@@ -540,7 +517,7 @@ export default function InfiniteGallery() {
             <button
               type="button"
               className="gal__tile"
-              key={`${cat}-${i}`}
+              key={i}
               ref={(el) => {
                 nodes.current[i] = el
               }}
@@ -548,9 +525,8 @@ export default function InfiniteGallery() {
               aria-label={`Open photograph: ${categoryLabel(c.shot.cat)}`}
               tabIndex={-1}
             >
-              {/* lazy: the plane holds every photograph of the event, but only
-                  the cells near the viewport need to load; the rest arrive as
-                  the reader pans toward them */}
+              {/* lazy: only the cells near the viewport need to load; the rest
+                  arrive as the reader pans toward them */}
               <img src={smallSrc(c.shot.id)} alt="" draggable={false} loading="lazy" decoding="async" />
             </button>
           ))}
@@ -580,7 +556,7 @@ export default function InfiniteGallery() {
             <p className="gal__caption">
               {categoryLabel(current.cat)}
               <span>
-                {open! + 1} / {list.length}
+                {open! + 1} / {ALL_SHOTS.length}
               </span>
             </p>
             <button

@@ -13,8 +13,12 @@
  * load. Files are /gallery/<id>-s.webp (650px on the long side) for the grid and
  * /gallery/<id>-l.webp (1400px) for the lightbox.
  *
- * The bar's strings are the main site's own: the photographer's credit, the
- * "Gallery" tab that shows every event, and the count line under the tabs.
+ * The page shows every photograph on one plane: no filter tabs. Each shot keeps
+ * its category, which orders the plane (see ALL_SHOTS) and captions the
+ * lightbox.
+ *
+ * The bar's strings: the photographer's credit, the page's title and the
+ * hint.
  */
 
 export type GalleryCategory = { slug: string; label: string }
@@ -23,12 +27,9 @@ export type GalleryShot = { id: string; ar: number; cat: string }
 export const galleryCopy = {
   /** Two lines: who took the photographs. */
   credit: ['Photos by', 'Badal Raja Company'],
-  /** The tab that shows every event. */
-  all: 'Gallery',
-  /** The tab the overflow of events tucks under. */
-  more: 'More',
-  /** "N photographs · Drag to explore" */
-  countNoun: 'photographs',
+  /** The page's title, in the bar. */
+  title: 'Gallery',
+  /** How to move through the plane. */
   hint: 'Drag to explore',
 }
 
@@ -71,18 +72,21 @@ export const GALLERY_SHOTS: GalleryShot[] = [
 ]
 
 /**
- * The "All" view interleaves the categories round-robin, so no run of neighbouring
- * tiles comes from one room — the same principle the home gallery follows.
+ * The plane's order: every category spread evenly through the list, so no run
+ * of neighbouring tiles comes from one room — the same principle the home
+ * gallery follows.
+ *
+ * Each shot is placed at the middle of its share of the list — the k-th of a
+ * category's n shots at (k + 0.5) / n — and the list is sorted by that place.
+ * A plain round-robin ran out of the small categories first and left the large
+ * one (Décor, 11 of 24) as a solid block at the end.
  */
-export const ALL_SHOTS: GalleryShot[] = (() => {
-  const byCat = GALLERY_CATEGORIES.map((c) => GALLERY_SHOTS.filter((s) => s.cat === c.slug))
-  const out: GalleryShot[] = []
-  const longest = Math.max(...byCat.map((l) => l.length))
-  for (let i = 0; i < longest; i++) {
-    for (const list of byCat) if (list[i]) out.push(list[i])
-  }
-  return out
-})()
+export const ALL_SHOTS: GalleryShot[] = GALLERY_CATEGORIES.flatMap((c, ci) => {
+  const own = GALLERY_SHOTS.filter((s) => s.cat === c.slug)
+  return own.map((shot, k) => ({ shot, at: (k + 0.5) / own.length, ci }))
+})
+  .sort((x, y) => x.at - y.at || x.ci - y.ci)
+  .map((e) => e.shot)
 
 export const categoryLabel = (slug: string) =>
   GALLERY_CATEGORIES.find((c) => c.slug === slug)?.label ?? ''

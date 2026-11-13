@@ -6,15 +6,14 @@ import { site } from '@/data/content'
 export const metadata: Metadata = {
   title: `Gallery — ${site.name}`,
   description:
-    'Photographs from the studio\'s celebrations — the rooms, the installations and '
-    + 'the details, by event: arrival, sufi night, mehendi, haldi, sangeet, wedding '
-    + 'and the rest.',
+    'Photographs from the studio\'s celebrations — the décor, the stages and '
+    + 'entertainment, the moments, the details and the venues.',
 }
 
 /**
- * The gallery: an endless, evenly aligned grid of photographs the reader pans
- * through in any direction, filtered by event from the bar at the top (see
- * InfiniteGallery).
+ * The gallery: an endless, evenly aligned grid of every photograph, which the
+ * reader pans through in any direction (see InfiniteGallery). The page's h1 is
+ * the title in the gallery's own bar.
  *
  * Deliberately without the closing band and the footer. The plane is fixed to
  * the viewport and owns the wheel — this page has no vertical scroll to give
@@ -26,7 +25,6 @@ export default function Gallery() {
     <>
       <Navigation />
       <main className="page_main">
-        <h1 className="gal__title">Gallery</h1>
         <InfiniteGallery />
       </main>
     </>
