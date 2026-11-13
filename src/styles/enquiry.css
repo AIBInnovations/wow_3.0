@@ -1,6 +1,6 @@
 /*
  * The enquiry form (EnquiryForm.tsx), set as the closing card is: the wine
- * ground, the script-initialled heading, the italic note, cream type with gold
+ * ground, the heading with its italic capital, the italic note, cream type with gold
  * details, and the site's pill button.
  *
  * A compact card centred over the darkened page, sized to fit the screen with
@@ -109,10 +109,10 @@
   opacity: 1;
 }
 
-/* The script S rises above its line; the padding holds it inside the heading. */
+/* The opening capital reaches above its line; the padding holds it inside the heading. */
 .enquiry_title {
   margin: 0;
-  padding-top: 0.45em;
+  padding-top: var(--initial-reach);
   font-family: var(--font--primary-family);
   font-size: clamp(1.75rem, 7.5vw, 2.4rem);
   font-weight: 400;

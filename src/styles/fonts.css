@@ -1,58 +1,18 @@
 /*
- * Brand faces, taken from the WOW brand deck and self-hosted.
+ * The site's family tokens, filled from the brand faces.
  *
- * Playfair Display sets headings; EB Garamond sets statement copy and small
- * labels; Parisienne sets the script capital that opens a heading — the formal
- * copperplate initial the deck uses. All three are SIL Open Font Licence, with
- * their notices beside the files in public/fonts. Each is a latin subset covering basic Latin — verify with
- * fontTools before swapping a file, because a subset missing the ASCII range
- * fails silently, one letter at a time.
+ * The faces themselves load through next/font (src/fonts/fonts.ts), which puts
+ * --font-playfair and --font-garamond on <html>. Every stylesheet reads the
+ * four tokens below, never a family name, so the whole site sets in exactly
+ * these two families on every device.
+ *
+ * The opening capital of a heading (.initial, see typography.css) is the
+ * display face's own italic, so a heading is one family from its first letter
+ * to its last.
  */
-
-@font-face {
-  font-family: 'Playfair Display';
-  font-style: normal;
-  font-weight: 400 900;
-  font-display: swap;
-  src: url('/fonts/playfairdisplay-latin.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Playfair Display';
-  font-style: italic;
-  font-weight: 400 900;
-  font-display: swap;
-  src: url('/fonts/playfairdisplay-italic-latin.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'EB Garamond';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/ebgaramond-latin.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'EB Garamond';
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/ebgaramond-italic-latin.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Parisienne';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/parisienne-latin.woff2') format('woff2');
-}
-
-/* The family tokens site.css declares, repointed at the brand faces. */
 :root {
-  --font--primary-family: 'Playfair Display', Georgia, serif;
-  --font--body: 'EB Garamond', Georgia, serif;
-  --font--inherit: 'EB Garamond', Georgia, serif;
-  --font--initial: 'Parisienne', 'Playfair Display', cursive;
+  --font--primary-family: var(--font-playfair);
+  --font--body: var(--font-garamond);
+  --font--inherit: var(--font-garamond);
+  --font--initial: var(--font-playfair);
 }

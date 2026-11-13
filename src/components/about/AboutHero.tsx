@@ -6,7 +6,6 @@ import { gsap, registerGsap } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useFontsReady } from '@/hooks/useFontsReady'
-import { unwrapInitials } from '@/hooks/useSplitText'
 import Initial from '@/components/Initial'
 import { aboutHero, type HeroPhrase } from '@/data/about'
 
@@ -17,7 +16,7 @@ import { aboutHero, type HeroPhrase } from '@/data/about'
  * The load sequence, on one timeline:
  *
  *   0.30s  first headline row rises word by word from beneath its line clip,
- *          its script initial fading up in place
+ *          its italic opening capital rising as the first word
  *   0.60s  second row, then 0.90s the third
  *   1.60s  kicker rises out of its clip
  *   1.80s  paragraph lines rise, fading in, a short stagger apart
@@ -62,9 +61,6 @@ export default function AboutHero() {
       }
     }
 
-    // The script initial leaves the word masks; it fades in with its row.
-    rows.forEach((row) => unwrapInitials(row))
-
     // Deep descenders would otherwise be cut by the line clip mid-rise.
     for (const split of rowSplits) {
       for (const word of (split.words ?? []) as HTMLElement[]) {
@@ -87,7 +83,6 @@ export default function AboutHero() {
         const words = names.flatMap((name) => gsap.utils.toArray<HTMLElement>(`[data-hero-row="${name}"] .word`))
         tl.from(words, { yPercent: 100, stagger: 0.1, ease: 'power3.out', duration: 2 }, 0.3 + i * 0.3)
       })
-      tl.from('.about-hero_top-row_text .initial', { opacity: 0, yPercent: 12, ease: 'power3.out', duration: 2 }, 0.3)
 
       tl.from('.about-hero_kicker_txt', { yPercent: 100, ease: 'power3.out', duration: 1.5 }, 1.6)
       tl.from('.p-line-inner', { yPercent: 100, opacity: 0, stagger: 0.05, ease: 'power3.out', duration: 1.5 }, 1.8)
@@ -173,7 +168,7 @@ export default function AboutHero() {
   )
 }
 
-/** One phrase of the headline. Only the opening phrase carries the script initial. */
+/** One phrase of the headline. Only the opening phrase carries the italic capital. */
 function Phrase({ row, phrase, extra, initial }: { row: string; phrase: HeroPhrase; extra?: string; initial?: boolean }) {
   const className = ['about-hero_top-row_text', extra ?? ''].filter(Boolean).join(' ')
   return (

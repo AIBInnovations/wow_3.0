@@ -173,8 +173,8 @@
   display: block;
 }
 
-/* Each row clips its rising line; the clip is widened upward where the script
-   initial's loop rises above the line box, and the space handed back. */
+/* Each row clips its rising line; the clip is widened upward where the opening
+   capital reaches above the line box, and the space handed back. */
 .cel-hero_row .line {
   overflow: hidden;
   padding-bottom: 0.12em;
@@ -182,8 +182,8 @@
 }
 
 .cel-hero_row .line:has(.initial) {
-  padding-top: 0.45em;
-  margin-top: -0.45em;
+  padding-top: var(--initial-reach);
+  margin-top: calc(-1 * var(--initial-reach));
 }
 
 .cel-hero_p {

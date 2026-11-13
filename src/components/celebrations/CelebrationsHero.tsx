@@ -6,7 +6,6 @@ import { gsap, registerGsap } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useFontsReady } from '@/hooks/useFontsReady'
-import { unwrapInitials } from '@/hooks/useSplitText'
 import Initial from '@/components/Initial'
 import { INTRO } from '@/data/celebrations'
 
@@ -62,17 +61,12 @@ export default function CelebrationsHero() {
 
     const rowInners = rowSplits.flatMap((s) => wrapLines((s.lines ?? []) as HTMLElement[]))
     const paraInners = paraSplit ? wrapLines((paraSplit.lines ?? []) as HTMLElement[]) : []
-    // The script initial leaves any word mask; it fades in with its row.
-    const initials = rows.flatMap((row) => unwrapInitials(row))
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline()
       tl.set('.hw', { autoAlpha: 1 })
       tl.from('.cel-hero_label-inner', { yPercent: 100, duration: 1.5, ease: 'power3.out' }, 0.2)
       tl.from(rowInners, { yPercent: 100, duration: 2, ease: 'power3.out', stagger: 0.2 }, 0.4)
-      if (initials.length) {
-        tl.from(initials, { opacity: 0, yPercent: 12, duration: 2, ease: 'power3.out' }, 0.4)
-      }
       if (paraInners.length) {
         tl.from(paraInners, { yPercent: 100, opacity: 0, duration: 1.5, ease: 'power3.out', stagger: 0.06 }, 1.4)
       }

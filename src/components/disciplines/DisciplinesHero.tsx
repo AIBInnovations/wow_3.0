@@ -6,7 +6,6 @@ import { gsap, registerGsap } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useFontsReady } from '@/hooks/useFontsReady'
-import { unwrapInitials } from '@/hooks/useSplitText'
 import Initial from '@/components/Initial'
 import { disciplinesHero } from '@/data/disciplines'
 
@@ -16,8 +15,8 @@ import { disciplinesHero } from '@/data/disciplines'
  * The load sequence, on one timeline:
  *
  *   0.20s  the label rises out of its clip
- *   0.40s  the first headline row rises word by word, its script initial fading
- *          up in place; 0.65s the second row
+ *   0.40s  the first headline row rises word by word, its italic opening
+ *          capital first; 0.65s the second row
  *   1.30s  the statement's lines rise, fading in, a short stagger apart
  */
 export default function DisciplinesHero() {
@@ -56,7 +55,6 @@ export default function DisciplinesHero() {
         line.appendChild(inner)
       }
     }
-    rows.forEach((row) => unwrapInitials(row))
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline()
@@ -66,7 +64,6 @@ export default function DisciplinesHero() {
         const words = row.querySelectorAll('.word')
         tl.from(words, { yPercent: 100, stagger: 0.08, ease: 'power3.out', duration: 2 }, 0.4 + i * 0.25)
       })
-      tl.from('.disc-hero_title .initial', { opacity: 0, yPercent: 12, ease: 'power3.out', duration: 2 }, 0.4)
       tl.from('.p-line-inner', { yPercent: 100, opacity: 0, stagger: 0.06, ease: 'power3.out', duration: 1.5 }, 1.3)
     }, section)
 

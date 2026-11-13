@@ -6,7 +6,7 @@ import { gsap, registerGsap } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useFontsReady } from '@/hooks/useFontsReady'
-import { useLineAnimation, unwrapInitials } from '@/hooks/useSplitText'
+import { useLineAnimation } from '@/hooks/useSplitText'
 import Initial from '@/components/Initial'
 import type { Discipline, Photo } from '@/data/disciplines'
 import { scrollToChapter } from './scrollToChapter'
@@ -57,7 +57,6 @@ export default function DisciplineChapter({ discipline, next }: { discipline: Di
         inners.push(inner)
       }
     }
-    const initials = lines.flatMap((line) => unwrapInitials(line))
 
     const ctx = gsap.context(() => {
       const opener = q('.disc-opener')[0]
@@ -85,15 +84,12 @@ export default function DisciplineChapter({ discipline, next }: { discipline: Di
         }
       )
 
-      // The statement rises line by line, its script initial fading in place.
+      // The statement rises line by line, its opening capital with it.
       gsap.set('.disc-chapter_statement', { autoAlpha: 1 })
       const statement = gsap.timeline({
         scrollTrigger: { trigger: '.disc-chapter_statement', start: 'top 80%', once: true },
       })
       statement.from(inners, { yPercent: 100, duration: 2, stagger: 0.2, ease: 'power3.out' })
-      if (initials.length) {
-        statement.from(initials, { opacity: 0, yPercent: 12, duration: 2, ease: 'power3.out' }, 0)
-      }
 
       // The two photographs wipe up as they enter, then drift at different rates.
       const figures = q('.disc-double figure') as HTMLElement[]

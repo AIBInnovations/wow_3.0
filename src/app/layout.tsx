@@ -3,6 +3,7 @@ import './globals.css'
 import { SmoothScrollProvider } from '@/providers/SmoothScrollProvider'
 import { site } from '@/data/content'
 import EnquiryForm from '@/components/EnquiryForm'
+import { garamond, playfair } from '@/fonts/fonts'
 
 export const metadata: Metadata = {
   title: site.title,
@@ -62,7 +63,7 @@ const stableViewport = `(function () {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${playfair.variable} ${garamond.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: stableViewport }} />
       </head>

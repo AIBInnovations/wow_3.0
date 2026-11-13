@@ -106,11 +106,11 @@
   margin-bottom: -0.08em;
 }
 
-/* The script initial's upper loop rises above its line; widen the clip for it
-   and hand the space back, exactly as the home headings do. */
+/* The opening capital reaches above its line; widen the clip for it and hand
+   the space back, exactly as the home headings do (see typography.css). */
 .disc-hero_title .line:has(.initial) {
-  padding-top: 0.45em;
-  margin-top: -0.45em;
+  padding-top: var(--initial-reach);
+  margin-top: calc(-1 * var(--initial-reach));
 }
 
 .disc-hero_statement {
@@ -323,8 +323,8 @@
 }
 
 .disc-chapter_statement .line:has(.initial) {
-  padding-top: 0.45em;
-  margin-top: -0.45em;
+  padding-top: var(--initial-reach);
+  margin-top: calc(-1 * var(--initial-reach));
 }
 
 .disc-chapter_intro {

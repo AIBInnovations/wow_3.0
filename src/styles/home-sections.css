@@ -612,11 +612,11 @@
 }
 
 /*
- * The script capital stands taller than its line and its top swash rose under
- * the number strip above, which cut it off. This is the room it needs.
+ * The opening capital stands taller than its line and would rise under the
+ * number strip above, which would cut it off. This is the room it needs.
  */
 .home-atelier_card_title.u-text-display {
-  padding-top: 0.3em;
+  padding-top: var(--initial-reach);
 }
 
 .home-atelier_card_link {
@@ -719,7 +719,7 @@
   text-align: center;
 }
 
-/* The kicker sat on the script initial's ascender; this lifts it clear. */
+/* Room between the kicker and the taller opening capital of the title. */
 .home-reels_head .kicker {
   margin-bottom: 0.75rem;
 }
@@ -1178,14 +1178,13 @@
 }
 
 /*
- * The script D rises about half its size above the line. A line with an
- * initial is widened upward by 0.45em to hold it (typography.css); the
- * padding gives that room inside the heading, so it can never reach what
- * sits above.
+ * The opening capital reaches above the line. A line with a capital is
+ * widened upward by --initial-reach to hold it (typography.css); the padding
+ * gives that room inside the heading, so it can never reach what sits above.
  */
 .days_title {
   margin: 0;
-  padding-top: 0.45em;
+  padding-top: var(--initial-reach);
   font-family: var(--font--primary-family);
   font-size: var(--step-6);
   font-weight: 400;
