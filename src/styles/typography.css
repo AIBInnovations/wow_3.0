@@ -268,8 +268,8 @@
 
 /*
  * A heading's opening capital (.initial, below) stands taller than the capitals
- * beside it, and the tallest of them (the T) reaches a little above the line
- * box. Each line clip that holds one is widened upward by --initial-reach so
+ * beside it, and in a tightly leaded heading its top reaches a little above
+ * the line box. Each line clip that holds one is widened upward by --initial-reach so
  * the letter is never cut; the negative margin hands the space back, so the
  * layout does not move. Widening the top exposes nothing early: a line's
  * content rises into its clip from below.
@@ -293,25 +293,28 @@
 /* ═══ The opening capital ════════════════════════════════════════════════ */
 
 /*
- * A heading's opening capital, in the display face's own italic at 1.35 times
- * the heading's size: the editorial capital of the brand deck, in the same
- * family as the rest of the heading, so the line reads as one typeface.
+ * A heading's opening capital, in Jost Italic at 1.3 times the heading's size:
+ * a clean geometric italic against the Playfair capitals that follow it, set
+ * tight to them with no gap after it.
  *
  * It is never lifted out of its heading's reveal. A line rises with the capital
  * in it; in a word or letter reveal the capital is split like any other letter
  * and rises or flips in its place in the sequence.
  *
- * Geometry, from Playfair Display's metrics (ascent 1.082em, descent 0.251em,
- * cap height 0.708em):
- *   - line-height 1.2 makes the capital's box tall enough to hold the letter,
- *     so the word and letter wrappers a reveal splits it into, which inherit
- *     that line-height, hold it whole too;
+ * Geometry, from Jost Italic's metrics (ascent 1.07em, descent 0.375em, the
+ * same in all three of its metric tables, so the letter sits identically on
+ * macOS, Windows, iOS and Android; capitals reach 0.739em up and, the J,
+ * 0.219em down):
+ *   - line-height 1.2 makes the capital's box hold every capital whole, so the
+ *     word and letter wrappers a reveal splits it into, which inherit that
+ *     line-height, hold it whole too;
  *   - the negative block margins hand that extra height back, so the taller
- *     letter never deepens its line or pushes the next line down.
+ *     letter never deepens its line or pushes the next line down, even under
+ *     the tightest heading leading on the site (0.95).
  */
 :root {
-  --initial-scale: 1.35;
-  --initial-reach: 0.25em;
+  --initial-scale: 1.3;
+  --initial-reach: 0.1em;
 }
 
 /* The capital never parts from the rest of its word at a line break. */
@@ -326,63 +329,64 @@
   font-weight: 400;
   font-size: calc(var(--initial-scale) * 1em);
   line-height: 1.2;
-  margin-top: -0.35em;
-  margin-bottom: -0.2em;
+  margin-top: -0.3em;
+  margin-bottom: -0.22em;
   text-transform: none;
   vertical-align: baseline;
 }
 
 /*
  * In a letter-by-letter reveal the capital gets a character clip of its own.
- * The italic leans past its advance on the right (up to 0.154em, the T) and a
- * few letters start left of their origin (up to 0.087em, the A), so the clip is
- * widened by that much on each side and the width handed back.
+ * The italic leans up to 0.091em past its advance on the right (the Y) and the
+ * J's tail reaches 0.164em left of its origin, so the clip is widened by that
+ * much on each side and the width handed back.
  */
 .initial .char {
-  padding-left: 0.1em;
-  padding-right: 0.16em;
-  margin-left: -0.1em;
-  margin-right: -0.16em;
+  padding-left: 0.17em;
+  padding-right: 0.1em;
+  margin-left: -0.17em;
+  margin-right: -0.1em;
 }
 
-/* Italic correction, measured from each capital's outline in the italic file:
-   the room its ink takes beyond its advance on either side. With it the
-   leaning capital never crowds the upright letter after it, and its ink stays
-   inside every clip a reveal puts around it. */
-.initial[data-letter="A"] { margin-left: 0.087em; }
-.initial[data-letter="B"] { margin-left: 0.033em; }
-.initial[data-letter="C"] { margin-right: 0.042em; }
-.initial[data-letter="D"] { margin-left: 0.03em; }
-.initial[data-letter="E"] { margin-left: 0.035em; margin-right: 0.032em; }
-.initial[data-letter="F"] { margin-left: 0.035em; margin-right: 0.076em; }
-.initial[data-letter="G"] { margin-right: 0.026em; }
-.initial[data-letter="H"] { margin-left: 0.033em; margin-right: 0.065em; }
-.initial[data-letter="I"] { margin-left: 0.033em; margin-right: 0.065em; }
-.initial[data-letter="J"] { margin-right: 0.107em; }
-.initial[data-letter="K"] { margin-left: 0.033em; margin-right: 0.032em; }
-.initial[data-letter="L"] { margin-left: 0.035em; }
-.initial[data-letter="M"] { margin-left: 0.034em; margin-right: 0.065em; }
-.initial[data-letter="N"] { margin-left: 0.072em; margin-right: 0.102em; }
-.initial[data-letter="P"] { margin-left: 0.033em; margin-right: 0.031em; }
-.initial[data-letter="Q"] { margin-left: 0.045em; }
-.initial[data-letter="R"] { margin-left: 0.033em; }
-.initial[data-letter="S"] { margin-left: 0.018em; margin-right: 0.022em; }
-.initial[data-letter="T"] { margin-right: 0.154em; }
-.initial[data-letter="U"] { margin-right: 0.082em; }
-.initial[data-letter="V"] { margin-right: 0.11em; }
-.initial[data-letter="W"] { margin-right: 0.092em; }
-.initial[data-letter="X"] { margin-left: 0.033em; margin-right: 0.05em; }
-.initial[data-letter="Y"] { margin-right: 0.086em; }
-.initial[data-letter="Z"] { margin-left: 0.035em; margin-right: 0.067em; }
+/* Spacing, measured from each capital's outline in the italic file. On the
+   right: where its ink ends, against its advance, within the height of the
+   capitals that follow; the next letter starts right there, so the leaning
+   capital sits as close as two upright capitals would, and under a T's bar.
+   On the left: the few capitals whose ink starts before their origin, so it
+   stays inside the clip at the start of a line. */
+.initial[data-letter="A"] { margin-left: 0.025em; margin-right: -0.032em; }
+.initial[data-letter="B"] { margin-right: -0.022em; }
+.initial[data-letter="E"] { margin-right: -0.041em; }
+.initial[data-letter="F"] { margin-right: -0.021em; }
+.initial[data-letter="G"] { margin-right: -0.01em; }
+.initial[data-letter="H"] { margin-right: -0.02em; }
+.initial[data-letter="I"] { margin-right: -0.02em; }
+.initial[data-letter="J"] { margin-left: 0.164em; margin-right: -0.023em; }
+.initial[data-letter="K"] { margin-right: -0.033em; }
+.initial[data-letter="L"] { margin-right: -0.022em; }
+.initial[data-letter="M"] { margin-right: -0.034em; }
+.initial[data-letter="N"] { margin-right: -0.022em; }
+.initial[data-letter="P"] { margin-right: 0.022em; }
+.initial[data-letter="R"] { margin-right: 0.011em; }
+.initial[data-letter="S"] { margin-right: -0.017em; }
+.initial[data-letter="T"] { margin-right: -0.125em; }
+.initial[data-letter="U"] { margin-right: -0.011em; }
+.initial[data-letter="V"] { margin-right: -0.04em; }
+.initial[data-letter="W"] { margin-right: -0.032em; }
+.initial[data-letter="X"] { margin-left: 0.01em; margin-right: -0.028em; }
+.initial[data-letter="Y"] { margin-right: -0.028em; }
+.initial[data-letter="Z"] { margin-left: 0.015em; margin-right: -0.051em; }
 
 /* ═══ Drop cap ═══════════════════════════════════════════════════════════ */
 
 /* Floated across two lines. Left inline it was taller than its own line and its
-   ink ran down into the line beneath. */
+   ink ran down into the line beneath. The same italic as a heading's opening
+   capital, so every first letter on the site is one face. */
 .drop-cap {
   float: left;
-  font-family: var(--font--primary-family);
+  font-family: var(--font--initial);
   font-style: italic;
+  font-weight: 400;
   font-size: 3.1em;
   line-height: 0.82;
   margin: 0.06em 0.12em 0 -0.02em;
