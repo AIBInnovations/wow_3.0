@@ -2,16 +2,16 @@
  * The site's family tokens, filled from the brand faces.
  *
  * The faces themselves load through next/font (src/fonts/fonts.ts), which puts
- * --font-playfair, --font-garamond and --font-jost on <html>. Every stylesheet
+ * --font-playfair, --font-garamond and --font-imperial on <html>. Every stylesheet
  * reads the four tokens below, never a family name, so the whole site sets in
  * exactly these faces on every device.
  *
  * The opening capital of a heading (.initial, see typography.css) and the
- * paragraph drop cap take Jost Italic: one face for every first letter.
+ * paragraph drop cap take Imperial Script: one face for every first letter.
  */
 :root {
   --font--primary-family: var(--font-playfair);
   --font--body: var(--font-garamond);
   --font--inherit: var(--font-garamond);
-  --font--initial: var(--font-jost);
+  --font--initial: var(--font-imperial);
 }

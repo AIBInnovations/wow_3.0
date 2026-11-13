@@ -293,28 +293,31 @@
 /* ═══ The opening capital ════════════════════════════════════════════════ */
 
 /*
- * A heading's opening capital, in Jost Italic at 1.3 times the heading's size:
- * a clean geometric italic against the Playfair capitals that follow it, set
- * tight to them with no gap after it.
+ * A heading's opening capital, in Imperial Script at 1.6 times the heading's
+ * size: a formal engraver's script capital against the Playfair capitals that
+ * follow it, set tight to them.
  *
  * It is never lifted out of its heading's reveal. A line rises with the capital
  * in it; in a word or letter reveal the capital is split like any other letter
  * and rises or flips in its place in the sequence.
  *
- * Geometry, from Jost Italic's metrics (ascent 1.07em, descent 0.375em, the
- * same in all three of its metric tables, so the letter sits identically on
- * macOS, Windows, iOS and Android; capitals reach 0.739em up and, the J,
- * 0.219em down):
- *   - line-height 1.2 makes the capital's box hold every capital whole, so the
- *     word and letter wrappers a reveal splits it into, which inherit that
- *     line-height, hold it whole too;
+ * The script has one upright style with its slant drawn in, so it is set
+ * `normal`: asking for italic would add a synthetic slant on top.
+ *
+ * Geometry, from Imperial Script's metrics (ascent 0.88em, descent 0.33em, the
+ * same in its hhea and typo tables, which it tells every platform to use, so
+ * the letter sits identically on macOS, Windows, iOS and Android; capitals
+ * reach 0.699em up and, the tails of G, Y and Z, 0.318em down):
+ *   - line-height 1.3 makes the capital's box hold every capital whole, tails
+ *     included, so the word and letter wrappers a reveal splits it into, which
+ *     inherit that line-height, hold it whole too;
  *   - the negative block margins hand that extra height back, so the taller
  *     letter never deepens its line or pushes the next line down, even under
  *     the tightest heading leading on the site (0.95).
  */
 :root {
-  --initial-scale: 1.3;
-  --initial-reach: 0.1em;
+  --initial-scale: 1.6;
+  --initial-reach: 0.25em;
 }
 
 /* The capital never parts from the rest of its word at a line break. */
@@ -325,71 +328,79 @@
 .initial {
   display: inline-block;
   font-family: var(--font--initial);
-  font-style: italic;
+  font-style: normal;
   font-weight: 400;
   font-size: calc(var(--initial-scale) * 1em);
-  line-height: 1.2;
-  margin-top: -0.3em;
-  margin-bottom: -0.22em;
+  line-height: 1.3;
+  margin-top: -0.38em;
+  margin-bottom: -0.35em;
   text-transform: none;
   vertical-align: baseline;
 }
 
 /*
  * In a letter-by-letter reveal the capital gets a character clip of its own.
- * The italic leans up to 0.091em past its advance on the right (the Y) and the
- * J's tail reaches 0.164em left of its origin, so the clip is widened by that
- * much on each side and the width handed back.
+ * A script capital's top swash runs up to 0.444em past its advance (the V) and
+ * the X starts 0.07em left of its origin, so the clip is widened by that much
+ * on each side and the width handed back.
  */
 .initial .char {
-  padding-left: 0.17em;
-  padding-right: 0.1em;
-  margin-left: -0.17em;
-  margin-right: -0.1em;
+  padding-left: 0.08em;
+  padding-right: 0.45em;
+  margin-left: -0.08em;
+  margin-right: -0.45em;
 }
 
-/* Spacing, measured from each capital's outline in the italic file. On the
+/* Spacing, measured from each capital's outline in the script file. On the
    right: where its ink ends, against its advance, within the height of the
-   capitals that follow; the next letter starts right there, so the leaning
-   capital sits as close as two upright capitals would, and under a T's bar.
+   capitals that follow; the next letter starts right there, so it sits as
+   close as two upright capitals would while the swash above sweeps over it.
    On the left: the few capitals whose ink starts before their origin, so it
    stays inside the clip at the start of a line. */
-.initial[data-letter="A"] { margin-left: 0.025em; margin-right: -0.032em; }
-.initial[data-letter="B"] { margin-right: -0.022em; }
-.initial[data-letter="E"] { margin-right: -0.041em; }
-.initial[data-letter="F"] { margin-right: -0.021em; }
-.initial[data-letter="G"] { margin-right: -0.01em; }
-.initial[data-letter="H"] { margin-right: -0.02em; }
-.initial[data-letter="I"] { margin-right: -0.02em; }
-.initial[data-letter="J"] { margin-left: 0.164em; margin-right: -0.023em; }
-.initial[data-letter="K"] { margin-right: -0.033em; }
-.initial[data-letter="L"] { margin-right: -0.022em; }
-.initial[data-letter="M"] { margin-right: -0.034em; }
-.initial[data-letter="N"] { margin-right: -0.022em; }
-.initial[data-letter="P"] { margin-right: 0.022em; }
-.initial[data-letter="R"] { margin-right: 0.011em; }
-.initial[data-letter="S"] { margin-right: -0.017em; }
-.initial[data-letter="T"] { margin-right: -0.125em; }
-.initial[data-letter="U"] { margin-right: -0.011em; }
-.initial[data-letter="V"] { margin-right: -0.04em; }
-.initial[data-letter="W"] { margin-right: -0.032em; }
-.initial[data-letter="X"] { margin-left: 0.01em; margin-right: -0.028em; }
-.initial[data-letter="Y"] { margin-right: -0.028em; }
-.initial[data-letter="Z"] { margin-left: 0.015em; margin-right: -0.051em; }
+.initial[data-letter="A"] { margin-right: 0.202em; }
+.initial[data-letter="B"] { margin-right: 0.007em; }
+.initial[data-letter="C"] { margin-right: 0.107em; }
+.initial[data-letter="D"] { margin-right: 0.039em; }
+.initial[data-letter="E"] { margin-right: 0.046em; }
+.initial[data-letter="F"] { margin-left: 0.01em; margin-right: 0.072em; }
+.initial[data-letter="G"] { margin-right: 0.067em; }
+.initial[data-letter="H"] { margin-right: 0.064em; }
+.initial[data-letter="I"] { margin-right: 0.13em; }
+.initial[data-letter="J"] { margin-right: 0.068em; }
+.initial[data-letter="K"] { margin-right: 0.063em; }
+.initial[data-letter="L"] { margin-left: 0.044em; margin-right: 0.203em; }
+.initial[data-letter="M"] { margin-right: 0.107em; }
+.initial[data-letter="N"] { margin-right: 0.094em; }
+.initial[data-letter="O"] { margin-right: 0.025em; }
+.initial[data-letter="P"] { margin-right: 0.146em; }
+.initial[data-letter="Q"] { margin-right: 0.084em; }
+.initial[data-letter="R"] { margin-right: 0.088em; }
+.initial[data-letter="S"] { margin-left: 0.017em; }
+.initial[data-letter="T"] { margin-left: 0.01em; margin-right: 0.078em; }
+.initial[data-letter="U"] { margin-right: 0.052em; }
+.initial[data-letter="V"] { margin-right: 0.162em; }
+.initial[data-letter="W"] { margin-right: 0.142em; }
+.initial[data-letter="X"] { margin-left: 0.07em; }
+.initial[data-letter="Y"] { margin-right: 0.148em; }
+.initial[data-letter="Z"] { margin-right: 0.035em; }
 
 /* ═══ Drop cap ═══════════════════════════════════════════════════════════ */
 
 /* Floated across two lines. Left inline it was taller than its own line and its
-   ink ran down into the line beneath. The same italic as a heading's opening
-   capital, so every first letter on the site is one face. */
+   ink ran down into the line beneath. The same script as a heading's opening
+   capital, so every first letter on the site is one face. Upright: the
+   script's slant is drawn in, and asking for italic would add a fake one. */
 .drop-cap {
   float: left;
   font-family: var(--font--initial);
-  font-style: italic;
+  font-style: normal;
   font-weight: 400;
-  font-size: 3.1em;
-  line-height: 0.82;
-  margin: 0.06em 0.12em 0 -0.02em;
+  /* A script capital stands shorter than a roman one (0.62em against 0.71em),
+     so it is set larger; its float box (size x line-height, plus the top
+     margin) stays 2.73em of the paragraph, two lines of text. */
+  font-size: 3.8em;
+  line-height: 0.68;
+  margin: 0.04em 0.12em 0 -0.02em;
 }
 
 /* ═══ Wordmark and the menu-open mark ════════════════════════════════════ */

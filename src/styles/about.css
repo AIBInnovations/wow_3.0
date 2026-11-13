@@ -275,6 +275,14 @@
   font-size: var(--step-6);
 }
 
+/* Each hero phrase holds one line and cannot wrap. On the narrowest phones
+   (320px) the longest, "Celebrations," with its script capital, is wider than
+   the screen at step 6, so there it scales with the viewport instead; from
+   about 350px up step 6 is the smaller of the two and nothing changes. */
+.about-hero_top-row_text {
+  font-size: min(var(--step-6), 10.5vw);
+}
+
 .about-hero_top-row_text {
   /* Each phrase holds its grid cell on one line; the grid does the arranging. */
   white-space: nowrap;
