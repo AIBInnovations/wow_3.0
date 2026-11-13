@@ -2,8 +2,8 @@
  * Gallery page — the plane.
  *
  * An endless, evenly aligned grid of every photograph, which the reader pans in
- * any direction, under a bar with the photographer's credit, the page's title
- * and a hint: the main site's gallery, restyled in this system. The page
+ * any direction, under a bar with the page's title and a hint: the main
+ * site's gallery, restyled in this system. The page
  * is fixed to the viewport and has no document scroll — the wheel pans the grid
  * — and it stacks in three bands: room for the site header (measured into
  * --nav-h by the component), the bar, then the grid filling the rest. Nothing
@@ -17,7 +17,6 @@
  *   ────  ───────  ─────────────────────────────────────────────────────────
  *    -1   label    the title, the hint, the viewer's caption —
  *                  EB Garamond, uppercase, open tracking
- *    -1   body     the photographer's credit, in the italic body face
  *
  * Colour is the ground colour throughout, with cream text. The gold accent is
  * kept for the title and for hover on the viewer's controls. Tiles rest
@@ -37,7 +36,7 @@
   color: var(--wow-cream);
 }
 
-/* ═══ The bar: credit, title, hint ═══════════════════════════════════════ */
+/* ═══ The bar: title, hint ═══════════════════════════════════════════════ */
 
 .gal__bar {
   position: relative;
@@ -50,20 +49,6 @@
   border-top: 1px solid var(--swatch--light-fade);
   border-bottom: 1px solid var(--swatch--light-fade);
   background-color: var(--swatch--dark);
-}
-
-/* Step −1 — the credit, in the italic body face */
-.gal__credit {
-  flex: none;
-  margin: 0;
-  font-family: var(--font--body);
-  font-size: var(--step-n1);
-  font-style: italic;
-  font-weight: 400;
-  line-height: var(--leading-label);
-  letter-spacing: 0;
-  text-transform: none;
-  opacity: 0.59;
 }
 
 /* Step −1 — label: the title, the hint, the viewer's caption */
@@ -92,14 +77,10 @@
   opacity: 0.59;
 }
 
-/* On a phone the bar keeps the title and the hint; the credit goes. */
+/* A shorter bar on a phone. */
 @media (max-width: 950px) {
   .gal__bar {
     min-height: 3.2rem;
-  }
-
-  .gal__credit {
-    display: none;
   }
 }
 

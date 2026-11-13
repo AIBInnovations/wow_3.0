@@ -27,20 +27,23 @@ import {
  * up exactly, edge to edge, however far the reader pans. A photograph is
  * cropped to its cell here and shown whole in the lightbox.
  *
- * The grid is a plane of `cols` x `rows` cells that repeats in both directions:
- * a cell's position is its place on the plane minus the pan offset, wrapped by
- * the plane's size, so dragging, wheeling or keying in any direction never
- * reaches an edge. The plane is always two cells wider and taller than the
- * viewport, which is what guarantees every visible slot is covered exactly once.
+ * The tiles are a grid of `cols` x `rows` nodes, two cells wider and taller
+ * than the viewport, that wraps in both directions: a tile's position is its
+ * place in the grid minus the pan offset, wrapped by the grid's size, so
+ * dragging, wheeling or keying in any direction never reaches an edge, and
+ * every visible slot is covered exactly once.
  *
- * Which photograph sits in which cell is a lattice (see chooseLattice), picked
- * for the screen so that the same photograph is never on screen twice where the
- * set is large enough to avoid it, and is as far from itself as possible where
- * it is not.
+ * Each time a tile wraps it stands on a new cell of the endless plane, and it
+ * shows that cell's photograph. Which photograph sits in which cell is a
+ * lattice (see chooseLattice), picked for the screen so that the same
+ * photograph is never on screen twice where the set is large enough to avoid
+ * it, and is as far from itself as possible where it is not. Because the
+ * photograph follows the cell rather than the tile, the lattice is free of the
+ * tile grid's size.
  *
  * The pan is not React state. The offset lives in a ref and the frame loop
- * writes `transform` straight onto the tile nodes; React renders the tiles once
- * per grid size.
+ * writes `transform`, and on a wrap the photograph, straight onto the tile
+ * nodes; React renders the tiles once per grid size.
  *
  * The page has no document scroll: the plane is fixed to the viewport and owns
  * the wheel, so the site's smooth scrolling is stopped while this is mounted
@@ -52,8 +55,6 @@ import {
 const GAP = 12
 const FRICTION = 0.93
 const CELL_RATIO = 5 / 4 // height / width
-/** A lattice whose plane would need more tiles than this is passed over. */
-const MAX_TILES = 400
 
 /**
  * How the set repeats across the plane. One copy of the set fills a block `p`
@@ -63,31 +64,13 @@ const MAX_TILES = 400
  */
 type Lattice = { p: number; q: number; a: number }
 type Geo = Lattice & { cw: number; ch: number; cols: number; rows: number }
-type Cell = { shot: GalleryShot; col: number; row: number }
 
-function gcd(a: number, b: number): number {
-  return b ? gcd(b, a % b) : a
-}
-
-/** The block index of the photograph at a plane cell. */
+/** The block index of the photograph at a plane cell (any cell, negative too). */
 function blockIndex({ p, q, a }: Lattice, col: number, row: number) {
   const band = Math.floor(row / q)
   const r = row - band * q
   const c = (((col - band * a) % p) + p) % p
   return r * p + c
-}
-
-/**
- * The plane must hold whole periods of the lattice in both directions or the
- * wrap would show a seam: its width a multiple of p, and its height a multiple
- * of the bands it takes for the slide to come back round to zero.
- */
-function planeSize({ p, q, a }: Lattice, needCols: number, needRows: number) {
-  const unitRows = q * (p / gcd(a, p))
-  return {
-    cols: Math.ceil(needCols / p) * p,
-    rows: Math.ceil(needRows / unitRows) * unitRows,
-  }
 }
 
 /**
@@ -99,17 +82,14 @@ function planeSize({ p, q, a }: Lattice, needCols: number, needRows: number) {
  * max(|dx| / spanX, |dy| / spanY): at 1 or more its two copies can never be on
  * screen together. The lattice with the highest score for its shortest step
  * wins; ties go to the longer straight-line step (copies diagonally apart rather
- * than straight below), then to the smaller plane.
+ * than straight below).
  */
-function chooseLattice(n: number, spanX: number, spanY: number, needCols: number, needRows: number) {
-  let best: (Lattice & { reach: number; dist: number; tiles: number }) | null = null
+function chooseLattice(n: number, spanX: number, spanY: number): Lattice {
+  let best: (Lattice & { reach: number; dist: number }) | null = null
   for (let q = 1; q <= n; q++) {
     if (n % q) continue
     const p = n / q
     for (let a = 0; a < p; a++) {
-      const { cols, rows } = planeSize({ p, q, a }, needCols, needRows)
-      const tiles = cols * rows
-      if (tiles > MAX_TILES && best) continue
       // the step straight along, then one per band down; beyond the point where
       // the vertical part alone outscores the shortest so far, none can be shorter
       let reach = p / spanX
@@ -125,12 +105,8 @@ function chooseLattice(n: number, spanX: number, spanY: number, needCols: number
       reach = Math.min(reach, 1)
       dist = Math.min(dist, 1)
       const better =
-        !best ||
-        (best.tiles > MAX_TILES && tiles <= MAX_TILES) ||
-        reach > best.reach + 0.01 ||
-        (reach > best.reach - 0.01 &&
-          (dist > best.dist + 0.05 || (dist > best.dist - 0.05 && tiles < best.tiles)))
-      if (better) best = { p, q, a, reach, dist, tiles }
+        !best || reach > best.reach + 0.01 || (reach > best.reach - 0.01 && dist > best.dist + 0.05)
+      if (better) best = { p, q, a, reach, dist }
     }
   }
   return { p: best!.p, q: best!.q, a: best!.a }
@@ -146,27 +122,35 @@ function chooseLattice(n: number, spanX: number, spanY: number, needCols: number
 function arrange(list: GalleryShot[], lattice: Lattice): GalleryShot[] {
   const { p } = lattice
   const n = list.length
-  const pairs: [number, number][] = []
+  // each cell's four neighbours on the repeating block, as block indices
+  const near: number[][] = []
   for (let i = 0; i < n; i++) {
     const col = i % p
     const row = Math.floor(i / p)
-    pairs.push([i, blockIndex(lattice, col + 1, row)], [i, blockIndex(lattice, col, row + 1)])
+    near.push([
+      blockIndex(lattice, col + 1, row),
+      blockIndex(lattice, col - 1, row),
+      blockIndex(lattice, col, row + 1),
+      blockIndex(lattice, col, row - 1),
+    ])
   }
   const order = [...list]
-  const clashes = () => pairs.reduce((sum, [x, y]) => sum + (order[x].cat === order[y].cat ? 1 : 0), 0)
-  let current = clashes()
-  for (let improved = true; improved && current > 0; ) {
+  // how many of cell i's neighbours (other than `skip`) share event `cat`
+  const touching = (i: number, cat: string, skip: number) =>
+    near[i].reduce((sum, k) => sum + (k !== i && k !== skip && order[k].cat === cat ? 1 : 0), 0)
+  // A swap only changes the pairs that touch the two cells it moves, so its
+  // effect is counted from their neighbours alone rather than the whole block.
+  for (let improved = true; improved; ) {
     improved = false
     for (let i = 0; i < n; i++) {
       for (let j = i + 1; j < n; j++) {
-        if (order[i].cat === order[j].cat) continue
-        ;[order[i], order[j]] = [order[j], order[i]]
-        const next = clashes()
-        if (next < current) {
-          current = next
-          improved = true
-        } else {
+        const a = order[i].cat
+        const b = order[j].cat
+        if (a === b) continue
+        const delta = touching(i, b, j) - touching(i, a, j) + touching(j, a, i) - touching(j, b, i)
+        if (delta < 0) {
           ;[order[i], order[j]] = [order[j], order[i]]
+          improved = true
         }
       }
     }
@@ -174,15 +158,11 @@ function arrange(list: GalleryShot[], lattice: Lattice): GalleryShot[] {
   return order
 }
 
-function buildCells(geo: Geo): Cell[] {
-  const order = arrange(ALL_SHOTS, geo)
-  const cells: Cell[] = []
-  for (let row = 0; row < geo.rows; row++) {
-    for (let col = 0; col < geo.cols; col++) {
-      cells.push({ shot: order[blockIndex(geo, col, row)], col, row })
-    }
-  }
-  return cells
+/** Which cell of the endless plane a tile stands on, from where it is drawn. */
+function cellOf(slot: number, drawn: number, step: number, count: number) {
+  // `drawn` is the slot's own position wrapped round the grid; how many whole
+  // grid widths it was shifted by says which copy of the slot it is
+  return slot + Math.round((drawn - slot * step) / (count * step)) * count
 }
 
 function measureGeo(w: number, h: number): Geo {
@@ -200,14 +180,12 @@ function measureGeo(w: number, h: number): Geo {
   const ch = Math.round(cw * CELL_RATIO)
   const stepX = cw + GAP
   const stepY = ch + GAP
-  const needCols = Math.ceil(w / stepX) + 2
-  const needRows = Math.ceil(h / stepY) + 2
   // How far apart two tiles can be and both show at least a quarter of their
   // width (or height): a thinner sliver at the edge does not read as a repeat.
   const spanX = (w + cw / 2) / stepX
   const spanY = (h + ch / 2) / stepY
-  const lattice = chooseLattice(ALL_SHOTS.length, spanX, spanY, needCols, needRows)
-  return { cw, ch, ...lattice, ...planeSize(lattice, needCols, needRows) }
+  const lattice = chooseLattice(ALL_SHOTS.length, spanX, spanY)
+  return { cw, ch, ...lattice, cols: Math.ceil(w / stepX) + 2, rows: Math.ceil(h / stepY) + 2 }
 }
 
 export default function InfiniteGallery() {
@@ -232,9 +210,12 @@ export default function InfiniteGallery() {
 
   const { start, stop } = useSmoothScroll()
 
-  const cells = useMemo(() => (geo ? buildCells(geo) : []), [geo])
-  const cellsRef = useRef(cells)
-  cellsRef.current = cells
+  // the set in its block order for this screen's lattice
+  const order = useMemo(() => (geo ? arrange(ALL_SHOTS, geo) : []), [geo])
+  const orderRef = useRef(order)
+  orderRef.current = order
+  // the block index each tile is showing, so a photograph is only swapped on a wrap
+  const shown = useRef<number[]>([])
 
   // The plane owns the wheel and the page has nothing to scroll, so the site's
   // smooth scrolling is paused and the document locked for as long as this
@@ -307,22 +288,34 @@ export default function InfiniteGallery() {
     const stepY = geo.ch + GAP
     const planeW = geo.cols * stepX
     const planeH = geo.rows * stepY
-    cellsRef.current.forEach((c, i) => {
+    const shots = orderRef.current
+    for (let i = 0; i < geo.cols * geo.rows; i++) {
       const node = nodes.current[i]
-      if (!node) return
-      let x = c.col * stepX - ox
+      if (!node) continue
+      const col = i % geo.cols
+      const row = Math.floor(i / geo.cols)
+      let x = col * stepX - ox
       x = (((x + stepX) % planeW) + planeW) % planeW - stepX
-      let y = c.row * stepY - oy
+      let y = row * stepY - oy
       y = (((y + stepY) % planeH) + planeH) % planeH - stepY
       // rounded once, from the one shared offset, so every gap on screen is the same width
       node.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(y)}px, 0)`
-    })
+      // the photograph of the plane cell the tile now stands on
+      const at = blockIndex(geo, cellOf(col, x + ox, stepX, geo.cols), cellOf(row, y + oy, stepY, geo.rows))
+      if (shown.current[i] !== at) {
+        shown.current[i] = at
+        const shot = shots[at]
+        node.querySelector('img')!.src = smallSrc(shot.id)
+        node.setAttribute('aria-label', `Open photograph: ${categoryLabel(shot.cat)}`)
+      }
+    }
   }, [geo])
 
   // the frame loop: momentum when not dragging, then paint
   useEffect(() => {
     if (!geo) return
     painted.current.key = ''
+    shown.current = []
     const tick = () => {
       if (!dragging.current) {
         const v = velocity.current
@@ -340,7 +333,7 @@ export default function InfiniteGallery() {
     return () => {
       if (raf.current) cancelAnimationFrame(raf.current)
     }
-  }, [paint, geo, cells])
+  }, [paint, geo, order])
 
   // pointer drag, wheel and keys all write to the same offset
   useEffect(() => {
@@ -378,11 +371,11 @@ export default function InfiniteGallery() {
       downTile.current = -1
       // a tap: little movement, short, on a tile, and not the same press twice
       if (moved.current >= 14 || at - downAt.current >= 450) return
-      const cell = cellsRef.current[idx]
-      if (idx < 0 || !cell || at - openedAt.current < 500) return
+      const shot = idx < 0 ? undefined : orderRef.current[shown.current[idx]]
+      if (!shot || at - openedAt.current < 500) return
       openedAt.current = at
       velocity.current = { x: 0, y: 0 }
-      setOpen(ALL_SHOTS.indexOf(cell.shot))
+      setOpen(ALL_SHOTS.indexOf(shot))
     }
     const move = (e: PointerEvent) => {
       if (!dragging.current) return
@@ -494,12 +487,6 @@ export default function InfiniteGallery() {
   return (
     <div ref={rootRef} className="gal">
       <div className="gal__bar">
-        <p className="gal__credit">
-          {galleryCopy.credit[0]}
-          <br />
-          {galleryCopy.credit[1]}
-        </p>
-
         <h1 className="gal__heading">{galleryCopy.title}</h1>
 
         <p className="gal__hint">{galleryCopy.hint}</p>
@@ -513,7 +500,7 @@ export default function InfiniteGallery() {
         tabIndex={0}
       >
         {geo &&
-          cells.map((c, i) => (
+          Array.from({ length: geo.cols * geo.rows }, (_, i) => (
             <button
               type="button"
               className="gal__tile"
@@ -522,12 +509,11 @@ export default function InfiniteGallery() {
                 nodes.current[i] = el
               }}
               style={{ width: geo.cw, height: geo.ch }}
-              aria-label={`Open photograph: ${categoryLabel(c.shot.cat)}`}
               tabIndex={-1}
             >
-              {/* lazy: only the cells near the viewport need to load; the rest
-                  arrive as the reader pans toward them */}
-              <img src={smallSrc(c.shot.id)} alt="" draggable={false} loading="lazy" decoding="async" />
+              {/* The photograph and the label are set by the frame loop, from
+                  the plane cell the tile stands on (see paint). */}
+              <img alt="" draggable={false} decoding="async" />
             </button>
           ))}
       </div>
