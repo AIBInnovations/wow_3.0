@@ -12,13 +12,26 @@ export default function StickyStories() {
   const wrapRef = useRef<HTMLElement>(null)
   const [active, setActive] = useState(0)
 
-  // Decode ahead of time so each crossfade has a ready photograph beneath it.
+  // Load and decode every photograph ahead of the crossfades, so each one has
+  // a ready image beneath it — but only once the section is about two screens
+  // away, not with the page, and at the size each image will actually show
+  // (its srcset picks 960px on a phone).
   useEffect(() => {
-    for (const story of stories) {
-      const img = new Image()
-      img.src = story.img
-      img.decode?.().catch(() => {})
-    }
+    const wrap = wrapRef.current
+    if (!wrap) return
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return
+        io.disconnect()
+        wrap.querySelectorAll<HTMLImageElement>('.sticky-gallery_bg_img').forEach((img) => {
+          img.loading = 'eager'
+          img.decode?.().catch(() => {})
+        })
+      },
+      { rootMargin: '200% 0px' }
+    )
+    io.observe(wrap)
+    return () => io.disconnect()
   }, [])
 
   useIsomorphicLayoutEffect(() => {
@@ -88,12 +101,16 @@ export default function StickyStories() {
               <div className="sticky-gallery_bg_contain">
                 <div className="sticky-gallery_bg_wrap">
                   <div className="div-block-29">
+                    {/* Lazy: the section sits far down the home page, and the
+                        browser still fetches each photograph well before it
+                        scrolls into view. Phones take the 960px file. */}
                     <img
                       src={story.img}
+                      srcSet={`${story.img.replace(/\.webp$/, '-960.webp')} 960w, ${story.img} 1920w`}
+                      sizes="100vw"
                       alt={story.alt}
-                      loading="eager"
+                      loading="lazy"
                       decoding="async"
-                      fetchPriority={i === 0 ? 'high' : 'auto'}
                       className="sticky-gallery_bg_img"
                     />
                   </div>

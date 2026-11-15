@@ -46,8 +46,8 @@ export type CelebrationChapter = {
 }
 
 const p = (id: number, w: number, h: number, w800: number): Photo => ({
-  src: `/celebrations/${id}.jpg`,
-  src800: `/celebrations/${id}-800.jpg`,
+  src: `/celebrations/${id}.webp`,
+  src800: `/celebrations/${id}-800.webp`,
   w,
   h,
   w800,

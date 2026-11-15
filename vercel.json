@@ -9,7 +9,7 @@
   ],
   "headers": [
     {
-      "source": "/(images|fonts|gallery|celebrations|disciplines)/:path*",
+      "source": "/(images|fonts|gallery|celebrations|disciplines|wow|home|reels|videos)/:path*",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]

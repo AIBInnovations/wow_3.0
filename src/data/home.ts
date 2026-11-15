@@ -41,59 +41,59 @@ export type AtelierCard = {
  * counter photographs arrive.
  */
 const homeCardImages: Record<string, { image: string; alt: string }> = {
-  decor: { image: '/home/lantern-corridor-800.jpg', alt: 'A corridor of blue florals and woven lanterns' },
-  'guest-experience': { image: '/wow/lib-drummers-800.jpg', alt: 'A band of drummers lined up to welcome the celebration' },
-  invites: { image: '/wow/lib-gift-boxes-800.jpg', alt: 'Wedding gifts arranged in presentation trays' },
-  'food-beverage': { image: '/wow/lib-buffet-table-800.jpg', alt: 'A reception buffet of silver chafing dishes, dressed with white roses' },
-  entertainment: { image: '/home/stage-duet-800.jpg', alt: 'Two singers performing live on a purple-lit stage' },
+  decor: { image: '/home/lantern-corridor-800.webp', alt: 'A corridor of blue florals and woven lanterns' },
+  'guest-experience': { image: '/wow/lib-drummers-800.webp', alt: 'A band of drummers lined up to welcome the celebration' },
+  invites: { image: '/wow/lib-gift-boxes-800.webp', alt: 'Wedding gifts arranged in presentation trays' },
+  'food-beverage': { image: '/wow/lib-buffet-table-800.webp', alt: 'A reception buffet of silver chafing dishes, dressed with white roses' },
+  entertainment: { image: '/home/stage-duet-800.webp', alt: 'Two singers performing live on a purple-lit stage' },
 }
 
 /** Four or five photographs of each discipline, for the phone's carousel. */
 const homeCardGalleries: Record<string, GalleryImage[]> = {
   venue: [
-    { src: '/wow/lib-palace-lit-800.jpg', alt: 'A palace facade lit for the evening' },
-    { src: '/wow/lib-city-night-800.jpg', alt: 'A palace on the lake at night' },
-    { src: '/wow/lib-aisle-dusk-800.jpg', alt: 'An aisle at dusk leading to the mandap by the sea' },
-    { src: '/wow/lib-red-archway-800.jpg', alt: 'A carved archway lit red' },
+    { src: '/wow/lib-palace-lit-800.webp', alt: 'A palace facade lit for the evening' },
+    { src: '/wow/lib-city-night-800.webp', alt: 'A palace on the lake at night' },
+    { src: '/wow/lib-aisle-dusk-800.webp', alt: 'An aisle at dusk leading to the mandap by the sea' },
+    { src: '/wow/lib-red-archway-800.webp', alt: 'A carved archway lit red' },
   ],
   photography: [
-    { src: '/wow/lib-fireworks-aisle-800.jpg', alt: 'Fireworks rising over the aisle' },
-    { src: '/wow/lib-stage-dancers-800.jpg', alt: 'Dancers on stage under crossing beams of light' },
-    { src: '/wow/lib-palace-dance-800.jpg', alt: 'A dancer turning in a palace hall' },
-    { src: '/wow/lib-fireworks-couple-800.jpg', alt: 'Fireworks over the mandap at night' },
+    { src: '/wow/lib-fireworks-aisle-800.webp', alt: 'Fireworks rising over the aisle' },
+    { src: '/wow/lib-stage-dancers-800.webp', alt: 'Dancers on stage under crossing beams of light' },
+    { src: '/wow/lib-palace-dance-800.webp', alt: 'A dancer turning in a palace hall' },
+    { src: '/wow/lib-fireworks-couple-800.webp', alt: 'Fireworks over the mandap at night' },
   ],
   decor: [
-    { src: '/home/lantern-corridor-800.jpg', alt: 'A corridor of blue florals and woven lanterns' },
-    { src: '/wow/lib-pastel-canopy-800.jpg', alt: 'A pastel canopy over a floral welcome display' },
-    { src: '/wow/lib-rose-arch-800.jpg', alt: 'An arch of red roses framing the palace courtyard' },
-    { src: '/wow/lib-palm-walk-800.jpg', alt: 'A floral walkway beneath palms' },
-    { src: '/wow/lib-night-mandap-800.jpg', alt: 'A mandap lit on the lawn at night' },
+    { src: '/home/lantern-corridor-800.webp', alt: 'A corridor of blue florals and woven lanterns' },
+    { src: '/wow/lib-pastel-canopy-800.webp', alt: 'A pastel canopy over a floral welcome display' },
+    { src: '/wow/lib-rose-arch-800.webp', alt: 'An arch of red roses framing the palace courtyard' },
+    { src: '/wow/lib-palm-walk-800.webp', alt: 'A floral walkway beneath palms' },
+    { src: '/wow/lib-night-mandap-800.webp', alt: 'A mandap lit on the lawn at night' },
   ],
   'guest-experience': [
-    { src: '/wow/lib-drummers-800.jpg', alt: 'A band of drummers lined up to welcome the celebration' },
-    { src: '/wow/lib-welcome-procession-800.jpg', alt: 'A welcome procession waiting along the palace drive' },
-    { src: '/home/feather-welcome-800.jpg', alt: 'Performers in white feathered fans welcoming the celebration' },
-    { src: '/wow/lib-blue-arch-800.jpg', alt: 'A floral arch at the entrance to the celebration' },
+    { src: '/wow/lib-drummers-800.webp', alt: 'A band of drummers lined up to welcome the celebration' },
+    { src: '/wow/lib-welcome-procession-800.webp', alt: 'A welcome procession waiting along the palace drive' },
+    { src: '/home/feather-welcome-800.webp', alt: 'Performers in white feathered fans welcoming the celebration' },
+    { src: '/wow/lib-blue-arch-800.webp', alt: 'A floral arch at the entrance to the celebration' },
   ],
   invites: [
-    { src: '/wow/lib-gift-boxes-800.jpg', alt: 'Wedding gifts arranged in presentation trays' },
-    { src: '/wow/lib-glass-tags-800.jpg', alt: 'Personalised monogram tags on the glassware' },
-    { src: '/reels/DXRlgyNglRb.jpg', alt: 'A monogrammed sangeet welcome board among red florals' },
-    { src: '/wow/lib-carnival-entrance-800.jpg', alt: 'A hand-lettered welcome board at the carnival entrance' },
+    { src: '/wow/lib-gift-boxes-800.webp', alt: 'Wedding gifts arranged in presentation trays' },
+    { src: '/wow/lib-glass-tags-800.webp', alt: 'Personalised monogram tags on the glassware' },
+    { src: '/reels/DXRlgyNglRb.webp', alt: 'A monogrammed sangeet welcome board among red florals' },
+    { src: '/wow/lib-carnival-entrance-800.webp', alt: 'A hand-lettered welcome board at the carnival entrance' },
   ],
   'food-beverage': [
-    { src: '/wow/lib-buffet-table-800.jpg', alt: 'A reception buffet of silver chafing dishes, dressed with white roses' },
-    { src: '/wow/lib-counter-day-800.jpg', alt: 'A live food counter beneath a pink and orange canopy' },
-    { src: '/wow/lib-red-canopy-800.jpg', alt: 'Food counters beneath a red canopy on the lawn' },
-    { src: '/wow/lib-bar-night-800.jpg', alt: 'A lit bar counter on the lawn at night' },
-    { src: '/wow/lib-banquet-florals-800.jpg', alt: 'A banquet table under a floral canopy' },
+    { src: '/wow/lib-buffet-table-800.webp', alt: 'A reception buffet of silver chafing dishes, dressed with white roses' },
+    { src: '/wow/lib-counter-day-800.webp', alt: 'A live food counter beneath a pink and orange canopy' },
+    { src: '/wow/lib-red-canopy-800.webp', alt: 'Food counters beneath a red canopy on the lawn' },
+    { src: '/wow/lib-bar-night-800.webp', alt: 'A lit bar counter on the lawn at night' },
+    { src: '/wow/lib-banquet-florals-800.webp', alt: 'A banquet table under a floral canopy' },
   ],
   entertainment: [
-    { src: '/home/stage-duet-800.jpg', alt: 'Two singers performing live on a purple-lit stage' },
-    { src: '/wow/lib-stage-magenta-800.jpg', alt: 'A singer and band on a magenta-lit stage' },
-    { src: '/wow/lib-stage-dancers-800.jpg', alt: 'Two dancers on stage under crossing beams of light' },
-    { src: '/home/band-trellis-800.jpg', alt: 'A band playing beneath a white trellis' },
-    { src: '/wow/lib-stage-ensemble-800.jpg', alt: 'An ensemble performing on the sangeet stage' },
+    { src: '/home/stage-duet-800.webp', alt: 'Two singers performing live on a purple-lit stage' },
+    { src: '/wow/lib-stage-magenta-800.webp', alt: 'A singer and band on a magenta-lit stage' },
+    { src: '/wow/lib-stage-dancers-800.webp', alt: 'Two dancers on stage under crossing beams of light' },
+    { src: '/home/band-trellis-800.webp', alt: 'A band playing beneath a white trellis' },
+    { src: '/wow/lib-stage-ensemble-800.webp', alt: 'An ensemble performing on the sangeet stage' },
   ],
 }
 
@@ -190,7 +190,7 @@ export const homeFilms = {
       // HIGHLIGHT.m4v from the client's "GEET & HEENA" Drive folder: 295 MB at
       // 4K, re-encoded at 720p to 26 MB.
       video: '/videos/highlight.mp4',
-      poster: '/videos/highlight-poster.jpg',
+      poster: '/videos/highlight-poster.webp',
       alt: 'Geet and Heena, from their highlight film',
     },
     {
@@ -200,7 +200,7 @@ export const homeFilms = {
       // The Drive file "SHOW REEL.mp4" (587 MB at 4K) re-encoded for the web at
       // 720p, 19 MB, so it is hosted here and plays in its tile.
       video: '/videos/show-reel.mp4',
-      poster: '/videos/show-reel-poster.jpg',
+      poster: '/videos/show-reel-poster.webp',
       alt: 'The studio’s show reel',
     },
     {
@@ -216,7 +216,7 @@ export const homeFilms = {
       // plays in its tile on hover like the films hosted here.
       preview:
         'https://player.vimeo.com/video/1154719831?h=594f4a3343&background=1&autoplay=1&loop=1&muted=1&dnt=1',
-      poster: '/videos/rajvi-karan-poster.jpg',
+      poster: '/videos/rajvi-karan-poster.webp',
       alt: 'Rajvi and Karan, from the trailer',
     },
     {
@@ -226,13 +226,13 @@ export const homeFilms = {
       // The client's own file, re-encoded for the web: 356 MB at 1080p became
       // 32 MB at 720p, so it can be hosted here and play in its tile.
       video: '/videos/sangeet.mp4',
-      poster: '/videos/sangeet-poster.jpg',
+      poster: '/videos/sangeet-poster.webp',
       alt: 'The sangeet, from the studio’s film',
     },
   ] as WallItem[],
   /** The still that closes the wall. */
   still: {
-    src: '/home/band-trellis.jpg',
+    src: '/home/band-trellis.webp',
     alt: 'A band playing beneath a white trellis and turquoise arches',
     caption: 'The live set',
   },
@@ -254,5 +254,5 @@ export const homeReels = {
   kicker: 'In Motion',
   heading: 'The Reels',
   note: 'Tap a reel to watch it on Instagram',
-  items: reelCodes.map((code) => ({ id: code, instagram: code, cover: `/reels/${code}.jpg` })) as Reel[],
+  items: reelCodes.map((code) => ({ id: code, instagram: code, cover: `/reels/${code}.webp` })) as Reel[],
 }

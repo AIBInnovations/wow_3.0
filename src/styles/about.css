@@ -559,7 +559,7 @@
 .marquee_grid_wrap.dark {
   background-image:
     linear-gradient(rgb(23 31 22 / 72%), rgb(23 31 22 / 72%)),
-    url('/images/wow-palm-tents.jpg');
+    url('/images/wow-palm-tents.webp');
   position: relative;
   overflow: hidden;
 }

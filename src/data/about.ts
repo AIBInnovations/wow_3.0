@@ -13,8 +13,8 @@
 export type HeroPhrase = { text: string }
 
 export const aboutHero = {
-  image: { src: '/images/wow-aisle-dusk.jpg', alt: 'An aisle of chandeliers leading to a seaside mandap at dusk' },
-  mobileImage: { src: '/images/wow-arch-night.jpg', alt: 'A floral arch lit at night' },
+  image: { src: '/images/wow-aisle-dusk.webp', alt: 'An aisle of chandeliers leading to a seaside mandap at dusk' },
+  mobileImage: { src: '/images/wow-arch-night.webp', alt: 'A floral arch lit at night' },
   /**
    * Five phrases, placed across the grid row by row:
    *   row one   → right-aligned across nine columns
@@ -52,7 +52,7 @@ export const aboutCards: AboutCard[] = [
       + 'refinement. Each celebration is conceived as a living composition, where '
       + 'architecture, florals, light, texture and music are brought together with '
       + 'deliberate harmony.',
-    image: '/images/wow-tented-lounge.jpg',
+    image: '/images/wow-tented-lounge.webp',
     alt: 'A tented lounge in pastel drapes',
   },
   {
@@ -64,7 +64,7 @@ export const aboutCards: AboutCard[] = [
       + 'dignity of historic estates. We draw inspiration from the worlds of art, fashion, '
       + 'music and design, translating these influences into celebrations that feel '
       + 'cultivated rather than constructed.',
-    image: '/images/wow-palace-facade.jpg',
+    image: '/images/wow-palace-facade.webp',
     alt: 'A palace facade',
   },
   {
@@ -74,7 +74,7 @@ export const aboutCards: AboutCard[] = [
       + 'From the earliest conversations to the final moments of celebration, our '
       + 'process is guided by thoughtful collaboration and meticulous orchestration. '
       + 'The journey is intimate. The execution is seamless.',
-    image: '/images/wow-palm-walk.jpg',
+    image: '/images/wow-palm-walk.webp',
     alt: 'A palm-lined walk to a floral pavilion',
   },
 ]
@@ -89,8 +89,8 @@ export const aboutPortfolio = {
     + 'The privacy of our clientele remains paramount, and as such, identities and imagery are '
     + 'not publicly disclosed. What remains visible is the artistry, the scale and the nuanced '
     + 'craftsmanship that define our work.',
-  left: { src: '/images/wow-fireworks-couple.jpg', alt: 'Fireworks over the mandap' },
-  right: { src: '/images/wow-red-ballroom.jpg', alt: 'A ballroom lit red, candles on every table' },
+  left: { src: '/images/wow-fireworks-couple.webp', alt: 'Fireworks over the mandap' },
+  right: { src: '/images/wow-red-ballroom.webp', alt: 'A ballroom lit red, candles on every table' },
 }
 
 export type Letter = { body: string; from: string }
@@ -137,7 +137,7 @@ export const aboutLetters = {
 export type Destination = { lead: string; tail: string; image: string; href: string }
 
 export const aboutDestinations = {
-  background: '/images/wow-palm-tents.jpg',
+  background: '/images/wow-palm-tents.webp',
   marquee: 'Remarkable Destinations',
   heading: 'Destinations & Scale',
   /** Website Content PDF, Destinations & Scale. */
@@ -151,8 +151,8 @@ export const aboutDestinations = {
   ],
   cta: 'Explore',
   items: [
-    { lead: 'Udaipur', tail: 'Rajasthan', image: '/images/city-udaipur.jpg', href: '/celebrations' },
-    { lead: 'Jaipur', tail: 'Rajasthan', image: '/images/city-jaipur.jpg', href: '/celebrations' },
-    { lead: 'Goa', tail: 'The West Coast', image: '/images/city-goa.jpg', href: '/celebrations' },
+    { lead: 'Udaipur', tail: 'Rajasthan', image: '/images/city-udaipur.webp', href: '/celebrations' },
+    { lead: 'Jaipur', tail: 'Rajasthan', image: '/images/city-jaipur.webp', href: '/celebrations' },
+    { lead: 'Goa', tail: 'The West Coast', image: '/images/city-goa.webp', href: '/celebrations' },
   ] as Destination[],
 }

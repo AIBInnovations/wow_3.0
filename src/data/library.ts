@@ -6,7 +6,7 @@
  * none shows a client close enough to be recognised: that is the client's own
  * condition for the site. A photograph that does not meet it does not go in.
  *
- * Files are /wow/lib-<name>.jpg, with an 800px-wide /wow/lib-<name>-800.jpg.
+ * Files are /wow/lib-<name>.webp, with an 800px-wide /wow/lib-<name>-800.webp.
  * Each entry is [width, height, width of the 800 file].
  */
 const SIZES = {
@@ -66,5 +66,5 @@ export type LibraryName = keyof typeof SIZES
 
 export const lib = (name: LibraryName) => {
   const [w, h, w800] = SIZES[name]
-  return { src: `/wow/lib-${name}.jpg`, src800: `/wow/lib-${name}-800.jpg`, w, h, w800 }
+  return { src: `/wow/lib-${name}.webp`, src800: `/wow/lib-${name}-800.webp`, w, h, w800 }
 }

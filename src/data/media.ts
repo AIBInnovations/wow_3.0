@@ -17,9 +17,9 @@ export type Media = { src: string; alt: string }
  * screens.
  */
 const heroFrames: Media[] = [
-  { src: '/home/fireworks-mandap.jpg', alt: 'Fireworks and cold pyro over a floral mandap as the couple meet beneath it' },
-  { src: '/home/glasshouse-entry.jpg', alt: 'The couple entering beneath a glass arch through falling bubbles and low fog' },
-  { src: '/home/singer-mono.jpg', alt: 'A singer in a velvet jacket performing on a smoke-lit stage' },
+  { src: '/home/fireworks-mandap.webp', alt: 'Fireworks and cold pyro over a floral mandap as the couple meet beneath it' },
+  { src: '/home/glasshouse-entry.webp', alt: 'The couple entering beneath a glass arch through falling bubbles and low fog' },
+  { src: '/home/singer-mono.webp', alt: 'A singer in a velvet jacket performing on a smoke-lit stage' },
 ]
 
 export const heroMarquee: Media[] = [...heroFrames, ...heroFrames]
@@ -31,16 +31,16 @@ export const heroMarquee: Media[] = [...heroFrames, ...heroFrames]
  */
 export const ambience = {
   video: '/videos/ambience.mp4',
-  poster: '/videos/ambience-poster.jpg',
+  poster: '/videos/ambience-poster.webp',
 }
 
 /** Closing enquiry band: the 2:1 card image and the full-bleed ground behind it. */
 export const closing = {
-  "card": "/home/stage-red.jpg",
-  "bg": "/home/fireworks-groom.jpg"
+  "card": "/home/stage-red.webp",
+  "bg": "/home/fireworks-groom.webp"
 }
 
 /** "Four days, one celebration" — one wide frame. */
 export const celebrationImages = {
-  "bg": "/home/mandap-night.jpg"
+  "bg": "/home/mandap-night.webp"
 }
