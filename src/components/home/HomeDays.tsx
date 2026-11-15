@@ -2,139 +2,241 @@
 
 import Link from 'next/link'
 import { useRef } from 'react'
-import { gsap, registerGsap } from '@/lib/gsap'
+import { gsap, ScrollTrigger, registerGsap } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useLineAnimation } from '@/hooks/useSplitText'
 import Initial from '../Initial'
-import { drawings, type DrawingName } from '../VoiceDrawings'
 import { CHAPTERS, INTRO } from '@/data/celebrations'
+import { lib, type LibraryName } from '@/data/library'
 
-/** Which drawing stands for which day. */
-const DRAWING: Record<string, DrawingName> = {
-  haldi: 'marigold',
-  sangeet: 'paisley',
-  wedding: 'mandap',
-  beyond: 'night',
+/**
+ * Day by day: the four days of a celebration as one editorial spread.
+ *
+ * A page from the studio's own deck: a wine ground with a giant script D
+ * faint behind it, the head at the top left, then the
+ * four days as photographic plates of different sizes, set off the grid's
+ * centre line and overlapping, each with a numbered card laid over the foot of
+ * its photograph. One gold thread runs from the head through the four numbers
+ * in order, so the spread reads as four days composed as one celebration; it
+ * draws itself as the section is scrolled.
+ *
+ * The photographs are the rooms and the light, not the couple: the studio
+ * keeps its clients' identities private.
+ *
+ * Wide screens set the plates on a 12-column grid (see styles: .dbd). Below
+ * 1100px it recomposes into one column, the plates alternating left and right
+ * with each card over its photograph's foot, and the thread snakes between
+ * them. Each plate links to its chapter on the Celebrations page.
+ */
+
+type Plate = { photo: LibraryName; alt: string }
+
+/** One photograph for each day, in chapter order. */
+const PLATES: Record<string, Plate> = {
+  haldi: { photo: 'marigold-pots', alt: 'Terracotta urns of yellow flowers against a sandstone wall' },
+  sangeet: { photo: 'stage-dancers', alt: 'The sangeet stage under crossing beams of light' },
+  wedding: { photo: 'rose-arch', alt: 'An arch of red roses over the aisle to the palace' },
+  beyond: { photo: 'red-archway', alt: 'A carved archway lit red for the night' },
 }
 
 /**
- * The four days of a celebration, joined by a gold line.
- *
- * No photographs: each day is a line drawing, its number, its name and the
- * three lines the Celebrations page opens it with. On a phone it is a compact
- * timeline: each drawing in a small circle on a line down the left, the words
- * beside it. From 992px the days sit four across, centred, the line runs
- * between their dots, and their rows line up whatever the length of each
- * name. Each day links to its chapter.
- *
- * As a day reaches the screen its dot appears, its drawing traces itself in
- * and its words rise. On a phone each joining line draws as it is scrolled
- * past; on a wide screen the four days arrive one after another, the line
- * reaching each in turn.
+ * A smooth path through the points, arriving at each from above. It leaves
+ * each point downward, except the first when the next lies to its right: the
+ * thread then runs on from the head's rule, sideways, so it never cuts back
+ * across the title beneath it.
  */
+function threadPath(points: { x: number; y: number }[]) {
+  if (points.length < 2) return ''
+  let d = `M ${points[0].x} ${points[0].y}`
+  for (let i = 1; i < points.length; i++) {
+    const a = points[i - 1]
+    const b = points[i]
+    const pull = Math.max(60, Math.abs(b.y - a.y) * 0.55)
+    const sideways = i === 1 && b.x - a.x > 40
+    const c1 = sideways ? `${a.x + (b.x - a.x) * 0.85} ${a.y}` : `${a.x} ${a.y + pull}`
+    d += ` C ${c1}, ${b.x} ${b.y - pull}, ${b.x} ${b.y}`
+  }
+  return d
+}
+
 export default function HomeDays() {
   const sectionRef = useRef<HTMLElement>(null)
+  const spreadRef = useRef<HTMLDivElement>(null)
+  const pathRef = useRef<SVGPathElement>(null)
+  const svgRef = useRef<SVGSVGElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
   const reduced = useReducedMotion()
 
   useLineAnimation(headingRef)
 
+  // The thread: measured from where the head's rule ends and where each
+  // number's mark sits, and redrawn whenever the spread changes size.
+  useIsomorphicLayoutEffect(() => {
+    const spread = spreadRef.current
+    const path = pathRef.current
+    const svg = svgRef.current
+    if (!spread || !path || !svg) return
+
+    const draw = () => {
+      const box = spread.getBoundingClientRect()
+      const at = (el: Element, edge: 'right' | 'centre') => {
+        const r = el.getBoundingClientRect()
+        return { x: (edge === 'right' ? r.right : r.left + r.width / 2) - box.left, y: r.top + r.height / 2 - box.top }
+      }
+      const start = spread.querySelector('.dbd_rule')
+      const head = spread.querySelector('.dbd_head')
+      const marks = Array.from(spread.querySelectorAll('.dbd_mark'))
+      const points = [...(start ? [at(start, 'right')] : []), ...marks.map((m) => at(m, 'centre'))]
+      // Where the first day sits below the head rather than beside it (one
+      // column, or two), the thread would fall straight through the intro.
+      // It runs out along the rule to the margin first, down past the head
+      // there, and only then across to the first day.
+      if (start && head && marks[0] && points.length > 1 && points[1].x < points[0].x + 40) {
+        const pad = parseFloat(getComputedStyle(spread).paddingRight) || 16
+        const below = head.getBoundingClientRect().bottom - box.top + 12
+        points.splice(1, 0, { x: box.width - pad / 2, y: below })
+      }
+      svg.setAttribute('viewBox', `0 0 ${box.width} ${box.height}`)
+      path.setAttribute('d', threadPath(points))
+      const length = path.getTotalLength()
+      path.style.strokeDasharray = `${length}`
+      path.dataset.length = `${length}`
+      if (reduced) path.style.strokeDashoffset = '0'
+    }
+
+    draw()
+    const ro = new ResizeObserver(() => {
+      draw()
+      ScrollTrigger.refresh()
+    })
+    ro.observe(spread)
+    return () => ro.disconnect()
+  }, [reduced])
+
+  // The reveal.
   useIsomorphicLayoutEffect(() => {
     const section = sectionRef.current
-    if (!section || reduced) return
+    const path = pathRef.current
+    if (!section || !path || reduced) return
     registerGsap()
 
-    const mm = gsap.matchMedia(section)
-    mm.add({ wide: '(min-width: 992px)', narrow: '(max-width: 991px)' }, (context) => {
-      const wide = Boolean(context.conditions?.wide)
-      const days = gsap.utils.toArray<HTMLElement>('.days_item').map((item) => {
-        const strokes = Array.from(item.querySelectorAll<SVGGeometryElement>('.day-draw path, .day-draw circle, .day-draw ellipse'))
-        strokes.forEach((el) => {
-          const length = el.getTotalLength()
-          gsap.set(el, { strokeDasharray: length, strokeDashoffset: length })
-        })
-        const rise = item.querySelectorAll('.days_rise')
-        const dot = item.querySelector('.days_dot')
-        const seg = item.querySelector('.days_seg_fill')
-        gsap.set(rise, { yPercent: 110 })
-        gsap.set(dot, { scale: 0 })
-        if (seg) gsap.set(seg, wide ? { scaleX: 0 } : { scaleY: 0 })
-        return { item, strokes, rise, dot, seg }
+    const ctx = gsap.context(() => {
+      gsap.from('.dbd_eyebrow, .dbd_lede', {
+        y: 24,
+        autoAlpha: 0,
+        duration: 1.2,
+        ease: 'power3.out',
+        stagger: 0.15,
+        scrollTrigger: { trigger: '.dbd_head', start: 'top 80%', once: true },
       })
 
-      const reveal = (tl: gsap.core.Timeline, day: (typeof days)[number], at: number) => {
-        tl.to(day.dot, { scale: 1, duration: 0.5, ease: 'back.out(3)' }, at)
-        tl.to(day.strokes, { strokeDashoffset: 0, duration: 1.6, ease: 'power2.inOut', stagger: 0.03 }, at)
-        tl.to(day.rise, { yPercent: 0, duration: 1.1, ease: 'power3.out', stagger: 0.07 }, at + 0.2)
-      }
+      // The thread follows the scroll from the head to the last number.
+      gsap.fromTo(
+        path,
+        { strokeDashoffset: () => Number(path.dataset.length ?? 0) },
+        {
+          strokeDashoffset: 0,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.dbd_spread',
+            start: 'top 65%',
+            end: 'bottom 85%',
+            scrub: 0.6,
+            invalidateOnRefresh: true,
+          },
+        }
+      )
 
-      if (wide) {
-        const tl = gsap.timeline({ scrollTrigger: { trigger: '.days_list', start: 'top 78%', once: true } })
-        days.forEach((day, i) => {
-          reveal(tl, day, i * 0.45)
-          if (day.seg) tl.to(day.seg, { scaleX: 1, duration: 0.6, ease: 'power2.inOut' }, i * 0.45 + 0.3)
-        })
-      } else {
-        days.forEach((day) => {
-          const tl = gsap.timeline({ scrollTrigger: { trigger: day.item, start: 'top 85%', once: true } })
-          // The circle that holds the drawing opens first.
-          tl.from(day.item.querySelector('.days_art'), { scale: 0.6, autoAlpha: 0, duration: 0.6, ease: 'back.out(2.2)' }, 0)
-          reveal(tl, day, 0.1)
-          if (day.seg) {
-            gsap.to(day.seg, {
-              scaleY: 1,
+      gsap.utils.toArray<HTMLElement>('.dbd_plate').forEach((plate) => {
+        const tl = gsap.timeline({ scrollTrigger: { trigger: plate, start: 'top 85%', once: true } })
+        // The photograph wipes up out of its frame while the image settles.
+        tl.fromTo(
+          plate.querySelector('.dbd_photo'),
+          { clipPath: 'inset(100% 0% 0% 0%)' },
+          { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'power3.inOut' },
+          0
+        )
+        tl.from(plate.querySelector('.dbd_img'), { scale: 1.18, duration: 1.9, ease: 'power3.out' }, 0)
+        tl.from(plate.querySelector('.dbd_card'), { y: 48, autoAlpha: 0, duration: 1.1, ease: 'power3.out' }, 0.45)
+        tl.from(plate.querySelector('.dbd_mark'), { scale: 0, duration: 0.6, ease: 'back.out(3)' }, 0.7)
+      })
+
+      // On a wide screen each photograph drifts a little against its frame.
+      gsap.matchMedia().add('(min-width: 1100px)', () => {
+        gsap.utils.toArray<HTMLElement>('.dbd_drift').forEach((el) => {
+          gsap.fromTo(
+            el,
+            { yPercent: -5 },
+            {
+              yPercent: 5,
               ease: 'none',
-              scrollTrigger: { trigger: day.seg, start: 'top 88%', end: 'bottom 62%', scrub: 0.4 },
-            })
-          }
+              scrollTrigger: { trigger: el.parentElement, start: 'top bottom', end: 'bottom top', scrub: true },
+            }
+          )
         })
-      }
-    })
+      })
+    }, section)
 
-    return () => mm.revert()
+    return () => ctx.revert()
   }, [reduced])
 
   return (
-    <section ref={sectionRef} data-theme="dark" className="days_wrap">
-      <div className="u-container days_contain" data-padding-top="none" data-padding-bottom="none">
-        <div className="days_head">
-          <h2 ref={headingRef} className="days_title" js-line-animation="">
+    <section ref={sectionRef} data-theme="dark" className="dbd" aria-labelledby="dbd-title">
+      <div ref={spreadRef} className="dbd_spread">
+        <span className="dbd_mono" aria-hidden="true">
+          D
+        </span>
+        <svg ref={svgRef} className="dbd_thread" aria-hidden="true" preserveAspectRatio="none">
+          <path ref={pathRef} className="dbd_thread_path" />
+        </svg>
+
+        <header className="dbd_head">
+          <p className="dbd_eyebrow">
+            The celebration · Four days
+            <span className="dbd_rule" aria-hidden="true" />
+          </p>
+          <h2 id="dbd-title" ref={headingRef} className="dbd_title" js-line-animation="">
             <Initial>Day By Day</Initial>
           </h2>
-          <p className="days_intro">{INTRO.caption}.</p>
-        </div>
+          <p className="dbd_lede">{INTRO.text}</p>
+        </header>
 
-        <ol className="days_list">
-          {CHAPTERS.map((day, i) => {
-            const Drawing = drawings[DRAWING[day.slug] ?? 'mandap']
+        <ol className="dbd_plates">
+          {CHAPTERS.map((day) => {
+            const plate = PLATES[day.slug]
+            const photo = lib(plate.photo)
+            const portrait = photo.h > photo.w
             return (
-              <li key={day.slug} className="days_item">
-                <span className="days_dot" aria-hidden="true" />
-                <Link href={`/celebrations#${day.slug}`} className="days_link">
-                  <span className="days_art">
-                    <Drawing />
+              <li key={day.slug} className={`dbd_plate dbd_plate--${day.slug}`}>
+                <Link href={`/celebrations#${day.slug}`} className="dbd_link">
+                  <span className={`dbd_photo${portrait ? ' is-portrait' : ''}`}>
+                    <span className="dbd_drift">
+                      <img
+                        className="dbd_img"
+                        src={photo.src800}
+                        srcSet={`${photo.src800} ${photo.w800}w, ${photo.src} ${photo.w}w`}
+                        sizes="(min-width: 1100px) 45vw, 86vw"
+                        width={photo.w}
+                        height={photo.h}
+                        alt={plate.alt}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </span>
                   </span>
-                  <span className="days_clip">
-                    <span className="days_rise days_num">{day.numeral}</span>
-                  </span>
-                  <span className="days_clip">
-                    <span className="days_rise days_name">{day.name}</span>
-                  </span>
-                  <span className="days_clip">
-                    <span className="days_rise days_lines">{day.lines.join(' ')}</span>
-                  </span>
-                  <span className="days_clip">
-                    <span className="days_rise days_more">
-                      {day.discover} <span aria-hidden="true">→</span>
+                  <span className="dbd_card">
+                    <span className="dbd_num">
+                      <span className="dbd_mark" aria-hidden="true" />
+                      {day.numeral}
+                    </span>
+                    <h3 className="dbd_name">{day.name}</h3>
+                    <span className="dbd_lines">{day.lines.join(' ')}</span>
+                    <span className="dbd_more">
+                      {day.discover}{'\u00a0'}<span aria-hidden="true">→</span>
                     </span>
                   </span>
                 </Link>
-                {i < CHAPTERS.length - 1 ? (
-                  <span className="days_seg" aria-hidden="true">
-                    <span className="days_seg_fill" />
-                  </span>
-                ) : null}
               </li>
             )
           })}

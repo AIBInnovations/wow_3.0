@@ -1148,42 +1148,132 @@
 /* ═══ Day by day ═════════════════════════════════════════════════════════ */
 
 /*
- * Phone first. Everything is centred: a title and a line under it, then the
- * four days stacked, each a dot, a drawing, its number, name, lines and link,
- * with a short gold line running down to the next day's dot.
+ * An editorial spread (see HomeDays), set like a page of the studio's deck:
+ * a wine ground lit a little at its centre, a giant script D faint behind
+ * the spread, cream cards over the photographs and a gold thread.
  *
- * From 992px the days sit four across. Each day is a subgrid of the list, so
- * the drawings, numbers, names, lines and links share rows: a name that wraps
- * to two lines moves every day's next row down with it, and nothing is left
- * ragged. The joining line then runs across from dot to dot.
+ * Phone first: the head, then the four plates in one column, alternating
+ * left and right, each card laid over the foot of its photograph.
  *
- * The container's own padding is switched off in the markup; the section's
- * padding below is the only space above and below it.
+ * From 1100px the spread is a 12-column grid. Row one: the head (1-5),
+ * Haldi tall (6-8), the sangeet set lower at the right (9-12). Row two: the
+ * wedding wide across the foot (1-7), the night that follows set down at the
+ * right (9-11). Offsets and gaps are in container units (cqi) so the spread
+ * keeps its proportions; the rows grow with their content, so no plate can run
+ * into another whatever its card's text does.
+ *
+ * Between 700 and 1099px the plates pair up two across, the second of each
+ * pair set lower, so a tablet is not one narrow column in a wide screen.
+ *
+ * Colour: cream type on the wine, gold for the thread, the rules and the
+ * marks; inside the cards, wine ink on cream with a darker gold for the
+ * numbers so they read.
  */
-.days_wrap {
-  --days-dot: 11px;
+.dbd {
+  --dbd-card: #fbf4e9;
+  --dbd-ink: var(--wow-wine-deep, #2b0d0f);
+  --dbd-soft: #6b4a45;
+  --dbd-gold: #c9a24d;
+  --dbd-gold-text: #7d5f24;
+  --dbd-head: #fbf4e9;
+  --dbd-head-soft: rgb(251 244 233 / 74%);
+  --dbd-eyebrow: #c6a96e;
   position: relative;
-  background-color: var(--wow-blue, #10264a);
-  padding-block: clamp(4rem, 10vw, 7.5rem);
   overflow: hidden;
+  padding-block: clamp(3.5rem, 7vw, 6rem);
+  /* The sections either side sit on the page's darkest wine; this one opens
+     out of that colour and closes back into it, lighter only at its centre,
+     so there is no seam at either edge. */
+  background-color: var(--swatch--dark, #2b0d0f);
+  background-image:
+    linear-gradient(to bottom, var(--swatch--dark, #2b0d0f) 0%, rgb(43 13 15 / 0%) 20%, rgb(43 13 15 / 0%) 80%, var(--swatch--dark, #2b0d0f) 100%),
+    radial-gradient(85% 60% at 62% 45%, #5a1f24 0%, #3b1215 55%, #2b0d0f 100%);
+  color: var(--dbd-head);
 }
 
-.days_head {
+/* A faint grain over the ground. */
+.dbd::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .12 0 0 0 0 .08 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.12;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+/* The deck's device: one script capital, enormous and nearly gone. */
+.dbd_mono {
+  position: absolute;
+  top: -6cqi;
+  left: -5cqi;
+  z-index: 0;
+  font-family: var(--font--initial);
+  font-size: 78cqi;
+  line-height: 1;
+  color: rgb(251 244 233 / 4.5%);
+  pointer-events: none;
+  user-select: none;
+}
+
+.dbd_spread {
+  position: relative;
+  container-type: inline-size;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: var(--padding-horizontal--main);
+}
+
+/* The thread runs beneath the photographs and the cards, so it shows only
+   on the paper between them, like a stitch passing behind the page. */
+.dbd_thread {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.dbd_thread_path {
+  fill: none;
+  stroke: var(--dbd-gold);
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ─── The head ───────────────────────────────────────────────────────── */
+
+.dbd_head {
+  position: relative;
+  z-index: 3;
+  max-width: 34rem;
+}
+
+.dbd_eyebrow {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  row-gap: 0.85rem;
-  margin-bottom: clamp(3rem, 10vw, 5rem);
-  text-align: center;
+  gap: 1rem;
+  margin: 0;
+  font-family: var(--font--inherit);
+  font-size: var(--step-n1);
+  line-height: var(--leading-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--dbd-eyebrow);
 }
 
-/*
- * The opening capital reaches above the line. A line with a capital is
- * widened upward by --initial-reach to hold it (typography.css); the padding
- * gives that room inside the heading, so it can never reach what sits above.
- */
-.days_title {
-  margin: 0;
+/* Where the thread begins. */
+.dbd_rule {
+  flex: 0 0 clamp(3rem, 8vw, 7rem);
+  height: 1px;
+  background-color: var(--dbd-gold);
+}
+
+.dbd_title {
+  margin: var(--rhythm-sm) 0 0;
   padding-top: var(--initial-reach);
   font-family: var(--font--primary-family);
   font-size: var(--step-6);
@@ -1191,287 +1281,291 @@
   line-height: var(--leading-heading);
   letter-spacing: var(--tracking-heading);
   text-transform: uppercase;
+  color: var(--dbd-head);
 }
 
-.days_intro {
-  max-width: 30ch;
-  text-wrap: balance;
-  margin: 0;
+.dbd_lede {
+  max-width: 36ch;
+  margin: var(--rhythm-sm) 0 0;
   font-family: var(--font--body);
-  font-size: clamp(1.1rem, 4.4vw, 1.35rem);
+  font-size: var(--step-1);
   font-style: italic;
-  line-height: 1.45;
-  color: var(--wow-gold-soft);
+  line-height: var(--leading-lead);
+  color: var(--dbd-head-soft);
+  text-wrap: pretty;
 }
 
-.days_list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0;
+/* ─── The plates ─────────────────────────────────────────────────────── */
+
+.dbd_plates {
+  position: relative;
+  display: grid;
+  row-gap: clamp(2.5rem, 8vw, 4rem);
+  margin: clamp(2.25rem, 6vw, 3.5rem) 0 0;
   padding: 0;
   list-style: none;
 }
 
-.days_item {
+.dbd_plate {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  text-align: center;
+  width: min(86%, 30rem);
 }
 
-.days_dot {
-  position: relative;
-  z-index: 1;
+.dbd_plate:nth-child(even) {
+  justify-self: end;
+}
+
+.dbd_link {
   display: block;
-  width: var(--days-dot);
-  height: var(--days-dot);
-  margin-bottom: 1.5rem;
-  border-radius: 50%;
-  background-color: var(--wow-gold);
-  box-shadow: 0 0 0 6px rgb(201 162 77 / 18%);
-}
-
-.days_link {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   color: inherit;
   text-decoration: none;
 }
 
-.days_art {
-  display: block;
-  margin-bottom: 1.25rem;
-  color: var(--wow-gold);
-}
-
-.days_art svg {
-  display: block;
-  width: auto;
-  height: clamp(5.25rem, 23vw, 6.5rem);
-  overflow: visible;
-}
-
-.days_clip {
+/* The frame clips; inside it the image drifts and settles. */
+.dbd_photo {
+  position: relative;
+  z-index: 1;
   display: block;
   overflow: hidden;
-  padding-bottom: 0.1em;
+  aspect-ratio: 3 / 2;
+  background-color: #4a181d;
 }
 
-.days_rise {
+.dbd_photo.is-portrait {
+  aspect-ratio: 4 / 5;
+}
+
+.dbd_drift {
+  position: absolute;
+  inset: -6% 0;
   display: block;
 }
 
-.days_num {
-  margin-bottom: 0.4rem;
-  font-family: var(--font--primary-family);
-  font-size: 0.8rem;
-  letter-spacing: 0.3em;
-  color: var(--wow-gold);
+.dbd_img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
 }
 
-.days_name {
-  max-width: 16ch;
-  margin-bottom: 0.55rem;
+/* A veil that lifts a little under the pointer. */
+.dbd_photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgb(43 13 15 / 0%);
+  transition: background-color 0.6s ease;
+}
+
+@media (hover: hover) {
+  .dbd_link:hover .dbd_photo::after {
+    background-color: rgb(43 13 15 / 14%);
+  }
+}
+
+/* The card, over the foot of its photograph. */
+.dbd_card {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: min(88%, 22rem);
+  margin: -3rem 0 0 1.5rem;
+  padding: 1.5rem;
+  background-color: var(--dbd-card);
+  color: var(--dbd-ink);
+  box-shadow: 0 30px 60px -30px rgb(0 0 0 / 60%);
+}
+
+.dbd_plate:nth-child(even) .dbd_card {
+  margin-left: auto;
+  margin-right: 1.5rem;
+}
+
+.dbd_num {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font--inherit);
+  font-size: var(--step-n1);
+  line-height: 1;
+  letter-spacing: var(--tracking-label);
+  color: var(--dbd-gold-text);
+}
+
+.dbd_num::after {
+  content: '';
+  width: 2.5rem;
+  height: 1px;
+  background-color: var(--dbd-gold);
+}
+
+/* Where the thread passes through the card. */
+.dbd_mark {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: var(--dbd-gold);
+  box-shadow: 0 0 0 4px var(--dbd-card);
+}
+
+.dbd_name {
+  margin: 0;
   font-family: var(--font--primary-family);
-  font-size: clamp(1.55rem, 6.4vw, 2rem);
-  line-height: 1.12;
-  letter-spacing: 0.04em;
+  font-size: var(--step-3);
+  font-weight: 400;
+  line-height: var(--leading-h3);
+  letter-spacing: var(--tracking-heading);
   text-transform: uppercase;
+}
+
+.dbd_lines {
+  font-family: var(--font--body);
+  font-size: var(--step-0);
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--dbd-soft);
   text-wrap: balance;
 }
 
-.days_lines {
-  max-width: 24ch;
-  margin-bottom: 0.9rem;
-  font-family: var(--font--body);
-  font-size: 1.1rem;
-  font-style: italic;
-  line-height: 1.45;
-  color: rgb(251 244 233 / 78%);
-}
-
-.days_more {
-  font-size: 0.78rem;
-  letter-spacing: 0.18em;
+.dbd_more {
+  align-self: flex-start;
+  margin-top: 0.25rem;
+  font-family: var(--font--inherit);
+  font-size: var(--step-n1);
+  line-height: 1.5;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.45em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--wow-gold-soft);
-  transition: color 0.3s ease;
+  color: var(--dbd-ink);
+  transition: color 0.4s ease;
 }
 
-.days_link:hover .days_more,
-.days_link:focus-visible .days_more {
-  color: var(--wow-cream);
+.dbd_link:hover .dbd_more,
+.dbd_link:focus-visible .dbd_more {
+  color: var(--dbd-gold-text);
 }
 
-/* The line down to the next day's dot. */
-.days_seg {
-  position: relative;
-  display: block;
-  width: 1px;
-  height: clamp(3rem, 13vw, 4.5rem);
-  margin-block: 1.75rem;
-  background-color: rgb(251 244 233 / 18%);
-}
+/* ─── Tablets: the plates two across ─────────────────────────────────── */
 
-.days_seg_fill {
-  position: absolute;
-  inset: 0;
-  background-color: var(--wow-gold);
-  transform-origin: top center;
-}
-
-/*
- * Phones and tablets: a compact timeline. Each day's drawing sits in a small
- * gold-ringed circle on a line down the left, its number, name, lines and link
- * beside it, so the four days take about half the height of a centred stack.
- * The line runs from each circle to the next.
- */
-@media screen and (max-width: 991px) {
-  .days_wrap {
-    --node: 68px;
-    --days-gap: 2.25rem;
-    padding-block: clamp(3.5rem, 12vw, 5rem);
-  }
-
-  .days_head {
-    margin-bottom: 2.5rem;
-  }
-
-  .days_list {
-    align-items: stretch;
-    row-gap: var(--days-gap);
-    max-width: 34rem;
-    margin-inline: auto;
-  }
-
-  .days_item {
-    display: block;
-    text-align: left;
-  }
-
-  .days_dot {
-    display: none;
-  }
-
-  .days_link {
-    display: grid;
-    grid-template-columns: var(--node) minmax(0, 1fr);
-    column-gap: 1.1rem;
+@media (min-width: 700px) and (max-width: 1099px) {
+  .dbd_plates {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 4vw;
+    row-gap: 3rem;
     align-items: start;
   }
 
-  .days_art {
-    position: relative;
-    z-index: 1;
-    grid-row: 1 / span 4;
-    display: grid;
-    place-items: center;
-    width: var(--node);
-    height: var(--node);
-    margin: 0;
-    border: 1px solid rgb(201 162 77 / 45%);
-    border-radius: 50%;
-    background-color: var(--wow-blue, #10264a);
-  }
-
-  .days_art svg {
+  .dbd_plate,
+  .dbd_plate:nth-child(even) {
     width: auto;
-    max-width: 74%;
-    height: 58%;
+    justify-self: stretch;
   }
 
-  .days_link > .days_clip {
-    grid-column: 2;
+  .dbd_plate:nth-child(even) {
+    margin-top: 9vw;
   }
 
-  .days_num {
-    margin-bottom: 0.2rem;
-  }
-
-  .days_name {
-    max-width: none;
-    margin-bottom: 0.35rem;
-    font-size: clamp(1.2rem, 5.2vw, 1.5rem);
-  }
-
-  .days_lines {
-    max-width: 30ch;
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
-    line-height: 1.4;
-  }
-
-  .days_more {
-    font-size: 0.72rem;
-  }
-
-  /* From the bottom of this day's circle down to the top of the next. */
-  .days_seg {
-    position: absolute;
-    top: var(--node);
-    bottom: calc(-1 * var(--days-gap));
-    left: calc(var(--node) / 2 - 0.5px);
-    width: 1px;
-    height: auto;
-    margin: 0;
+  .dbd_card,
+  .dbd_plate:nth-child(even) .dbd_card {
+    width: calc(100% - 1.5rem);
   }
 }
 
-/* Four across, rows shared, the line running from dot to dot. */
-@media screen and (min-width: 992px) {
-  .days_list {
-    --days-gap: 2.5vw;
+/* ─── The spread, from 1100px ────────────────────────────────────────── */
+
+@media (min-width: 1100px) {
+  .dbd_spread {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    grid-template-rows: repeat(6, auto);
-    column-gap: var(--days-gap);
-    row-gap: 0;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 2.2cqi;
     align-items: start;
   }
 
-  .days_item {
-    display: grid;
-    grid-row: span 6;
-    grid-template-rows: subgrid;
-    justify-items: center;
+  .dbd_head {
+    grid-column: 1 / 6;
+    grid-row: 1;
+    max-width: none;
+    padding-top: 3cqi;
   }
 
-  .days_dot {
-    margin-bottom: 2.5rem;
-  }
-
-  .days_link {
-    display: grid;
-    grid-row: span 5;
-    grid-template-rows: subgrid;
-    justify-items: center;
+  /* The list takes the whole grid and lays its plates on the same columns. */
+  .dbd_plates {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 2.2cqi;
+    row-gap: 3cqi;
     align-items: start;
-  }
-
-  .days_name {
-    font-size: clamp(1.3rem, 1.8vw, 1.85rem);
-  }
-
-  .days_lines {
-    font-size: 1.05rem;
-  }
-
-  /* From this day's dot across to the next one's. */
-  .days_seg {
-    position: absolute;
-    top: calc(var(--days-dot) / 2 - 0.5px);
-    left: 50%;
-    width: calc(100% + var(--days-gap));
-    height: 1px;
     margin: 0;
   }
 
-  .days_seg_fill {
-    transform-origin: left center;
+  .dbd_plate,
+  .dbd_plate:nth-child(even) {
+    width: auto;
+    justify-self: stretch;
+  }
+
+  .dbd_plate--haldi {
+    grid-column: 6 / 9;
+    grid-row: 1;
+  }
+
+  .dbd_plate--sangeet {
+    grid-column: 9 / 13;
+    grid-row: 1;
+    margin-top: 7cqi;
+  }
+
+  .dbd_plate--wedding {
+    grid-column: 1 / 8;
+    grid-row: 2;
+  }
+
+  .dbd_plate--beyond {
+    grid-column: 9 / 12;
+    grid-row: 2;
+    margin-top: 5cqi;
+  }
+
+  .dbd_card,
+  .dbd_plate:nth-child(even) .dbd_card {
+    width: calc(100% - 1.6cqi);
+    max-width: none;
+    margin: -3.4cqi 0 0 1.6cqi;
+    padding: 1.7cqi;
+  }
+
+  /* The cards hang off their photographs, away from the spread's centre:
+     Haldi's to the left into the open paper beside the head, the wedding's
+     past the right of the wide photograph, the night's to the right. A
+     narrow plate's card gets the width a two-line name needs. */
+  .dbd_plate--haldi .dbd_card {
+    width: calc(100% + 5.4cqi);
+    margin-left: -7cqi;
+  }
+
+  .dbd_plate--wedding .dbd_card {
+    width: 44%;
+    margin-left: auto;
+    margin-right: -2.2cqi;
+  }
+
+  .dbd_plate--beyond .dbd_card,
+  .dbd_plate--beyond:nth-child(even) .dbd_card {
+    width: calc(100% + 4cqi);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dbd_photo::after,
+  .dbd_more {
+    transition: none;
   }
 }
 
