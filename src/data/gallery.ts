@@ -10,7 +10,9 @@
  * Bangalore, Gulmarg) by outside photographers, which are not the studio's
  * work and are used on the pages under CC BY / CC BY-SA licences whose credit
  * (public/images/CITY-CREDITS.md, linked from the footer) must travel with
- * them; this page has no footer.
+ * them; this page has no footer. Also left out: the reception buffet on the
+ * home page, an Unsplash stand-in until the studio's own photograph arrives
+ * (see data/library.ts) — a gallery is the studio's own work.
  *
  * Shots with an rs-/av- id are page photographs that already had gallery
  * files under their photo-library id.
@@ -103,7 +105,6 @@ export const GALLERY_SHOTS: GalleryShot[] = [
   { id: 'wow-lib-stage-crowd', ar: 1.778, cat: 'moments' },
   { id: 'reels-dxj23uuaspo', ar: 0.563, cat: 'details' },
   { id: 'reels-dxrlgynglrb', ar: 0.563, cat: 'details' },
-  { id: 'wow-lib-buffet-table', ar: 1.501, cat: 'details' },
   { id: 'wow-lib-gift-boxes', ar: 1.501, cat: 'details' },
   { id: 'wow-lib-glass-tags', ar: 0.667, cat: 'details' },
   { id: 'wow-lib-marigold-pots', ar: 0.666, cat: 'details' },
