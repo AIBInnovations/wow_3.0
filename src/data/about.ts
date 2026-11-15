@@ -33,11 +33,12 @@ export const aboutHero = {
       + 'articulated through space, atmosphere and carefully composed moments.',
     'Our role is not simply to orchestrate, but to curate — to shape experiences '
       + 'with discernment, sensitivity and artistic discipline. For us, celebration '
-      + 'is not produced. It is authored.',
+      + 'is not produced. It is authored. And every wedding becomes a singular work of art.',
   ],
 }
 
-export const aboutMarquee = 'Get To Know The Atelier'
+/** Website Content PDF, Banners. */
+export const aboutMarquee = 'A Wedding, Rendered Like Couture'
 
 export type AboutCard = { title: string; body: string; image: string; alt: string }
 
@@ -46,7 +47,8 @@ export const aboutCards: AboutCard[] = [
   {
     title: 'Ideology',
     body:
-      'Rather than spectacle, we pursue atmosphere. Rather than excess, we pursue '
+      'Our design philosophy rests upon a belief in considered elegance. '
+      + 'Rather than spectacle, we pursue atmosphere. Rather than excess, we pursue '
       + 'refinement. Each celebration is conceived as a living composition, where '
       + 'architecture, florals, light, texture and music are brought together with '
       + 'deliberate harmony.',
@@ -58,14 +60,18 @@ export const aboutCards: AboutCard[] = [
     body:
       'Our aesthetic language is shaped by a dialogue with European art, '
       + 'architecture and couture — the romanticism of Parisian salons, the grandeur '
-      + 'of Italian palazzos and the quiet dignity of historic estates.',
+      + 'of Italian palazzos, the sun-washed elegance of Spanish villas and the quiet '
+      + 'dignity of historic estates. We draw inspiration from the worlds of art, fashion, '
+      + 'music and design, translating these influences into celebrations that feel '
+      + 'cultivated rather than constructed.',
     image: '/images/wow-palace-facade.jpg',
     alt: 'A palace facade',
   },
   {
     title: 'Journey',
     body:
-      'From the earliest conversations to the final moments of celebration, our '
+      'The experience of working with our atelier is both personal and assured. '
+      + 'From the earliest conversations to the final moments of celebration, our '
       + 'process is guided by thoughtful collaboration and meticulous orchestration. '
       + 'The journey is intimate. The execution is seamless.',
     image: '/images/wow-palm-walk.jpg',
@@ -77,7 +83,12 @@ export const aboutCards: AboutCard[] = [
 export const aboutPortfolio = {
   kicker: 'Signature Portfolio',
   lines: ['A Discreet Anthology', 'Never Repeated'],
-  note: 'Each celebration within our portfolio reflects a narrative interpreted with depth, sensitivity and aesthetic clarity.',
+  /** Website Content PDF, Signature Portfolio. */
+  note:
+    'Our portfolio represents a discreet anthology of our most distinguished celebrations. '
+    + 'The privacy of our clientele remains paramount, and as such, identities and imagery are '
+    + 'not publicly disclosed. What remains visible is the artistry, the scale and the nuanced '
+    + 'craftsmanship that define our work.',
   left: { src: '/images/wow-fireworks-couple.jpg', alt: 'Fireworks over the mandap' },
   right: { src: '/images/wow-red-ballroom.jpg', alt: 'A ballroom lit red, candles on every table' },
 }
@@ -92,21 +103,25 @@ export const aboutLetters = {
       body:
         'At our atelier, every celebration begins as a study of the couple it honours. '
         + 'Through thoughtful dialogue and intuitive interpretation, we uncover the '
-        + 'nuances that make each story distinct.',
+        + 'nuances that make each story distinct. From this understanding emerges a '
+        + 'celebration that is deeply personal, quietly extraordinary and impossible to replicate.',
       from: '— Founder’s Philosophy',
     },
     {
       body:
         'Every detail is measured not by its grandeur alone, but by its ability to '
-        + 'contribute to the emotional landscape of the celebration. Nothing is '
-        + 'incidental. Everything is intentional.',
+        + 'contribute to the emotional landscape of the celebration. Guided by the '
+        + 'discipline of an atelier and the sensibility of a cultural curator, we create '
+        + 'environments that feel timeless, immersive and deeply evocative.',
       from: '— Design Ideology',
     },
     {
       body:
         'From the first arrival to the final farewell, every movement of the '
-        + 'celebration is orchestrated with narrative precision. Guests do not merely '
-        + 'attend our celebrations. They inhabit them.',
+        + 'celebration is orchestrated with narrative precision. Our approach transcends '
+        + 'traditional planning. Instead, we conceive weddings as cultural and artistic '
+        + 'compositions that engage the senses and create enduring memory. Every '
+        + 'celebration is singular. Never repeated. Never replicated.',
       from: '— What Distinguishes Us',
     },
     {
@@ -125,6 +140,15 @@ export const aboutDestinations = {
   background: '/images/wow-palm-tents.jpg',
   marquee: 'Remarkable Destinations',
   heading: 'Destinations & Scale',
+  /** Website Content PDF, Destinations & Scale. */
+  note: [
+    'Our celebrations unfold across some of the world’s most remarkable destinations. '
+      + 'From historic European estates to Mediterranean coastlines, private villas and '
+      + 'architecturally significant venues, each setting becomes an extension of the '
+      + 'celebration’s narrative.',
+    'Whether an intimate gathering of close family or a multi-day celebration of considerable '
+      + 'scale, every occasion is approached with the same devotion to artistry and discretion.',
+  ],
   cta: 'Explore',
   items: [
     { lead: 'Udaipur', tail: 'Rajasthan', image: '/images/city-udaipur.jpg', href: '/celebrations' },

@@ -10,7 +10,7 @@ import { scrollToChapter } from './scrollToChapter'
 /**
  * Chapter progress, fixed to the right edge on desktop.
  *
- * Five numerals, one per chapter; the one whose chapter holds the viewport's
+ * Seven numerals, one per chapter; the one whose chapter holds the viewport's
  * centre is lit. The column shows itself only while the chapters are on screen
  * and hides again for the closing band. Each numeral scrolls to its chapter.
  *

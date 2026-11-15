@@ -348,3 +348,16 @@ body {
 .home-marquee_wrap .hk {
   text-shadow: 0 2px 24px rgb(0 0 0 / 55%), 0 1px 3px rgb(0 0 0 / 45%);
 }
+
+/* Closing card: the deck's last line above the heading. */
+.cta24_card_lead {
+  max-width: 34ch;
+  margin: 0;
+  font-family: var(--font--body);
+  font-size: var(--step-1);
+  font-style: italic;
+  line-height: var(--leading-lead);
+  letter-spacing: 0;
+  color: var(--wow-gold-soft);
+  text-wrap: balance;
+}

@@ -600,3 +600,26 @@
 
 /* Landed on from the home page's atelier button. */
 #atelier { scroll-margin-top: 4.5rem; }
+
+/* Destinations & Scale: the content document's words under the heading. */
+.marquee_grid_note {
+  max-width: 52ch;
+  margin: var(--rhythm-sm) auto 0;
+  font-family: var(--font--body);
+  font-size: var(--step-0);
+  font-style: italic;
+  line-height: var(--leading-body);
+  letter-spacing: 0;
+  opacity: 0.82;
+  text-wrap: pretty;
+}
+
+.marquee_grid_note:last-of-type {
+  margin-bottom: var(--rhythm-md);
+}
+
+/* The portfolio note now carries the privacy paragraph; a wider measure keeps
+   it from running into a long narrow column. */
+.featured-in_note {
+  max-width: 36ch;
+}

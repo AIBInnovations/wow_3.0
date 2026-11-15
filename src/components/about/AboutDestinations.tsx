@@ -107,6 +107,11 @@ export default function AboutDestinations() {
           <h2 ref={headingRef} className="u-text-h2" js-line-animation="">
             <Initial>{aboutDestinations.heading}</Initial>
           </h2>
+          {aboutDestinations.note.map((paragraph) => (
+            <p key={paragraph.slice(0, 24)} className="marquee_grid_note">
+              {paragraph}
+            </p>
+          ))}
           <div className="marquee_grid_wrapper">
             <div className="marquee_grid_list--gd1-ct3">
               {aboutDestinations.items.map((item) => (

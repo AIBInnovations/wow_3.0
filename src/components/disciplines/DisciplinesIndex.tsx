@@ -8,7 +8,7 @@ import { disciplines, disciplinesIndex } from '@/data/disciplines'
 import { scrollToChapter } from './scrollToChapter'
 
 /**
- * The index: five full-width rows, one per discipline, each a link to its chapter.
+ * The index: seven full-width rows, one per discipline, each a link to its chapter.
  *
  * The rows rise in with a stagger as the list enters. On a desktop with a
  * pointer, hovering a row shows that discipline's photograph in a fixed frame

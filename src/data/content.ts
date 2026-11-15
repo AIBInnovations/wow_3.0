@@ -15,7 +15,8 @@ export const site = {
 export const wordmark = { lead: 'WOW', middle: 'Weddings', tail: '& Events' }
 
 export const hero = {
-  kicker: 'Weddings, ceremonies and events',
+  /** Website Content PDF, Banners. */
+  kicker: 'The Curators of Extraordinary Celebrations',
   /** The oversized display line. */
   title: 'celebrations composed with intention',
   paragraph:
@@ -50,9 +51,14 @@ export const celebration = {
 }
 
 export const closing = {
+  /** Preview deck p. 24. */
+  lead: 'Some celebrations end. The best ones become part of family history.',
   heading: 'Shall We Begin?',
+  /** Website Content PDF, Private Enquiries. */
   note:
     'Our atelier accepts a limited number of celebrations each year. '
+    + 'This considered approach allows us to dedicate the depth of attention and creative '
+    + 'immersion that each celebration deserves. '
     + 'For private enquiries, we invite you to begin a confidential conversation with our studio.',
   cta: { href: 'mailto:enquiries@woweventsandweddings.com', label: 'Start an enquiry' },
   circleText: 'START AN ENQUIRY · MAKE AN ENQUIRY · ',

@@ -54,6 +54,7 @@ export default function FinalCta() {
             </div>
 
             <div className="cta24_card_content">
+              <p className="cta24_card_lead">{closing.lead}</p>
               <div className="div-hide">
                 <h2 ref={headingRef} className="cta24_card_h2 u-text-h2" js-line-animation="">
                   <Initial>{closing.heading}</Initial>

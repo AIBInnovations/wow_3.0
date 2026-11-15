@@ -1,7 +1,8 @@
 /** Service copy: Weddings_Preview Deck (1).pdf, pp. 5–19 and 22;
  * design philosophy: Wow events Website Content.pdf, Design Ideology.
  * Short card explanations are faithful condensations, not verbatim quotations.
- * Existing five-service navigation and supplied photographs are retained.
+ * Seven services, as the deck lists them (p. 5): venue sourcing & contracting and
+ * photography & cinematic direction joined the original five.
  */
 
 import { lib, type LibraryName } from './library'
@@ -30,17 +31,20 @@ export type Discipline = {
 }
 
 export const disciplinesHero = {
-  label: 'Five disciplines, composed as one',
-  title: ['Five Disciplines', 'Never In Isolation'],
+  label: 'Seven disciplines, composed as one',
+  title: ['Seven Disciplines', 'Never In Isolation'],
+  /** Preview deck p. 4: what we really do. */
   statement:
-    'Each celebration is conceived as a living composition, where architecture, florals, '
-    + 'light, texture and music are brought together with deliberate harmony. '
-    + 'Nothing is incidental. Everything is intentional.',
+    'We make complexity disappear. From the first conversation to the final farewell brunch, '
+    + 'every celebration is designed as a complete narrative rather than disconnected functions.',
 }
 
 export const disciplinesIndex = {
   label: 'The index',
-  lead: 'Decor, guest experience, invitations, cuisine and entertainment — conceived together, never in isolation.',
+  /** Preview deck p. 3. */
+  lead:
+    'The part people see is beautiful. The part they never see is where we begin. '
+    + 'Behind every unforgettable celebration sits an invisible architecture of planning.',
 }
 
 /** A photograph from the library, with the words that describe it. */
@@ -51,8 +55,79 @@ const photo = (name: LibraryName, alt: string): Photo => {
 
 export const disciplines: Discipline[] = [
   {
-    slug: 'decor',
+    slug: 'venue',
     number: '01',
+    name: 'Venue & Contracting',
+    caption: "Venue sourcing & contracting",
+    statement: ['Flawless', 'is never', 'accidental'],
+    intro: "Luxury works best when every clause, commitment, and coordination point is already solved long before the guest arrives.",
+    feature: {
+      "title": "Done correctly.",
+      "text": "Our contracting and execution framework covers over 90 operational and hospitality checkpoints across vendor alignment, timelines, logistics, production, and guest management."
+    },
+    lists: [
+      {
+        "title": "Solved before arrival",
+        "items": [
+          "Venue sourcing",
+          "Every clause",
+          "Every commitment",
+          "Every coordination point"
+        ]
+      },
+      {
+        "title": "Execution framework",
+        "items": [
+          "Vendor alignment",
+          "Timelines",
+          "Logistics",
+          "Production",
+          "Guest management"
+        ]
+      }
+    ],
+    cards: [
+      {
+        "title": "Venue sourcing",
+        "text": "The setting found and secured as an extension of the celebration’s narrative."
+      },
+      {
+        "title": "Contracting",
+        "text": "Every clause and commitment solved long before the guest arrives."
+      },
+      {
+        "title": "Vendor alignment",
+        "text": "Every partner held to one plan, within a framework of over 90 checkpoints."
+      },
+      {
+        "title": "Timelines",
+        "text": "Timelines set and kept across every function of the celebration."
+      },
+      {
+        "title": "Logistics & production",
+        "text": "Logistics and production coordinated long before the first guest arrives."
+      },
+      {
+        "title": "Guest management",
+        "text": "Operational and hospitality checkpoints that keep every guest looked after."
+      }
+    ],
+    closing: [
+      "Because flawless",
+      "celebrations are",
+      "never accidental."
+    ],
+    background: '#4a161b',
+    photos: {
+      index: photo('palace-lit', 'A palace facade lit for the evening'),
+      open: photo('city-night', 'A palace on the lake at night'),
+      wide: photo('aisle-dusk', 'An aisle at dusk leading to the mandap by the sea'),
+      narrow: photo('red-archway', 'A carved archway lit red'),
+    },
+  },
+  {
+    slug: 'decor',
+    number: '02',
     name: 'Decor',
     caption: "Décor & spatial styling",
     statement: ['Luxury is', 'a thousand', 'small things'],
@@ -71,11 +146,11 @@ export const disciplines: Discipline[] = [
         ]
       },
       {
-        "title": "Execution framework",
+        "title": "Considered elegance",
         "items": [
-          "Vendor alignment",
-          "Timelines and production",
-          "Production and guest management"
+          "Atmosphere over spectacle",
+          "Refinement over excess",
+          "Deliberate harmony"
         ]
       }
     ],
@@ -120,7 +195,7 @@ export const disciplines: Discipline[] = [
   },
   {
     slug: 'guest-experience',
-    number: '02',
+    number: '03',
     name: 'Guest Experience',
     caption: "Welcome & guest experience",
     statement: ['The welcome,', 'composed'],
@@ -133,18 +208,33 @@ export const disciplines: Discipline[] = [
       {
         "title": "Arrivals that feel cinematic",
         "items": [
+          "From airport to check-in",
+          "Airport hospitality & logistics",
+          "Dedicated arrival assistance",
+          "Porter & baggage coordination",
+          "Curated luxury transport",
+          "Guest movement management",
+          "Hotel arrival experiences",
+          "Signature hospitality desks",
+          "Bespoke lobby styling",
+          "Floral welcomes & escorts",
           "Traditional welcome rituals",
-          "Floral welcomes",
+          "Personalised arrival branding",
           "Live instrumental performances",
+          "Curated entertainment moments",
           "Thematic arrival experiences"
         ]
       },
       {
-        "title": "Keepsakes",
+        "title": "Hospitality, redefined",
         "items": [
-          "Curated keepsakes",
-          "Gifting experiences",
-          "Personalised arrival branding"
+          "Post check-in experiences",
+          "Concierge assistance",
+          "Personalised communication",
+          "Room coordination",
+          "Real-time guest support",
+          "Experience updates",
+          "Hampers & gifting"
         ]
       }
     ],
@@ -181,7 +271,7 @@ export const disciplines: Discipline[] = [
   },
   {
     slug: 'invites',
-    number: '03',
+    number: '04',
     name: 'Invites & Gifting',
     caption: "Wedding branding & stationery",
     statement: ["Every celebration", "carries its own", "visual language"],
@@ -251,7 +341,7 @@ export const disciplines: Discipline[] = [
   },
   {
     slug: 'food-beverage',
-    number: '04',
+    number: '05',
     name: 'Food & Beverage',
     caption: "Culinary experiences",
     statement: ['Food', 'is never just', 'food'],
@@ -319,13 +409,13 @@ export const disciplines: Discipline[] = [
   },
   {
     slug: 'entertainment',
-    number: '05',
+    number: '06',
     name: 'Entertainment',
     caption: "Entertainment direction",
     statement: ['Entertainment', 'with', 'presence'],
     intro: "From celebrated performers to immersive cultural showcases, every act is curated to match the scale and spirit of the celebration.",
     feature: {
-      "title": "Entertainment with presence",
+      "title": "Not noise.",
       "text": "Artists, performances, entries, and immersive showcases designed to complement the emotional rhythm of the celebration."
     },
     lists: [
@@ -334,15 +424,20 @@ export const disciplines: Discipline[] = [
         "items": [
           "Bollywood & international artists",
           "DJs & live performers",
-          "Folk & cultural acts"
+          "Folk & cultural acts",
+          "Celebrity appearances",
+          "Baraat entertainment concepts"
         ]
       },
       {
-        "title": "Signature moments",
+        "title": "Signature enhancements",
         "items": [
-          "Celebrity appearances",
-          "Baraat entertainment concepts",
-          "Grand bridal & groom entries"
+          "Grand bridal & groom entries",
+          "Elevated varmala concepts",
+          "Luxury bar experiences",
+          "Fireworks & special effects",
+          "Ice installations",
+          "Bespoke experiential additions"
         ]
       }
     ],
@@ -383,6 +478,61 @@ export const disciplines: Discipline[] = [
       open: photo('stage-dancers', 'Two dancers on stage under crossing beams of light'),
       wide: photo('stage-ensemble', 'An ensemble performing on the sangeet stage'),
       narrow: photo('singer', 'A singer performing on stage'),
+    },
+  },
+  {
+    slug: 'photography',
+    number: '07',
+    name: 'Photography & Film',
+    caption: "Photography & cinematic direction",
+    statement: ['Memories', 'that feel', 'eternal'],
+    intro: "Frames that feel editorial. Memories that feel eternal.",
+    feature: {
+      "title": "Photography & cinematic direction",
+      "text": "Frames that feel editorial. Memories that feel eternal."
+    },
+    lists: [
+      {
+        "title": "Photography",
+        "items": [
+          "Photography direction",
+          "Editorial frames"
+        ]
+      },
+      {
+        "title": "Film",
+        "items": [
+          "Cinematic direction",
+          "Highlight films",
+          "Trailers & show reels"
+        ]
+      }
+    ],
+    cards: [
+      {
+        "title": "Editorial frames",
+        "text": "Frames that feel editorial."
+      },
+      {
+        "title": "Cinematic direction",
+        "text": "The celebration directed for film as well as for the room."
+      },
+      {
+        "title": "Memories",
+        "text": "Memories that feel eternal."
+      }
+    ],
+    closing: [
+      "Memories",
+      "that feel",
+      "eternal."
+    ],
+    background: '#163a38',
+    photos: {
+      index: photo('fireworks-aisle', 'Fireworks rising over the aisle'),
+      open: photo('fireworks-couple', 'Fireworks over the mandap at night'),
+      wide: photo('stage-dancers', 'Dancers on stage under crossing beams of light'),
+      narrow: photo('palace-dance', 'A dancer turning in a palace hall'),
     },
   },
 ]

@@ -16,11 +16,13 @@ export const footerColumns: FooterColumn[] = [
     heading: 'Disciplines',
     modifier: 'center',
     links: [
+      { href: '/disciplines#venue', label: 'Venue & Contracting' },
       { href: '/disciplines#decor', label: 'Decor' },
       { href: '/disciplines#guest-experience', label: 'Guest Experience' },
       { href: '/disciplines#invites', label: 'Invites & Gifting' },
       { href: '/disciplines#food-beverage', label: 'Food & Beverage' },
       { href: '/disciplines#entertainment', label: 'Entertainment' },
+      { href: '/disciplines#photography', label: 'Photography & Film' },
     ],
   },
   {

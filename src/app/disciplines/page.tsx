@@ -14,11 +14,11 @@ export const metadata: Metadata = {
   title: `Disciplines — ${site.name}`,
   description:
     'Decor, guest experience, invitations, food and beverage, and entertainment — '
-    + 'five disciplines, composed as one by WOW Weddings & Events.',
+    + 'seven disciplines, composed as one by WOW Weddings & Events.',
 }
 
 /**
- * An index that opens: five rows, then five chapters, one per discipline. The
+ * An index that opens: seven rows, then seven chapters, one per discipline. The
  * chapters carry the ids the footer links to (#decor, #guest-experience,
  * #invites, #food-beverage, #entertainment).
  */

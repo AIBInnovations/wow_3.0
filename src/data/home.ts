@@ -29,7 +29,7 @@ export type AtelierCard = {
 }
 
 /**
- * The five disciplines, as the staircase of cards.
+ * The seven disciplines, as the staircase of cards.
  *
  * Read from `./disciplines` rather than copied, so the band and the Disciplines
  * page can never drift: each card takes a discipline's number, its name and
@@ -50,6 +50,18 @@ const homeCardImages: Record<string, { image: string; alt: string }> = {
 
 /** Four or five photographs of each discipline, for the phone's carousel. */
 const homeCardGalleries: Record<string, GalleryImage[]> = {
+  venue: [
+    { src: '/wow/lib-palace-lit-800.jpg', alt: 'A palace facade lit for the evening' },
+    { src: '/wow/lib-city-night-800.jpg', alt: 'A palace on the lake at night' },
+    { src: '/wow/lib-aisle-dusk-800.jpg', alt: 'An aisle at dusk leading to the mandap by the sea' },
+    { src: '/wow/lib-red-archway-800.jpg', alt: 'A carved archway lit red' },
+  ],
+  photography: [
+    { src: '/wow/lib-fireworks-aisle-800.jpg', alt: 'Fireworks rising over the aisle' },
+    { src: '/wow/lib-stage-dancers-800.jpg', alt: 'Dancers on stage under crossing beams of light' },
+    { src: '/wow/lib-palace-dance-800.jpg', alt: 'A dancer turning in a palace hall' },
+    { src: '/wow/lib-fireworks-couple-800.jpg', alt: 'Fireworks over the mandap at night' },
+  ],
   decor: [
     { src: '/home/lantern-corridor-800.jpg', alt: 'A corridor of blue florals and woven lanterns' },
     { src: '/wow/lib-pastel-canopy-800.jpg', alt: 'A pastel canopy over a floral welcome display' },
@@ -103,14 +115,25 @@ export type Stat = {
   label: string
 }
 
-/** Preview deck pp. 2 and 7; five is the site's service grouping. */
+/** Preview deck p. 2; seven services, as the deck lists them on p. 5. */
 export const homeStats = {
   kicker: 'In numbers',
-  statement: 'Based in Indore and celebrated across India and international destinations.',
+  /** Preview deck p. 2. */
+  statement: 'Social landmarks, remembered for years.',
+  body: [
+    'Based in Indore and celebrated across India and international destinations, the company '
+      + 'has curated over 50 bespoke weddings and milestone celebrations for families who value '
+      + 'discretion, detail, and experience over excess.',
+    'For over eight years, Ishaan Vyas and Manish Baherwani have approached weddings not as '
+      + 'events, but as immersive environments — where hospitality, emotion, movement, design, '
+      + 'and timing come together seamlessly.',
+    'Because true luxury is never about doing more. It is about making everything feel '
+      + 'beautifully natural.',
+  ],
   stats: [
     { value: 50, suffix: '+', label: 'Weddings & milestone celebrations' },
     { value: 8, suffix: '+', label: 'Years of experience' },
-    { value: 5, label: 'Disciplines, as one' },
+    { value: 7, label: 'Disciplines, as one' },
   ] as Stat[],
 }
 

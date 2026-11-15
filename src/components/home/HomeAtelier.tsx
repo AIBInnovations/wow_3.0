@@ -9,7 +9,7 @@ import { useLineAnimation } from '@/hooks/useSplitText'
 import { homeAtelier, homeAtelierCards, type GalleryImage } from '@/data/home'
 
 /**
- * Five sticky cards, each with a dedicated number strip. Their pin offsets match
+ * Seven sticky cards, one per discipline, each with a dedicated number strip. Their pin offsets match
  * the strip height so every earlier number remains visible beneath navigation.
  * The closing band stays outside the stack so the last card can scroll away.
  */

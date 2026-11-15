@@ -91,6 +91,11 @@ export default function HomeStats() {
           <p ref={statementRef} className="home-stats_statement" js-line-animation="">
             {homeStats.statement}
           </p>
+          {homeStats.body.map((paragraph) => (
+            <p key={paragraph.slice(0, 24)} className="home-stats_body">
+              {paragraph}
+            </p>
+          ))}
         </div>
 
         <ul className="home-stats_grid" role="list">

@@ -10,7 +10,7 @@ export type NavItem = {
 export const navItems: NavItem[] = [
   { className: 'nl2', href: '/about', label: 'About', hover: 'MEET THE ATELIER' },
   { className: 'nl3', href: '/celebrations', label: 'Celebrations', hover: 'SEE THE WORK' },
-  { className: 'nl4', href: '/disciplines', label: 'Disciplines', hover: 'FIVE, AS ONE' },
+  { className: 'nl4', href: '/disciplines', label: 'Disciplines', hover: 'SEVEN, AS ONE' },
   { className: 'bl5', href: '/gallery', label: 'Gallery', hover: 'VIEW THE WORK' },
   { className: 'nl6', href: 'mailto:enquiries@woweventsandweddings.com', label: 'Enquiries', hover: 'START A CONVERSATION' },
 ]
