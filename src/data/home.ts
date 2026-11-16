@@ -21,63 +21,36 @@ export const homeAtelier = {
   cta: { label: 'Get to know the atelier', href: '/about' },
 }
 
-export type GalleryImage = { src: string; alt: string }
-
 export type AtelierCard = {
   number: string
   background: string
   title: string
-  body: string
+  /** The section's opening sentence, verbatim. */
+  lead: string
+  /** The paragraph after it, verbatim. */
+  text: string
+  /** The section's closing line, where the document gives one. */
+  closing?: string
+  /** The photograph: 800px for phones, the full file for the desktop's half-screen print. */
   image: string
+  imageLarge: string
+  imageWidth: number
   alt: string
-  /** On a phone the card shows these as a carousel in place of the one image. */
-  gallery: GalleryImage[]
   href: string
 }
 
 /**
- * The staircase of cards carries the Website Content PDF's sections, in its
- * order: each card the section's heading, its opening sentence and first
- * paragraph in the document's words, and one of the preview deck's section
- * colours. (What Distinguishes Our Celebrations has its own section further
- * down; the full text of every section is on the About page, where each card
- * leads.) Photographs are rooms, flowers and light, with three apiece for the
- * phone's carousel.
+ * The split-screen chapters carry the Website Content PDF's sections, in its
+ * order: each the section's heading, its opening sentence, first paragraph and
+ * closing line in the document's words, a photograph, and one of the preview
+ * deck's section colours. (What Distinguishes Our Celebrations has its own
+ * section further down; the full text of every section is on the About page,
+ * where each chapter leads.) Photographs are rooms, flowers and light.
+ *
+ * Design Ideology's own ground is the olive the home page's section sits on, so
+ * it takes the deck's navy instead (the colour of What Distinguishes).
  */
-const lib800 = (name: string, alt: string): GalleryImage => ({ src: `/wow/lib-${name}-800.webp`, alt })
-
-const docCardGalleries: Record<string, GalleryImage[]> = {
-  philosophy: [
-    lib800('floral-corridor', 'A corridor of blue florals and woven lanterns'),
-    lib800('pastel-canopy', 'A pastel canopy over a floral welcome display'),
-    lib800('rose-arch', 'An arch of red roses framing the palace courtyard'),
-  ],
-  ideology: [
-    lib800('ice-florals', 'Florals rising from a carved ice sculpture'),
-    lib800('palm-walk', 'A floral walkway beneath palms'),
-    lib800('night-mandap', 'A mandap lit on the lawn at night'),
-  ],
-  influences: [
-    lib800('banquet-florals', 'A banquet table under a canopy of florals'),
-    lib800('ice-sculpture', 'An ice sculpture lit for the evening'),
-    lib800('palace-lit', 'A palace facade lit for the evening'),
-  ],
-  portfolio: [
-    lib800('red-archway', 'A carved archway lit red'),
-    lib800('red-wall', 'A carved wall washed in red light'),
-    lib800('mandala-pavilion', 'A pavilion beneath a mandala canopy'),
-  ],
-  experience: [
-    lib800('tented-lounge', 'A tented lounge dressed in blue and gold'),
-    lib800('welcome-procession', 'A welcome procession waiting along the palace drive'),
-    lib800('blue-arch', 'A floral arch at the entrance to the celebration'),
-  ],
-  destinations: [
-    lib800('city-night', 'A palace on the lake at night'),
-    lib800('aisle-dusk', 'An aisle at dusk leading to the mandap by the sea'),
-    lib800('red-canopy', 'Low seating beneath a red canopy on the lawn'),
-  ],
-}
+const cardGround: Record<string, string> = { ideology: '#10264a' }
 
 export const homeAtelierCards: AtelierCard[] = [
   founderPhilosophy,
@@ -88,12 +61,15 @@ export const homeAtelierCards: AtelierCard[] = [
   destinationsScale,
 ].map((section, i) => ({
   number: String(i + 1).padStart(2, '0'),
-  background: section.ground,
+  background: cardGround[section.id] ?? section.ground,
   title: section.heading,
-  body: `${section.lead} ${section.body[0]}`,
+  lead: section.lead,
+  text: section.body[0],
+  closing: section.closing?.join(' '),
   image: section.photo.src800,
+  imageLarge: section.photo.src,
+  imageWidth: section.photo.w,
   alt: section.photo.alt,
-  gallery: docCardGalleries[section.id] ?? [],
   href: '/about',
 }))
 

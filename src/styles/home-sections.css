@@ -154,10 +154,6 @@
   margin-bottom: var(--rhythm-lg);
 }
 
-.home-atelier_cards {
-  position: relative;
-}
-
 /* The portfolio band is what the pinned cards rest under — on its own layer,
    solid, scrolling up over the stack, exactly as it does on /about. The button
    rides with it so nothing sits between the band and the stack. */
@@ -565,96 +561,6 @@
    until a frame is tapped. */
 
 
-/* Restored: these rules were dropped when the films band was rebuilt.
-   Without them the five cards lose position:sticky and scroll past in one
-   run instead of stacking, and the title floor and min-width that keep
-   "Entertainment" inside a 320px screen go with them. */
-/* ═══ Atelier staircase: the five disciplines ════════════════════════════ */
-
-/*
- * About stacks three cards at 7, 11 and 15rem. Five need their own ramp, and it
- * is kept across the same span so the staircase reads at the same depth as the
- * one on /about — 2rem a step instead of 4rem. The offsets are computed from
- * `--i` rather than written out, so the band follows src/data/disciplines.ts if
- * a discipline is ever added or dropped.
- */
-.home-atelier_cards > .home-atelier_card {
-  position: sticky;
-  top: calc(7rem + var(--i) * 2rem);
-  /* The wine ramp the About cards descend, over five steps rather than three. */
-  background-image: linear-gradient(
-    hsl(354 49% calc(23.5% - var(--i) * 2.6%)),
-    hsl(354 49% calc(23.5% - var(--i) * 2.6%))
-  );
-}
-
-/* The number above the name, as the Disciplines page sets it. */
-.home-atelier_card_num.kicker {
-  opacity: 0.6;
-}
-
-/*
- * Two-word names where About had one. "Guest Experience" and "Food & Beverage"
- * break between words and fit; "Entertainment" is the one that decides the size.
- * It is thirteen capitals with nowhere to break, and it measures 9.26em.
- *
- * So the title is sized from its own column, not the page. The text column is a
- * size container, and the title takes 10% of its width: 9.26em at that size is
- * 93% of the column, which leaves the word clear of the photograph at every
- * width. Sized from the page instead (7cqw), every title sat at the 5.5rem cap
- * on a desktop, and "Entertainment" ran 84px into the photograph at 1400px.
- *
- * All five share the one size, so the cards read as a set; the shorter names
- * simply leave more room. `min-width: 0` stops a long word stretching the
- * column, which is what once widened the whole page past a 320px screen.
- */
-.home-atelier_card_title.u-text-display {
-  font-size: clamp(1.5rem, 10cqi, 5.5rem);
-  text-wrap: balance;
-}
-
-.home-atelier_card .deets_card_text-wrap {
-  min-width: 0;
-  container-type: inline-size;
-}
-
-/*
- * The name and its line read as one block at the top of the card. About's rule
- * pushes them to opposite ends, which on these taller cards left a gulf between
- * the two.
- */
-.home-atelier_card .deets_card_text-wrap.u-column.u-vflex-left-top.u-gap-large {
-  justify-content: flex-start;
-  gap: clamp(1rem, 4cqi, 2rem);
-}
-
-/*
- * The opening capital stands taller than its line and would rise under the
- * number strip above, which would cut it off. This is the room it needs.
- */
-.home-atelier_card_title.u-text-display {
-  padding-top: var(--initial-reach);
-}
-
-.home-atelier_card_link {
-  color: inherit;
-  text-decoration: none;
-}
-
-.home-atelier_card_link:hover {
-  color: var(--swatch--brand);
-}
-
-/* The band the stack comes to rest under, carrying the button. */
-.press_wrap.home-atelier_close {
-  background-color: var(--swatch--dark);
-}
-
-@media (max-width: 991px) {
-  .home-atelier_cards > .home-atelier_card {
-    top: calc(15.5vw + var(--i) * 6.325vw);
-  }
-}
 
 
 
@@ -1162,131 +1068,6 @@
   .statement_fill { clip-path: none; }
 }
 
-/* ═══ The discipline cards' carousel (phones) ═════════════════════════════ */
-
-/*
- * Below 768px the cards run edge to edge, and each shows its photographs as a
- * ring, set as the reels are:
- * every photograph sits at the centre and is moved out by its --offset from
- * the one in view, scaled down, dimmed and stacked behind it, so wrapping from
- * the last to the first is only a change of number. Those more than one place
- * out are hidden. The carousel runs to the card's edges, which clip the
- * neighbours to slivers. From 768px it is hidden and the single image returns.
- */
-.card-carousel {
-  display: none;
-}
-
-@media screen and (max-width: 767px) {
-  .home-atelier_card .home-atelier_single {
-    display: none;
-  }
-
-  .card-carousel {
-    display: block;
-    width: calc(100% + 8vw);
-    min-width: 0;
-    margin-inline: -4vw;
-    overflow: hidden;
-  }
-
-  .card-ring_wrap {
-    position: relative;
-  }
-
-  .card-ring {
-    --slide-w: 64%;
-    position: relative;
-    width: 100%;
-    /* One photograph tall: 64% of the width, a little landscape at 4:3. */
-    aspect-ratio: 25 / 12;
-    touch-action: pan-y;
-    user-select: none;
-    -webkit-user-select: none;
-  }
-
-  .card-ring_slide {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: var(--slide-w);
-    aspect-ratio: 4 / 3;
-    margin: 0;
-    overflow: hidden;
-    border-radius: 6px;
-    background-color: #000;
-    transform:
-      translateX(calc(-50% + var(--offset) * 74% + var(--drag, 0px)))
-      scale(calc(1 - var(--abs) * 0.18));
-    opacity: calc(1 - var(--abs) * 0.25);
-    z-index: calc(10 - var(--abs));
-    filter: brightness(0.5);
-    cursor: pointer;
-    transition:
-      transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-      filter 0.8s ease;
-  }
-
-  .card-ring_slide.is-active {
-    filter: none;
-    cursor: default;
-  }
-
-  .card-ring_slide[data-far] {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .card-ring.is-dragging .card-ring_slide {
-    transition: none;
-  }
-
-  .card-ring_slide img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    pointer-events: none;
-    -webkit-user-drag: none;
-  }
-
-  /* The counter and its gold line beneath. */
-  .card-ring_bar {
-    justify-content: center;
-    margin-top: 0.75rem;
-    font-size: 0.8rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .card-ring_slide {
-    transition: none;
-  }
-}
-
-/* ═══ Our Approach: the button in the last card, full-width cards on phones ═ */
-
-.home-atelier_card_cta.btn-wrap.home-atelier_cta {
-  padding-top: var(--rhythm-md, 2rem);
-  padding-bottom: var(--rhythm-lg, 3rem);
-}
-
-@media screen and (max-width: 767px) {
-  /* The cards cover the screen from edge to edge: no gutter of the green ground
-     either side, and none beneath the last card, which ends the section. */
-  .home-atelier_cards {
-    margin-inline: calc(-1 * var(--padding-horizontal--main));
-  }
-
-  .home-atelier_cards > .home-atelier_card {
-    border-radius: 0;
-  }
-
-  .home-atelier_contain.u-container {
-    padding-bottom: 0;
-  }
-}
 
 /* The paragraphs carry their own spacing; the site's default bottom margin is dropped. */
 .home-stats_statement,
@@ -1296,4 +1077,387 @@
 
 .home-stats_statement + .home-stats_body {
   margin-top: var(--rhythm-sm);
+}
+
+/* ═══ Our Approach: the split screen ════════════════════════════════════ */
+
+/*
+ * The document's sections, read one at a time on a pinned stage (see
+ * HomeAtelier): the words on the left over the section's colour, the
+ * photographs on the right laid one over another like prints.
+ *
+ * The track's height is the scroll the chapters take; the stage sticks inside
+ * it. On the 8px grid: 16px print corners, gaps of 24, 32 and 48.
+ */
+.split_track {
+  position: relative;
+  height: calc(var(--n) * 85svh);
+  margin-top: var(--rhythm-lg);
+}
+
+.split_stage {
+  --nav: 88px;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  color: var(--wow-cream, #fbf4e9);
+  /* The section's colour, lit a little from the top left. */
+  background:
+    radial-gradient(90% 70% at 0% 0%, rgb(255 255 255 / 0.07), transparent 60%),
+    var(--ground);
+  transition: background-color 0.9s ease;
+  background-color: var(--ground);
+}
+
+.split_grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 32px;
+  height: 100%;
+  padding: calc(var(--nav) + 24px) var(--padding-horizontal--main) 48px;
+}
+
+/* ─── The words ───────────────────────────────────────────────────────── */
+
+.split_words {
+  grid-column: 1 / span 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 40px;
+  min-width: 0;
+}
+
+.split_count {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--font--inherit);
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.2em;
+}
+
+.split_count_now {
+  color: var(--swatch--brand);
+}
+
+.split_count_all {
+  opacity: 0.55;
+}
+
+.split_count_line {
+  position: relative;
+  width: 96px;
+  height: 1px;
+  background: rgb(251 244 233 / 0.24);
+}
+
+.split_count_line span {
+  position: absolute;
+  inset: 0;
+  background: var(--swatch--brand);
+  transform-origin: 0 50%;
+  transition: transform 0.9s var(--ease-out);
+}
+
+/* Every chapter in the one cell; the tallest sets the height. */
+.split_texts {
+  display: grid;
+  container-type: inline-size;
+}
+
+.split_text {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  row-gap: 24px;
+  min-width: 0;
+  visibility: hidden;
+}
+
+.split_text[data-state='on'] {
+  visibility: visible;
+}
+
+/* Each line of a chapter moves on its own, the later ones a beat behind. */
+.split_text > * {
+  opacity: 0;
+  transform: translateY(40px);
+  transition:
+    opacity 0.45s ease,
+    transform 0.6s var(--ease-out);
+}
+
+.split_text[data-state='past'] > * {
+  transform: translateY(-32px);
+}
+
+.split_text[data-state='on'] > * {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.8s ease,
+    transform 1s var(--ease-out);
+}
+
+.split_text[data-state='on'] > :nth-child(2) { transition-delay: 0.08s; }
+.split_text[data-state='on'] > :nth-child(3) { transition-delay: 0.16s; }
+.split_text[data-state='on'] > :nth-child(4) { transition-delay: 0.24s; }
+.split_text[data-state='on'] > :nth-child(5) { transition-delay: 0.32s; }
+
+/* The words leaving go first and quickly, so the two never read together. */
+.split_text:not([data-state='on']) {
+  transition: visibility 0s 0.45s;
+}
+
+.split_title {
+  margin: 0;
+  /* The opening capital stands taller than the line. */
+  padding-top: var(--initial-reach);
+  font-family: var(--font--primary-family);
+  font-size: clamp(2.25rem, 11cqi, 4.75rem);
+  font-weight: 400;
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-heading);
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.split_title_link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.split_title_link:hover {
+  color: var(--swatch--brand);
+}
+
+.split_lead,
+.split_p,
+.split_closing {
+  margin: 0;
+  font-family: var(--font--body);
+  letter-spacing: 0;
+  text-wrap: pretty;
+}
+
+.split_lead {
+  max-width: 30ch;
+  font-size: var(--step-2);
+  font-style: italic;
+  line-height: 1.35;
+}
+
+.split_p {
+  max-width: 48ch;
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  opacity: 0.8;
+}
+
+.split_closing {
+  max-width: 40ch;
+  padding-top: 24px;
+  border-top: 1px solid rgb(245 215 153 / 0.3);
+  color: var(--swatch--brand);
+  font-size: var(--step-1);
+  font-style: italic;
+  line-height: var(--leading-lead);
+}
+
+.split_more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgb(251 244 233 / 0.3);
+  color: inherit;
+  font-family: var(--font--inherit);
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.split_more span {
+  color: var(--swatch--brand);
+  transition: transform 0.3s ease;
+}
+
+.split_more:hover {
+  color: var(--swatch--brand);
+  border-color: var(--swatch--brand);
+}
+
+.split_more:hover span {
+  transform: translateX(4px);
+}
+
+.btn-wrap.split_cta {
+  display: flex;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── The prints ──────────────────────────────────────────────────────── */
+
+.split_prints {
+  grid-column: 7 / -1;
+  position: relative;
+  min-height: 0;
+  /* Room above the print on top for the edges of the three beneath. */
+  padding-top: 96px;
+}
+
+.split_desk {
+  position: relative;
+  height: 100%;
+}
+
+.split_print {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  background: rgb(0 0 0 / 0.3);
+  box-shadow: 0 -8px 40px rgb(0 0 0 / 0.35), 0 24px 64px rgb(0 0 0 / 0.3);
+  transform-origin: 50% 0;
+  will-change: transform;
+}
+
+/* Before the timeline takes over: every print after the first waits below. */
+.split_print + .split_print {
+  transform: translateY(112%);
+}
+
+.split_print img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.08);
+  will-change: transform;
+}
+
+.split_veil {
+  position: absolute;
+  inset: 0;
+  background: #0b0807;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Reduced motion: the prints change with the words, in place. */
+.split_track.is-still .split_print {
+  transform: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.split_track.is-still .split_print[data-on] {
+  opacity: 1;
+}
+
+.split_track.is-still .split_print img {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .split_text > *,
+  .split_text[data-state='on'] > * {
+    transform: none;
+    transition: opacity 0.3s ease;
+    transition-delay: 0s;
+  }
+}
+
+/* ─── Shorter desktops: the paragraph steps aside ─────────────────────── */
+
+@media (min-width: 768px) and (max-height: 760px) {
+  .split_p {
+    display: none;
+  }
+
+  .split_words {
+    row-gap: 24px;
+  }
+}
+
+/* ─── Tablets ─────────────────────────────────────────────────────────── */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .split_words {
+    grid-column: 1 / span 6;
+  }
+
+  .split_prints {
+    grid-column: 7 / -1;
+  }
+
+  .split_closing {
+    display: none;
+  }
+}
+
+/* ─── Phones: the prints above, the words beneath ─────────────────────── */
+
+@media (max-width: 767px) {
+  .split_track {
+    height: calc(var(--n) * 75svh);
+  }
+
+  .split_stage {
+    --nav: 64px;
+  }
+
+  .split_grid {
+    display: flex;
+    flex-direction: column;
+    row-gap: 24px;
+    padding: calc(var(--nav) + 8px) 24px 24px;
+  }
+
+  .split_prints {
+    order: -1;
+    flex: none;
+    height: 40svh;
+    padding-top: 32px;
+    /* The words sit straight under the prints here, so a print still on its
+       way comes up out of the desk's lower edge rather than over them. The
+       edges above and the shadows either side stay. */
+    clip-path: inset(-100vh -100vw 0 -100vw);
+  }
+
+  .split_words {
+    flex: 1;
+    justify-content: flex-start;
+    row-gap: 20px;
+  }
+
+  .split_text {
+    row-gap: 16px;
+  }
+
+  .split_title {
+    font-size: clamp(1.75rem, 10cqi, 2.5rem);
+  }
+
+  .split_lead {
+    font-size: var(--step-1);
+  }
+
+  /* A phone has room for the opening line; the rest is on the About page. */
+  .split_p,
+  .split_closing {
+    display: none;
+  }
 }

@@ -14,7 +14,7 @@
 .deets_card_sticky-second { background-image: linear-gradient(var(--wow-blue), var(--wow-blue)); }
 .deets_card_sticky-third { background-image: linear-gradient(#49262d, #49262d); }
 .disc-chapter { --swatch--brand: #f5d799; }
-.home-atelier_card { --swatch--brand: #f5d799; }
+.split_stage { --swatch--brand: #f5d799; }
 
 /* Keep the existing wordmark and link groups; use both sides of small screens. */
 .footernn_wrap {
@@ -135,40 +135,10 @@
   .home-gal_scroll-bar { display: none; }
 }
 
-/* Reserve one complete number strip for each pinned discipline. */
-.home-atelier_cards { --card-strip: 52px; --card-pin-top: 88px; }
-.home-atelier_cards > .home-atelier_card {
-  top: calc(var(--card-pin-top) + var(--i) * var(--card-strip));
-  min-height: calc(var(--stack-height, 0px) - var(--i) * var(--card-strip));
-}
-.home-atelier_card_header {
-  position: relative;
-  z-index: 1;
-  background: inherit;
-  height: var(--card-strip);
-  padding-inline: 2vw;
-  display: flex;
-  align-items: center;
-}
-.home-atelier_card_header .home-atelier_card_num {
-  margin: 0;
-  opacity: 1;
-  font-size: 18px;
-  line-height: 1;
-  flex: none;
-}
-.home-atelier_card .deets_card_wrap { padding-top: 16px; }
 .testimonial1_slider_component { background-color: var(--wow-blue); }
 .voices-scroll-text { display: none; }
 
 @media (max-width: 767px) {
-  /* A slimmer strip per stacked card, so each card's photographs and arrows
-     stay on screen while it is on top, even on a short phone. */
-  .home-atelier_cards { --card-strip: 36px; --card-pin-top: 64px; }
-  .home-atelier_card_header { padding-inline: 4vw; }
-  .home-atelier_card .deets_card_wrap { row-gap: 20px; }
-  .home-atelier_card .deets_card_text-wrap.u-column.u-vflex-left-top.u-gap-large { gap: 16px; }
-  .home-atelier_card .deets_card_p { font-size: 16px; line-height: 1.5; margin-bottom: 0; }
 
   /* The full photograph occupies the lower half; the arch overlaps its top. */
   .testimonial1_slider_layout.u-hflex-center-stretch {
