@@ -1213,8 +1213,8 @@
   border-radius: 4px;
   background: rgb(0 0 0 / 0.3);
   box-shadow: 0 24px 56px rgb(0 0 0 / 0.4);
-  /* Below the frame until the script places it. */
-  transform: translate3d(0, 120vh, 0);
+  /* Hidden until the script lays out the row, so nothing jumps. */
+  opacity: 0;
   will-change: transform;
 }
 

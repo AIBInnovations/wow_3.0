@@ -11,16 +11,13 @@ import { MainButton } from '@/components/HeroMarquee'
 import { homeAtelier, homeAtelierCards as chapters } from '@/data/home'
 
 /*
- * The pinned scroll, as fractions of the track:
- *   0 → FLY      the cards rise into a pile at the centre, the nearest first
- *   FLY → FAN    the pile fans out into a row, the centre card largest
- *   FAN → BEND   the row bends into a snake
+ * The pinned scroll, as fractions of the track. The frame opens on the row
+ * already laid out, the centre card largest, so it is never empty; then:
+ *   0 → BEND     the row bends into a snake
  *   BEND → END   the cards travel along the snake, each section's photograph
  *                passing through the centre in turn; then a short hold
  */
-const FLY = 0.07
-const FAN = 0.15
-const BEND = 0.21
+const BEND = 0.08
 const END = 0.95
 
 /** The cards: every section's photograph, then every section's second one. */
@@ -42,9 +39,9 @@ const wrap = (s: number) => ((((s + N / 2) % N) + N) % N) - N / 2
  * Our Approach: the document's six sections as a run of photographs.
  *
  * A pinned frame, ruled with dashed lines like a contact sheet: the heading in
- * its top corner, the section in view at its foot. The photographs rise into
- * a pile at the centre, fan out into a row and bend into a snake, then travel
- * along it as the page scrolls, each section's photograph coming through the
+ * its top corner, the section in view at its foot. The photographs are laid
+ * out in a row from the first, the centre card largest; as the page scrolls
+ * the row bends into a snake and the cards travel along it, each section's photograph coming through the
  * centre, largest there and in its own colours, the others smaller and washed
  * in wine. When a section's photograph reaches the centre its heading and
  * opening line roll up into place: they slide out of a mask, never fade.
@@ -83,13 +80,12 @@ export default function HomeAtelier() {
     const els = Array.from(band.querySelectorAll<HTMLElement>('.snake_card'))
     const tints = els.map((el) => el.querySelector<HTMLElement>('.snake_tint')!)
     let W = 0
-    let bandH = 0
     let phone = false
 
     const size = () => {
       const r = band.getBoundingClientRect()
       phone = window.innerWidth < 768
-      bandH = r.height
+      const bandH = r.height
       // Sized so the snake's highest and lowest cards stay within the band.
       W = phone ? Math.min(r.width * 0.48, bandH * 0.55) : Math.min(r.width * 0.2, bandH * 0.55)
       band.style.setProperty('--w', `${Math.round(W)}px`)
@@ -98,8 +94,7 @@ export default function HomeAtelier() {
     const state = { p: 0 }
     const render = () => {
       const p = state.p
-      const fan = reduced ? 1 : smooth((p - FLY) / (FAN - FLY))
-      const bend = reduced ? 0 : smooth((p - FAN) / (BEND - FAN))
+      const bend = reduced ? 0 : smooth(p / BEND)
       const c = clamp01((p - BEND) / (END - BEND)) * (chapters.length - 1)
       setActive(Math.round(c))
 
@@ -111,16 +106,14 @@ export default function HomeAtelier() {
         const rowScale = Math.max(0.3, 1 - 0.17 * a)
         // The snake: an S through the centre.
         const snakeY = W * 0.36 * Math.sin(s * 0.9)
-        // The rise into the pile, nearest the centre first.
-        const fly = reduced ? 1 : smooth((p - Math.min(a, 5) * 0.008) / (FLY * 0.6))
-        const x = rowX * fan
-        const y = snakeY * bend + (1 - fly) * (bandH + W)
-        const scale = 0.62 + (rowScale - 0.62) * fan
+        const x = rowX
+        const y = snakeY * bend
+        const scale = rowScale
         el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) scale(${scale.toFixed(4)})`
         // Only where the run wraps round, out past the fourth card, does a card go.
         el.style.opacity = String(1 - clamp01((a - 4.2) / 0.5))
         el.style.zIndex = String(100 - Math.round(a * 10))
-        tints[k].style.opacity = String(Math.min(1, a) * 0.85 * fan)
+        tints[k].style.opacity = String(Math.min(1, a) * 0.85)
       })
     }
 
