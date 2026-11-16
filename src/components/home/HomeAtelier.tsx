@@ -87,7 +87,7 @@ export default function HomeAtelier() {
       phone = window.innerWidth < 768
       const bandH = r.height
       // Sized so the snake's highest and lowest cards stay within the band.
-      W = phone ? Math.min(r.width * 0.48, bandH * 0.55) : Math.min(r.width * 0.2, bandH * 0.55)
+      W = phone ? Math.min(r.width * 0.56, bandH * 0.66) : Math.min(r.width * 0.25, bandH * 0.68)
       band.style.setProperty('--w', `${Math.round(W)}px`)
     }
 
@@ -105,7 +105,7 @@ export default function HomeAtelier() {
         const rowX = Math.sign(s) * W * (0.7 * a - 0.06 * a * a) * (phone ? 0.9 : 1)
         const rowScale = Math.max(0.3, 1 - 0.17 * a)
         // The snake: an S through the centre.
-        const snakeY = W * 0.36 * Math.sin(s * 0.9)
+        const snakeY = W * 0.3 * Math.sin(s * 0.9)
         const x = rowX
         const y = snakeY * bend
         const scale = rowScale
