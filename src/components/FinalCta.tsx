@@ -17,7 +17,8 @@ import { closing as closingImages } from '@/data/media'
  * drifts from -27% to rest as the section crosses the viewport, on a heavier
  * lag than the other parallaxes.
  */
-export default function FinalCta() {
+/** `lead`: the deck's closing line above the heading; the home page, which keeps to the content document, leaves it out. */
+export default function FinalCta({ lead = true }: { lead?: boolean } = {}) {
   const sectionRef = useRef<HTMLElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
   const reduced = useReducedMotion()
@@ -54,7 +55,7 @@ export default function FinalCta() {
             </div>
 
             <div className="cta24_card_content">
-              <p className="cta24_card_lead">{closing.lead}</p>
+              {lead ? <p className="cta24_card_lead">{closing.lead}</p> : null}
               <div className="div-hide">
                 <h2 ref={headingRef} className="cta24_card_h2 u-text-h2" js-line-animation="">
                   <Initial>{closing.heading}</Initial>

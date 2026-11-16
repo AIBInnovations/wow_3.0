@@ -84,7 +84,7 @@ export default function HomeAtelier() {
         <div ref={stackRef} className="deets_layout home-atelier_cards">
           {homeAtelierCards.map((card, i) => (
             <div
-              key={card.href}
+              key={card.number}
               className="home-atelier_card"
               /* The depth this card comes to rest at, counted down the stack. */
               style={{ '--i': i, background: card.background } as React.CSSProperties}

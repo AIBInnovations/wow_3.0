@@ -1,4 +1,11 @@
-import { disciplines } from './disciplines'
+import {
+  artisticInfluences,
+  designIdeology,
+  destinationsScale,
+  founderPhilosophy,
+  signaturePortfolio,
+  theExperience,
+} from './homeDoc'
 
 /**
  * Every string the three home-only sections show — the atelier band, the stats
@@ -11,7 +18,7 @@ import { disciplines } from './disciplines'
 export const homeAtelier = {
   kicker: 'Our Approach',
   heading: 'Composed With Intention',
-  cta: { label: 'Explore the Disciplines', href: '/disciplines' },
+  cta: { label: 'Get to know the atelier', href: '/about' },
 }
 
 export type GalleryImage = { src: string; alt: string }
@@ -29,83 +36,65 @@ export type AtelierCard = {
 }
 
 /**
- * The seven disciplines, as the staircase of cards.
- *
- * Read from `./disciplines` rather than copied, so the band and the Disciplines
- * page can never drift: each card takes a discipline's number, its name and
- * the paragraph that opens its chapter, and links to that chapter's anchor.
- * Each card's photograph shows the discipline itself. Décor and entertainment
- * come from the client's new set; it has no gifting or welcome photograph, so
- * those are the studio's own from the Disciplines page. Food & Beverage is a
- * reception buffet from Unsplash (see data/library.ts) until the client's own
- * counter photographs arrive.
+ * The staircase of cards carries the Website Content PDF's sections, in its
+ * order: each card the section's heading, its opening sentence and first
+ * paragraph in the document's words, and one of the preview deck's section
+ * colours. (What Distinguishes Our Celebrations has its own section further
+ * down; the full text of every section is on the About page, where each card
+ * leads.) Photographs are rooms, flowers and light, with three apiece for the
+ * phone's carousel.
  */
-const homeCardImages: Record<string, { image: string; alt: string }> = {
-  decor: { image: '/home/lantern-corridor-800.webp', alt: 'A corridor of blue florals and woven lanterns' },
-  'guest-experience': { image: '/wow/lib-drummers-800.webp', alt: 'A band of drummers lined up to welcome the celebration' },
-  invites: { image: '/wow/lib-gift-boxes-800.webp', alt: 'Wedding gifts arranged in presentation trays' },
-  'food-beverage': { image: '/wow/lib-buffet-table-800.webp', alt: 'A reception buffet of silver chafing dishes, dressed with white roses' },
-  entertainment: { image: '/home/stage-duet-800.webp', alt: 'Two singers performing live on a purple-lit stage' },
-}
+const lib800 = (name: string, alt: string): GalleryImage => ({ src: `/wow/lib-${name}-800.webp`, alt })
 
-/** Four or five photographs of each discipline, for the phone's carousel. */
-const homeCardGalleries: Record<string, GalleryImage[]> = {
-  venue: [
-    { src: '/wow/lib-palace-lit-800.webp', alt: 'A palace facade lit for the evening' },
-    { src: '/wow/lib-city-night-800.webp', alt: 'A palace on the lake at night' },
-    { src: '/wow/lib-aisle-dusk-800.webp', alt: 'An aisle at dusk leading to the mandap by the sea' },
-    { src: '/wow/lib-red-archway-800.webp', alt: 'A carved archway lit red' },
+const docCardGalleries: Record<string, GalleryImage[]> = {
+  philosophy: [
+    lib800('floral-corridor', 'A corridor of blue florals and woven lanterns'),
+    lib800('pastel-canopy', 'A pastel canopy over a floral welcome display'),
+    lib800('rose-arch', 'An arch of red roses framing the palace courtyard'),
   ],
-  photography: [
-    { src: '/wow/lib-fireworks-aisle-800.webp', alt: 'Fireworks rising over the aisle' },
-    { src: '/wow/lib-stage-dancers-800.webp', alt: 'Dancers on stage under crossing beams of light' },
-    { src: '/wow/lib-palace-dance-800.webp', alt: 'A dancer turning in a palace hall' },
-    { src: '/wow/lib-fireworks-couple-800.webp', alt: 'Fireworks over the mandap at night' },
+  ideology: [
+    lib800('ice-florals', 'Florals rising from a carved ice sculpture'),
+    lib800('palm-walk', 'A floral walkway beneath palms'),
+    lib800('night-mandap', 'A mandap lit on the lawn at night'),
   ],
-  decor: [
-    { src: '/home/lantern-corridor-800.webp', alt: 'A corridor of blue florals and woven lanterns' },
-    { src: '/wow/lib-pastel-canopy-800.webp', alt: 'A pastel canopy over a floral welcome display' },
-    { src: '/wow/lib-rose-arch-800.webp', alt: 'An arch of red roses framing the palace courtyard' },
-    { src: '/wow/lib-palm-walk-800.webp', alt: 'A floral walkway beneath palms' },
-    { src: '/wow/lib-night-mandap-800.webp', alt: 'A mandap lit on the lawn at night' },
+  influences: [
+    lib800('banquet-florals', 'A banquet table under a canopy of florals'),
+    lib800('ice-sculpture', 'An ice sculpture lit for the evening'),
+    lib800('palace-lit', 'A palace facade lit for the evening'),
   ],
-  'guest-experience': [
-    { src: '/wow/lib-drummers-800.webp', alt: 'A band of drummers lined up to welcome the celebration' },
-    { src: '/wow/lib-welcome-procession-800.webp', alt: 'A welcome procession waiting along the palace drive' },
-    { src: '/home/feather-welcome-800.webp', alt: 'Performers in white feathered fans welcoming the celebration' },
-    { src: '/wow/lib-blue-arch-800.webp', alt: 'A floral arch at the entrance to the celebration' },
+  portfolio: [
+    lib800('red-archway', 'A carved archway lit red'),
+    lib800('red-wall', 'A carved wall washed in red light'),
+    lib800('mandala-pavilion', 'A pavilion beneath a mandala canopy'),
   ],
-  invites: [
-    { src: '/wow/lib-gift-boxes-800.webp', alt: 'Wedding gifts arranged in presentation trays' },
-    { src: '/wow/lib-glass-tags-800.webp', alt: 'Personalised monogram tags on the glassware' },
-    { src: '/reels/DXRlgyNglRb.webp', alt: 'A monogrammed sangeet welcome board among red florals' },
-    { src: '/wow/lib-carnival-entrance-800.webp', alt: 'A hand-lettered welcome board at the carnival entrance' },
+  experience: [
+    lib800('tented-lounge', 'A tented lounge dressed in blue and gold'),
+    lib800('welcome-procession', 'A welcome procession waiting along the palace drive'),
+    lib800('blue-arch', 'A floral arch at the entrance to the celebration'),
   ],
-  'food-beverage': [
-    { src: '/wow/lib-buffet-table-800.webp', alt: 'A reception buffet of silver chafing dishes, dressed with white roses' },
-    { src: '/wow/lib-counter-day-800.webp', alt: 'A live food counter beneath a pink and orange canopy' },
-    { src: '/wow/lib-red-canopy-800.webp', alt: 'Food counters beneath a red canopy on the lawn' },
-    { src: '/wow/lib-bar-night-800.webp', alt: 'A lit bar counter on the lawn at night' },
-    { src: '/wow/lib-banquet-florals-800.webp', alt: 'A banquet table under a floral canopy' },
-  ],
-  entertainment: [
-    { src: '/home/stage-duet-800.webp', alt: 'Two singers performing live on a purple-lit stage' },
-    { src: '/wow/lib-stage-magenta-800.webp', alt: 'A singer and band on a magenta-lit stage' },
-    { src: '/wow/lib-stage-dancers-800.webp', alt: 'Two dancers on stage under crossing beams of light' },
-    { src: '/home/band-trellis-800.webp', alt: 'A band playing beneath a white trellis' },
-    { src: '/wow/lib-stage-ensemble-800.webp', alt: 'An ensemble performing on the sangeet stage' },
+  destinations: [
+    lib800('city-night', 'A palace on the lake at night'),
+    lib800('aisle-dusk', 'An aisle at dusk leading to the mandap by the sea'),
+    lib800('red-canopy', 'Low seating beneath a red canopy on the lawn'),
   ],
 }
 
-export const homeAtelierCards: AtelierCard[] = disciplines.map((discipline) => ({
-  number: discipline.number,
-  background: discipline.background,
-  title: discipline.name,
-  body: discipline.intro,
-  image: homeCardImages[discipline.slug]?.image ?? discipline.photos.index.src,
-  alt: homeCardImages[discipline.slug]?.alt ?? discipline.photos.index.alt,
-  gallery: homeCardGalleries[discipline.slug] ?? [],
-  href: `/disciplines#${discipline.slug}`,
+export const homeAtelierCards: AtelierCard[] = [
+  founderPhilosophy,
+  designIdeology,
+  artisticInfluences,
+  signaturePortfolio,
+  theExperience,
+  destinationsScale,
+].map((section, i) => ({
+  number: String(i + 1).padStart(2, '0'),
+  background: section.ground,
+  title: section.heading,
+  body: `${section.lead} ${section.body[0]}`,
+  image: section.photo.src800,
+  alt: section.photo.alt,
+  gallery: docCardGalleries[section.id] ?? [],
+  href: '/about',
 }))
 
 export type Stat = {

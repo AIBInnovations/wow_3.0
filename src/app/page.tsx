@@ -25,7 +25,7 @@ export default function Home() {
         <StickyStories />
         <CelebrationSection />
         <HomeFilms />
-        <FinalCta />
+        <FinalCta lead={false} />
       </main>
       <Footer />
     </>

@@ -42,8 +42,9 @@ export const atelier = {
 export const voicesMarquee = 'Composed With Intention &'
 
 export const celebration = {
-  headingLead: 'Every Moment',
-  headingOutline: 'One Celebration',
+  /** Website Content PDF: the section's own heading. */
+  headingLead: 'What Distinguishes',
+  headingOutline: 'Our Celebrations',
   paragraph:
     'From the first arrival to the final farewell, every movement of the celebration is orchestrated with '
     + 'narrative precision. Spaces evolve, atmospheres shift and moments unfold with a quiet sense of theatre.',
@@ -53,7 +54,8 @@ export const celebration = {
 export const closing = {
   /** Preview deck p. 24. */
   lead: 'Some celebrations end. The best ones become part of family history.',
-  heading: 'Shall We Begin?',
+  /** Website Content PDF: the section's own heading. */
+  heading: 'Private Enquiries',
   /** Website Content PDF, Private Enquiries. */
   note:
     'Our atelier accepts a limited number of celebrations each year. '
