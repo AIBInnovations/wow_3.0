@@ -6,6 +6,7 @@ import {
   signaturePortfolio,
   theExperience,
 } from './homeDoc'
+import { lib, type LibraryName } from './library'
 
 /**
  * Every string the three home-only sections show — the atelier band, the stats
@@ -36,6 +37,8 @@ export type AtelierCard = {
   imageLarge: string
   imageWidth: number
   alt: string
+  /** A second photograph of the section, for the snake's second run of cards. */
+  second: { image: string; imageLarge: string; imageWidth: number }
   href: string
 }
 
@@ -51,6 +54,16 @@ export type AtelierCard = {
  * it takes the deck's navy instead (the colour of What Distinguishes).
  */
 const cardGround: Record<string, string> = { ideology: '#10264a' }
+
+/** Each section's second photograph: rooms, flowers and light, like the first. */
+const secondPhoto: Record<string, LibraryName> = {
+  philosophy: 'pastel-canopy',
+  ideology: 'palm-walk',
+  influences: 'ice-sculpture',
+  portfolio: 'red-wall',
+  experience: 'welcome-procession',
+  destinations: 'aisle-dusk',
+}
 
 export const homeAtelierCards: AtelierCard[] = [
   founderPhilosophy,
@@ -70,6 +83,7 @@ export const homeAtelierCards: AtelierCard[] = [
   imageLarge: section.photo.src,
   imageWidth: section.photo.w,
   alt: section.photo.alt,
+  second: (({ src800, src, w }) => ({ image: src800, imageLarge: src, imageWidth: w }))(lib(secondPhoto[section.id])),
   href: '/about',
 }))
 

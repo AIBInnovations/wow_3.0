@@ -14,7 +14,7 @@
 .deets_card_sticky-second { background-image: linear-gradient(var(--wow-blue), var(--wow-blue)); }
 .deets_card_sticky-third { background-image: linear-gradient(#49262d, #49262d); }
 .disc-chapter { --swatch--brand: #f5d799; }
-.split_stage { --swatch--brand: #f5d799; }
+.snake_stage { --swatch--brand: #f5d799; }
 
 /* Keep the existing wordmark and link groups; use both sides of small screens. */
 .footernn_wrap {

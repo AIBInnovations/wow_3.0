@@ -1079,198 +1079,302 @@
   margin-top: var(--rhythm-sm);
 }
 
-/* ═══ Our Approach: the split screen ════════════════════════════════════ */
+/* ═══ Our Approach: the run of photographs ══════════════════════════════ */
 
 /*
- * The document's sections, read one at a time on a pinned stage (see
- * HomeAtelier): the words on the left over the section's colour, the
- * photographs on the right laid one over another like prints.
- *
- * The track's height is the scroll the chapters take; the stage sticks inside
- * it. On the 8px grid: 16px print corners, gaps of 24, 32 and 48.
+ * A pinned frame ruled like a contact sheet (see HomeAtelier): two dashed
+ * verticals and two dashed horizontals with a dot where they cross; the
+ * labels in the top left, the heading in the top right, the photographs on
+ * the band between the rules, the section in view along the foot.
  */
-.split_track {
+.snake_track {
   position: relative;
-  height: calc(var(--n) * 85svh);
-  margin-top: var(--rhythm-lg);
+  height: calc(var(--n) * 95svh);
 }
 
-.split_stage {
+.snake_stage {
   --nav: 88px;
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --x1: 6%;
+  --x2: 70%;
+  --y1: calc(var(--nav) + 120px);
+  --y2: calc(100% - 184px);
+  --rule: rgb(245 215 153 / 0.32);
   position: sticky;
   top: 0;
   height: 100svh;
   overflow: hidden;
   color: var(--wow-cream, #fbf4e9);
-  /* The section's colour, lit a little from the top left. */
-  background:
-    radial-gradient(90% 70% at 0% 0%, rgb(255 255 255 / 0.07), transparent 60%),
-    var(--ground);
-  transition: background-color 0.9s ease;
-  background-color: var(--ground);
 }
 
-.split_grid {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: 32px;
-  height: 100%;
-  padding: calc(var(--nav) + 24px) var(--padding-horizontal--main) 48px;
+/* ─── The rules ───────────────────────────────────────────────────────── */
+
+.snake_rules {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
 
-/* ─── The words ───────────────────────────────────────────────────────── */
+.snake_rule {
+  position: absolute;
+}
 
-.split_words {
-  grid-column: 1 / span 5;
+.snake_rule.is-x1,
+.snake_rule.is-x2 {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: repeating-linear-gradient(to bottom, var(--rule) 0 6px, transparent 6px 12px);
+}
+
+.snake_rule.is-x1 { left: var(--x1); }
+.snake_rule.is-x2 { left: var(--x2); }
+
+.snake_rule.is-y1,
+.snake_rule.is-y2 {
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: repeating-linear-gradient(to right, var(--rule) 0 6px, transparent 6px 12px);
+}
+
+.snake_rule.is-y1 { top: var(--y1); }
+.snake_rule.is-y2 { top: var(--y2); }
+
+.snake_dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--swatch--brand);
+}
+
+.snake_dot.is-a { left: var(--x1); top: var(--y1); }
+.snake_dot.is-b { left: var(--x2); top: var(--y1); }
+.snake_dot.is-c { left: var(--x1); top: var(--y2); }
+.snake_dot.is-d { left: var(--x2); top: var(--y2); }
+
+/* ─── The corners ─────────────────────────────────────────────────────── */
+
+.snake_label {
+  position: absolute;
+  left: calc(var(--x1) + 16px);
+  bottom: calc(100% - var(--y1) + 16px);
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  row-gap: 40px;
+  row-gap: 4px;
+  font-family: var(--font--inherit);
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.snake_label span:first-child {
+  color: var(--swatch--brand);
+}
+
+.snake_heading {
+  position: absolute;
+  top: calc(var(--nav) + 8px);
+  left: calc(var(--x2) + 24px);
+  right: var(--padding-horizontal--main);
+  z-index: 120;
+  margin: 0;
+  padding-top: var(--initial-reach);
+  font-family: var(--font--primary-family);
+  font-size: clamp(2rem, 3.4vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: var(--tracking-heading);
+  text-transform: uppercase;
+}
+
+/* ─── The photographs ─────────────────────────────────────────────────── */
+
+.snake_band {
+  position: absolute;
+  top: var(--y1);
+  bottom: calc(100% - var(--y2));
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+
+.snake_card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--w, 300px);
+  aspect-ratio: 4 / 5;
+  margin: calc(var(--w, 300px) * -0.625) 0 0 calc(var(--w, 300px) / -2);
+  overflow: hidden;
+  border-radius: 4px;
+  background: rgb(0 0 0 / 0.3);
+  box-shadow: 0 24px 56px rgb(0 0 0 / 0.4);
+  /* Below the frame until the script places it. */
+  transform: translate3d(0, 120vh, 0);
+  will-change: transform;
+}
+
+.snake_card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  -webkit-user-drag: none;
+}
+
+/* The cards away from the centre, washed in the house wine. */
+.snake_tint {
+  position: absolute;
+  inset: 0;
+  background: #a83a46;
+  mix-blend-mode: multiply;
+  opacity: 0;
+}
+
+/* ─── The foot: the section in view, rolled in from a mask ────────────── */
+
+.snake_words {
+  /* Each item as tall as its own content, so its mask hides it whole. */
+  align-items: start;
+  position: absolute;
+  top: calc(var(--y2) + 24px);
+  left: calc(var(--x1) + 16px);
+  width: calc(var(--x2) - var(--x1) - 48px);
+  display: grid;
+}
+
+.snake_chapter {
+  grid-area: 1 / 1;
   min-width: 0;
 }
 
-.split_count {
+/* Positioned, so it clips the button's own positioned parts as well. */
+.snake_mask {
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+
+/* Each line waits below its mask, rises into it, and leaves upwards: far
+   enough either way that no italic tail or script capital shows at the edge. */
+.snake_mask > * {
+  display: block;
+  transform: translateY(135%);
+  transition: transform 0.6s cubic-bezier(0.7, 0, 0.25, 1);
+}
+
+[data-state='past'] .snake_mask > *,
+.snake_mask[data-state='past'] > * {
+  transform: translateY(-135%);
+}
+
+[data-state='on'] .snake_mask > *,
+.snake_mask[data-state='on'] > * {
+  transform: none;
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+}
+
+[data-state='on'] .snake_mask + .snake_mask > * {
+  transition-delay: 0.42s;
+}
+
+.snake_title {
+  margin: 0;
+  padding-top: var(--initial-reach);
+  font-family: var(--font--primary-family);
+  font-size: clamp(1.75rem, 3vw, 3rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: var(--tracking-heading);
+  text-transform: uppercase;
+}
+
+.snake_title_link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.snake_title_link:hover {
+  color: var(--swatch--brand);
+}
+
+.snake_lead {
+  max-width: 52ch;
+  margin: 8px 0 0;
+  font-family: var(--font--body);
+  font-size: var(--step-1);
+  font-style: italic;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+.snake_side {
+  position: absolute;
+  top: calc(var(--y2) + 24px);
+  left: calc(var(--x2) + 24px);
+  right: var(--padding-horizontal--main);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  row-gap: 24px;
+}
+
+.snake_count {
   display: flex;
   align-items: center;
   gap: 16px;
   font-family: var(--font--inherit);
   font-size: 12px;
-  line-height: 1;
+  line-height: 1.2;
   letter-spacing: 0.2em;
 }
 
-.split_count_now {
+.snake_count_now {
+  display: grid;
+  align-items: start;
   color: var(--swatch--brand);
 }
 
-.split_count_all {
+.snake_digit {
+  grid-area: 1 / 1;
+}
+
+.snake_count_all {
   opacity: 0.55;
 }
 
-.split_count_line {
+.snake_count_line {
   position: relative;
   width: 96px;
   height: 1px;
   background: rgb(251 244 233 / 0.24);
 }
 
-.split_count_line span {
+.snake_count_line span {
   position: absolute;
   inset: 0;
   background: var(--swatch--brand);
   transform-origin: 0 50%;
-  transition: transform 0.9s var(--ease-out);
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Every chapter in the one cell; the tallest sets the height. */
-.split_texts {
+.snake_ways {
+  /* Each item as tall as its own content, so its mask hides it whole. */
+  align-items: start;
   display: grid;
-  container-type: inline-size;
 }
 
-.split_text {
+.snake_way {
   grid-area: 1 / 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  row-gap: 24px;
-  min-width: 0;
-  visibility: hidden;
+  padding-bottom: 2px;
 }
 
-.split_text[data-state='on'] {
-  visibility: visible;
-}
-
-/* Each line of a chapter moves on its own, the later ones a beat behind. */
-.split_text > * {
-  opacity: 0;
-  transform: translateY(40px);
-  transition:
-    opacity 0.45s ease,
-    transform 0.6s var(--ease-out);
-}
-
-.split_text[data-state='past'] > * {
-  transform: translateY(-32px);
-}
-
-.split_text[data-state='on'] > * {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity 0.8s ease,
-    transform 1s var(--ease-out);
-}
-
-.split_text[data-state='on'] > :nth-child(2) { transition-delay: 0.08s; }
-.split_text[data-state='on'] > :nth-child(3) { transition-delay: 0.16s; }
-.split_text[data-state='on'] > :nth-child(4) { transition-delay: 0.24s; }
-.split_text[data-state='on'] > :nth-child(5) { transition-delay: 0.32s; }
-
-/* The words leaving go first and quickly, so the two never read together. */
-.split_text:not([data-state='on']) {
-  transition: visibility 0s 0.45s;
-}
-
-.split_title {
-  margin: 0;
-  /* The opening capital stands taller than the line. */
-  padding-top: var(--initial-reach);
-  font-family: var(--font--primary-family);
-  font-size: clamp(2.25rem, 11cqi, 4.75rem);
-  font-weight: 400;
-  line-height: var(--leading-heading);
-  letter-spacing: var(--tracking-heading);
-  text-transform: uppercase;
-  text-wrap: balance;
-}
-
-.split_title_link {
-  color: inherit;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.split_title_link:hover {
-  color: var(--swatch--brand);
-}
-
-.split_lead,
-.split_p,
-.split_closing {
-  margin: 0;
-  font-family: var(--font--body);
-  letter-spacing: 0;
-  text-wrap: pretty;
-}
-
-.split_lead {
-  max-width: 30ch;
-  font-size: var(--step-2);
-  font-style: italic;
-  line-height: 1.35;
-}
-
-.split_p {
-  max-width: 48ch;
-  font-size: var(--step-0);
-  line-height: var(--leading-body);
-  opacity: 0.8;
-}
-
-.split_closing {
-  max-width: 40ch;
-  padding-top: 24px;
-  border-top: 1px solid rgb(245 215 153 / 0.3);
-  color: var(--swatch--brand);
-  font-size: var(--step-1);
-  font-style: italic;
-  line-height: var(--leading-lead);
-}
-
-.split_more {
+.snake_more {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -1286,178 +1390,92 @@
   transition: color 0.3s ease, border-color 0.3s ease;
 }
 
-.split_more span {
+.snake_more span {
   color: var(--swatch--brand);
   transition: transform 0.3s ease;
 }
 
-.split_more:hover {
+.snake_more:hover {
   color: var(--swatch--brand);
   border-color: var(--swatch--brand);
 }
 
-.split_more:hover span {
+.snake_more:hover span {
   transform: translateX(4px);
 }
 
-.btn-wrap.split_cta {
+.btn-wrap.snake_cta {
   display: flex;
-  justify-content: flex-start;
   margin: 0;
   padding: 0;
 }
 
-/* ─── The prints ──────────────────────────────────────────────────────── */
-
-.split_prints {
-  grid-column: 7 / -1;
-  position: relative;
-  min-height: 0;
-  /* Room above the print on top for the edges of the three beneath. */
-  padding-top: 96px;
-}
-
-.split_desk {
-  position: relative;
-  height: 100%;
-}
-
-.split_print {
-  position: absolute;
-  inset: 0;
-  margin: 0;
-  overflow: hidden;
-  border-radius: 16px;
-  background: rgb(0 0 0 / 0.3);
-  box-shadow: 0 -8px 40px rgb(0 0 0 / 0.35), 0 24px 64px rgb(0 0 0 / 0.3);
-  transform-origin: 50% 0;
-  will-change: transform;
-}
-
-/* Before the timeline takes over: every print after the first waits below. */
-.split_print + .split_print {
-  transform: translateY(112%);
-}
-
-.split_print img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1.08);
-  will-change: transform;
-}
-
-.split_veil {
-  position: absolute;
-  inset: 0;
-  background: #0b0807;
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* Reduced motion: the prints change with the words, in place. */
-.split_track.is-still .split_print {
-  transform: none;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.split_track.is-still .split_print[data-on] {
-  opacity: 1;
-}
-
-.split_track.is-still .split_print img {
-  transform: none;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .split_text > *,
-  .split_text[data-state='on'] > * {
-    transform: none;
-    transition: opacity 0.3s ease;
+  .snake_mask > *,
+  [data-state='on'] .snake_mask > *,
+  .snake_mask[data-state='on'] > * {
+    transition-duration: 0.01s;
     transition-delay: 0s;
   }
 }
 
-/* ─── Shorter desktops: the paragraph steps aside ─────────────────────── */
-
-@media (min-width: 768px) and (max-height: 760px) {
-  .split_p {
-    display: none;
-  }
-
-  .split_words {
-    row-gap: 24px;
-  }
-}
-
-/* ─── Tablets ─────────────────────────────────────────────────────────── */
-
-@media (min-width: 768px) and (max-width: 1023px) {
-  .split_words {
-    grid-column: 1 / span 6;
-  }
-
-  .split_prints {
-    grid-column: 7 / -1;
-  }
-
-  .split_closing {
-    display: none;
-  }
-}
-
-/* ─── Phones: the prints above, the words beneath ─────────────────────── */
+/* ─── Phones: heading on top, photographs, then the section ───────────── */
 
 @media (max-width: 767px) {
-  .split_track {
-    height: calc(var(--n) * 75svh);
+  .snake_track {
+    height: calc(var(--n) * 80svh);
   }
 
-  .split_stage {
+  .snake_stage {
     --nav: 64px;
+    --x1: 16px;
+    --x2: calc(100% - 16px);
+    --y1: calc(var(--nav) + 120px);
+    --y2: calc(100% - 208px);
   }
 
-  .split_grid {
-    display: flex;
-    flex-direction: column;
-    row-gap: 24px;
-    padding: calc(var(--nav) + 8px) 24px 24px;
-  }
-
-  .split_prints {
-    order: -1;
-    flex: none;
-    height: 40svh;
-    padding-top: 32px;
-    /* The words sit straight under the prints here, so a print still on its
-       way comes up out of the desk's lower edge rather than over them. The
-       edges above and the shadows either side stay. */
-    clip-path: inset(-100vh -100vw 0 -100vw);
-  }
-
-  .split_words {
-    flex: 1;
-    justify-content: flex-start;
-    row-gap: 20px;
-  }
-
-  .split_text {
-    row-gap: 16px;
-  }
-
-  .split_title {
-    font-size: clamp(1.75rem, 10cqi, 2.5rem);
-  }
-
-  .split_lead {
-    font-size: var(--step-1);
-  }
-
-  /* A phone has room for the opening line; the rest is on the About page. */
-  .split_p,
-  .split_closing {
+  .snake_label {
     display: none;
+  }
+
+  .snake_heading {
+    top: calc(var(--nav) + 16px);
+    left: 24px;
+    right: 24px;
+    font-size: clamp(1.75rem, 8vw, 2.25rem);
+  }
+
+  .snake_side {
+    top: calc(var(--y2) + 16px);
+    left: 24px;
+    right: 24px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .snake_ways {
+    justify-items: end;
+    /* Level with the number beside it, however tall the last chapter's button. */
+    align-items: center;
+  }
+
+  .btn-wrap.snake_cta {
+    transform-origin: 100% 50%;
+    scale: 0.8;
+  }
+
+  .snake_words {
+    top: calc(var(--y2) + 64px);
+    left: 24px;
+    width: calc(100% - 48px);
+  }
+
+  .snake_title {
+    font-size: clamp(1.5rem, 7vw, 2rem);
+  }
+
+  .snake_lead {
+    font-size: var(--step-0);
   }
 }
