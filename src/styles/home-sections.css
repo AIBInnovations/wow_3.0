@@ -1375,6 +1375,7 @@
 }
 
 .snake_more {
+  white-space: nowrap;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -1452,6 +1453,15 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+  }
+
+  /* A shorter line, so the count and the link share a 360px row. */
+  .snake_count {
+    gap: 12px;
+  }
+
+  .snake_count_line {
+    width: 48px;
   }
 
   .snake_ways {

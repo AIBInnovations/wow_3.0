@@ -91,6 +91,8 @@ export default function HomeAtelier() {
       band.style.setProperty('--w', `${Math.round(W)}px`)
     }
 
+    // What each card was last given, so a frame writes only what changed.
+    const written = els.map(() => ({ transform: '', opacity: '', z: '', tint: '', out: false }))
     const state = { p: 0 }
     const render = () => {
       const p = state.p
@@ -98,22 +100,51 @@ export default function HomeAtelier() {
       const c = clamp01((p - BEND) / (END - BEND)) * (chapters.length - 1)
       setActive(Math.round(c))
 
+      // Phones keep three cards either side in play, wider screens four.
+      const reach = phone ? 3.2 : 4.2
       els.forEach((el, k) => {
         const s = wrap(k - c)
         const a = Math.abs(s)
+        const last = written[k]
+        // Beyond the reach a card is hidden outright: nothing to draw.
+        const out = a > reach + 0.5
+        if (out) {
+          if (!last.out) {
+            el.style.visibility = 'hidden'
+            last.out = true
+          }
+          return
+        }
+        if (last.out) {
+          el.style.visibility = ''
+          last.out = false
+        }
         // The row: cards closer together the further out they are.
-        const rowX = Math.sign(s) * W * (0.7 * a - 0.06 * a * a) * (phone ? 0.9 : 1)
-        const rowScale = Math.max(0.3, 1 - 0.17 * a)
+        const x = Math.sign(s) * W * (0.7 * a - 0.06 * a * a) * (phone ? 0.9 : 1)
+        const scale = Math.max(0.3, 1 - 0.17 * a)
         // The snake: an S through the centre.
-        const snakeY = W * 0.3 * Math.sin(s * 0.9)
-        const x = rowX
-        const y = snakeY * bend
-        const scale = rowScale
-        el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) scale(${scale.toFixed(4)})`
-        // Only where the run wraps round, out past the fourth card, does a card go.
-        el.style.opacity = String(1 - clamp01((a - 4.2) / 0.5))
-        el.style.zIndex = String(100 - Math.round(a * 10))
-        tints[k].style.opacity = String(Math.min(1, a) * 0.85)
+        const y = W * 0.3 * Math.sin(s * 0.9) * bend
+        const transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) scale(${scale.toFixed(3)})`
+        // Only write what changed: while a chapter holds, nothing does.
+        if (transform !== last.transform) {
+          el.style.transform = transform
+          last.transform = transform
+        }
+        const opacity = (1 - clamp01((a - reach) / 0.5)).toFixed(2)
+        if (opacity !== last.opacity) {
+          el.style.opacity = opacity
+          last.opacity = opacity
+        }
+        const z = String(100 - Math.round(a * 10))
+        if (z !== last.z) {
+          el.style.zIndex = z
+          last.z = z
+        }
+        const tint = (Math.min(1, a) * 0.85).toFixed(2)
+        if (tint !== last.tint) {
+          tints[k].style.opacity = tint
+          last.tint = tint
+        }
       })
     }
 
@@ -127,8 +158,14 @@ export default function HomeAtelier() {
         scrollTrigger: { trigger: track, start: 'top top', end: 'bottom bottom', scrub: 0.9 },
       })
     }, track)
+    // Only a change of width re-sizes the cards: a phone's address bar
+    // sliding away changes the height alone, on every scroll.
+    let width = window.innerWidth
     const onResize = () => {
+      if (window.innerWidth === width) return
+      width = window.innerWidth
       size()
+      written.forEach((w) => (w.transform = ''))
       render()
     }
     window.addEventListener('resize', onResize)
@@ -174,7 +211,7 @@ export default function HomeAtelier() {
                 <img
                   src={card.image}
                   srcSet={`${card.image} 800w, ${card.large} ${card.w}w`}
-                  sizes="(min-width: 768px) 24vw, 52vw"
+                  sizes="(min-width: 768px) 25vw, 56vw"
                   alt=""
                   loading="lazy"
                   decoding="async"
