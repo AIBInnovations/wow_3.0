@@ -59,11 +59,12 @@ export const aboutCards: AboutCard[] = [
     title: 'Influence',
     body:
       'Our aesthetic language is shaped by a dialogue with European art, '
-      + 'architecture and couture — the romanticism of Parisian salons, the grandeur '
+      + 'architecture and couture. The romanticism of Parisian salons, the grandeur '
       + 'of Italian palazzos, the sun-washed elegance of Spanish villas and the quiet '
-      + 'dignity of historic estates. We draw inspiration from the worlds of art, fashion, '
-      + 'music and design, translating these influences into celebrations that feel '
-      + 'cultivated rather than constructed.',
+      + 'dignity of historic estates all inform our sensibilities. We draw inspiration '
+      + 'from the worlds of art, fashion, music and design, translating these influences '
+      + 'into celebrations that feel cultivated rather than constructed. The result is a '
+      + 'visual language defined by refinement, balance and enduring beauty.',
     image: '/images/wow-palace-facade.webp',
     alt: 'A palace facade',
   },
@@ -88,7 +89,8 @@ export const aboutPortfolio = {
     'Our portfolio represents a discreet anthology of our most distinguished celebrations. '
     + 'The privacy of our clientele remains paramount, and as such, identities and imagery are '
     + 'not publicly disclosed. What remains visible is the artistry, the scale and the nuanced '
-    + 'craftsmanship that define our work.',
+    + 'craftsmanship that define our work. Each celebration within our portfolio reflects '
+    + 'a narrative interpreted with depth, sensitivity and aesthetic clarity.',
   left: { src: '/images/wow-fireworks-couple.webp', alt: 'Fireworks over the mandap' },
   right: { src: '/images/wow-red-ballroom.webp', alt: 'A ballroom lit red, candles on every table' },
 }
