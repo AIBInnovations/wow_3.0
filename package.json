@@ -3,15 +3,17 @@
   "version": "3.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3300",
-    "build": "next build",
-    "start": "next start -p 3300",
+    "dev": "node init && next dev -p 3300",
+    "build": "node init && next build",
+    "start": "node init && next start -p 3300",
     "lint": "next lint"
   },
   "dependencies": {
+    "dotenv": "^8.2.0",
     "gsap": "^3.12.5",
     "lenis": "^1.1.18",
     "next": "^15.1.6",
+    "node-fetch": "^3.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "split-type": "^0.3.4",
