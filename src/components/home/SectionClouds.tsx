@@ -11,12 +11,12 @@ const LINGER = 0.75
 /**
  * Clouds over the join between Our Approach and the destinations.
  *
- * The join is hidden by colour, not covered: Our Approach's foot deepens to
- * one dark tone and the first destination rises out of the same tone, so the
- * two meet without an edge. Over it float real cumulus, cut whole from
- * photographs (free under the Unsplash License) and laid out in three layers
- * that take no height in the page; no crown rises more than a few pixels
- * above the join, into the room beneath that section's words.
+ * The join lies under a bank of cloud: real cumulus cut whole from
+ * photographs (free under the Unsplash License), set so close along the join
+ * that it is covered solid from edge to edge, the bank's billowing top just
+ * above it, the photograph's own sky below. Neither section is darkened.
+ * Three layers take no height in the page; no crown rises into the words
+ * above the join.
  *
  * Each layer drifts sideways on its own (the middle one slowly left to right,
  * a fainter, hazed row behind and a nearer row in front right to left, the
@@ -66,16 +66,10 @@ export default function SectionClouds() {
   }, [reduced])
 
   return (
-    <>
-      {/* The join itself: the photograph rises out of the same deep tone
-          Our Approach ends in, so there is no line to see. It stays on the
-          join; only the clouds linger. */}
-      <div className="clouds_join" aria-hidden="true" />
     <div ref={ref} className="clouds" aria-hidden="true">
       <div className="clouds_layer clouds_back"><div className="clouds_strip" /></div>
       <div className="clouds_layer clouds_core"><div className="clouds_strip" /></div>
       <div className="clouds_layer clouds_front"><div className="clouds_strip" /></div>
     </div>
-    </>
   )
 }

@@ -1133,16 +1133,6 @@
   opacity: 0.52;
 }
 
-/* The foot deepens to the join's tone, which the destinations rise out of
-   (see SectionClouds); the cards and words lie above it. */
-.snake_grounds::after {
-  content: '';
-  position: absolute;
-  inset: auto 0 0;
-  height: 30%;
-  background: linear-gradient(to bottom, rgb(28 22 17 / 0), rgb(28 22 17 / 0.85) 70%, rgb(28 22 17));
-}
-
 .snake_ground::after {
   content: '';
   position: absolute;
@@ -1730,23 +1720,6 @@
 
 /* ═══ Clouds over the join into the destinations ═══════════════════════ */
 
-/* The first destination rises out of the tone Our Approach ends in. */
-.clouds_join {
-  position: relative;
-  z-index: 29;
-  height: 0;
-  pointer-events: none;
-}
-
-.clouds_join::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto;
-  /* Short: just enough to dissolve the edge, so the photograph's own sky shows. */
-  height: 16vh;
-  background: linear-gradient(to bottom, rgb(28 22 17), rgb(28 22 17 / 0.6) 40%, rgb(28 22 17 / 0));
-}
-
 /*
  * A zero-height band on the join (see SectionClouds), above both sections.
  * Each layer is one tile of its cloud image (--tile wide, at the image's
@@ -1793,10 +1766,13 @@
   --drift: 150s;
 }
 
+/* The bank: the join falls 1/6 of the way down its image, covered solid. */
 .clouds_core {
-  --tile: 100vw;
-  --ratio: 4.2857;
-  --top: -1.2vw;
+  --tile: 90vw;
+  --ratio: 4;
+  /* 3px under the exact line: the bank is solid from 1/7 down, so the join
+     stays covered and the crowns keep clear of the words. */
+  --top: calc(var(--tile) / var(--ratio) * -0.1667 + 3px);
   --drift: 110s;
 }
 
@@ -1844,8 +1820,7 @@
   }
 
   .clouds_core {
-    --tile: 250vw;
-    --top: -4vw;
+    --tile: 230vw;
   }
 
   .clouds_front {
