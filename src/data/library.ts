@@ -56,10 +56,9 @@ const SIZES = {
   'gift-boxes': [1600, 1066, 800],
   'glass-tags': [1000, 1500, 800],
   'banquet-florals': [768, 1067, 768],
-  // A reception buffet: Saile Ilyas on Unsplash (unsplash.com/photos/SiwrpBnxDww),
-  // free under the Unsplash License. A stand-in until the client's own counter
-  // photographs arrive; the rest of the library is the studio's own.
-  'buffet-table': [1600, 1066, 800],
+  // A dinner table dressed in red florals and gold chargers, from the studio's
+  // own portfolio (the client's "WOW Images" folder, 114A5838).
+  'dinner-table': [1600, 1067, 800],
 } as const
 
 export type LibraryName = keyof typeof SIZES

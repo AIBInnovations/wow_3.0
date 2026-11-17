@@ -2,17 +2,17 @@
  * Gallery page: the plane.
  *
  * The photographs used on the site's own pages (home, About, Celebrations
- * and Disciplines), on one plane, each once: a photograph used in more than
- * one place appears once, from its largest copy. The stills behind the films
+ * and Disciplines), and the studio's portfolio as the client sent it (the
+ * "WOW Images" Drive folder: ids drive-*, its duplicates left out and its
+ * photographs already on the pages kept once), on one plane, each once: a
+ * photograph used in more than one place appears once, from its largest copy. The stills behind the films
  * and the reel covers are included; nothing appears here that is not on a page.
  * Left out: one reel cover with Instagram's caption sticker burned into it,
  * and the six destination photographs (Udaipur, Jaipur, Goa, Indore,
  * Bangalore, Gulmarg) by outside photographers, which are not the studio's
  * work and are used on the pages under CC BY / CC BY-SA licences whose credit
  * (public/images/CITY-CREDITS.md, linked from the footer) must travel with
- * them; this page has no footer. Also left out: the reception buffet on the
- * home page, an Unsplash stand-in until the studio's own photograph arrives
- * (see data/library.ts) — a gallery is the studio's own work.
+ * them; this page has no footer.
  *
  * Shots with an rs-/av- id are page photographs that already had gallery
  * files under their photo-library id.
@@ -112,6 +112,82 @@ export const GALLERY_SHOTS: GalleryShot[] = [
   { id: 'images-city-emirates-palace', ar: 1.501, cat: 'venues' },
   { id: 'images-wow-palace-facade', ar: 1.5, cat: 'venues' },
   { id: 'videos-sangeet-poster', ar: 1.778, cat: 'venues' },
+  // The studio's portfolio, from the client's "WOW Images" folder (Drive), November 2026.
+  { id: 'drive-mehendi-0123', ar: 0.666, cat: 'decor' },
+  { id: 'drive-welcome-dinner-0322', ar: 1.501, cat: 'decor' },
+  { id: 'drive-2026-01-14-00-00-13', ar: 1.5, cat: 'decor' },
+  { id: 'drive-mehendi-0134', ar: 0.666, cat: 'decor' },
+  { id: 'drive-roka-0048', ar: 1.501, cat: 'decor' },
+  { id: 'drive-dsc00391', ar: 1.497, cat: 'decor' },
+  { id: 'drive-ishh0347', ar: 0.667, cat: 'decor' },
+  { id: 'drive-mehendi-0059', ar: 0.667, cat: 'decor' },
+  { id: 'drive-mehendi-0028', ar: 1.501, cat: 'decor' },
+  { id: 'drive-ishh6465', ar: 0.667, cat: 'decor' },
+  { id: 'drive-ishh6468', ar: 1.499, cat: 'decor' },
+  { id: 'drive-114a6966', ar: 0.667, cat: 'decor' },
+  { id: 'drive-sufi-night-0059', ar: 1.501, cat: 'decor' },
+  { id: 'drive-ishh0360', ar: 0.667, cat: 'decor' },
+  { id: 'drive-mehendi-0085', ar: 0.667, cat: 'decor' },
+  { id: 'drive-ishh6433', ar: 1.499, cat: 'decor' },
+  { id: 'drive-mehendi-0047', ar: 1.78, cat: 'decor' },
+  { id: 'drive-114a6977', ar: 0.667, cat: 'decor' },
+  { id: 'drive-carnival-0036', ar: 0.666, cat: 'decor' },
+  { id: 'drive-dsc00387', ar: 0.668, cat: 'decor' },
+  { id: 'drive-roka-0081', ar: 1.501, cat: 'decor' },
+  { id: 'drive-sufi-night-0890', ar: 1.501, cat: 'decor' },
+  { id: 'drive-dsc00389', ar: 0.668, cat: 'decor' },
+  { id: 'drive-2026-01-14-00-00-04', ar: 0.667, cat: 'decor' },
+  { id: 'drive-carnival-0040', ar: 0.666, cat: 'decor' },
+  { id: 'drive-2026-01-13-08-59-58', ar: 0.667, cat: 'decor' },
+  { id: 'drive-roka-0066', ar: 0.666, cat: 'decor' },
+  { id: 'drive-welcome-dinner-0259', ar: 0.666, cat: 'decor' },
+  { id: 'drive-ishh0355', ar: 0.667, cat: 'decor' },
+  { id: 'drive-roka-0099', ar: 1.501, cat: 'decor' },
+  { id: 'drive-2026-01-14-00-00-03', ar: 0.667, cat: 'decor' },
+  { id: 'drive-roka-0116', ar: 1.501, cat: 'decor' },
+  { id: 'drive-carnival-0136', ar: 0.666, cat: 'decor' },
+  { id: 'drive-roka-4555', ar: 1.501, cat: 'stage' },
+  { id: 'drive-ishh6445', ar: 0.667, cat: 'stage' },
+  { id: 'drive-roka-3892', ar: 1.78, cat: 'stage' },
+  { id: 'drive-2026-01-13-12-25-54', ar: 1.5, cat: 'stage' },
+  { id: 'drive-ishh6700', ar: 1.499, cat: 'stage' },
+  { id: 'drive-sufi-night-0005', ar: 1.78, cat: 'stage' },
+  { id: 'drive-roka-4205', ar: 1.501, cat: 'stage' },
+  { id: 'drive-sufi-night-1460', ar: 0.666, cat: 'stage' },
+  { id: 'drive-roka-5752', ar: 1.501, cat: 'stage' },
+  { id: 'drive-roka-3923', ar: 1.501, cat: 'stage' },
+  { id: 'drive-2026-01-14-11-54-05', ar: 1.5, cat: 'stage' },
+  { id: 'drive-ishh6443', ar: 1.499, cat: 'stage' },
+  { id: 'drive-roka-3975', ar: 1.54, cat: 'moments' },
+  { id: 'drive-sufi-night-1604', ar: 1.501, cat: 'moments' },
+  { id: 'drive-roka-2290', ar: 0.667, cat: 'moments' },
+  { id: 'drive-roka-2265', ar: 1.501, cat: 'moments' },
+  { id: 'drive-roka-4340', ar: 0.667, cat: 'moments' },
+  { id: 'drive-roka-2134', ar: 1.501, cat: 'moments' },
+  { id: 'drive-roka-3427', ar: 0.666, cat: 'moments' },
+  { id: 'drive-roka-3912', ar: 0.667, cat: 'moments' },
+  { id: 'drive-roka-3169', ar: 0.666, cat: 'moments' },
+  { id: 'drive-roka-2148', ar: 1.5, cat: 'moments' },
+  { id: 'drive-2026-01-14-08-35-37', ar: 0.667, cat: 'moments' },
+  { id: 'drive-roka-3633', ar: 0.666, cat: 'moments' },
+  { id: 'drive-mehendi-0066', ar: 0.666, cat: 'details' },
+  { id: 'drive-mehendi-0080', ar: 0.666, cat: 'details' },
+  { id: 'drive-mehendi-0120', ar: 0.666, cat: 'details' },
+  { id: 'drive-2026-01-12-23-40-02', ar: 0.667, cat: 'details' },
+  { id: 'drive-2026-01-13-09-11-40', ar: 0.667, cat: 'details' },
+  { id: 'drive-2026-01-12-23-40-50', ar: 0.667, cat: 'details' },
+  { id: 'drive-ishh0372', ar: 1.499, cat: 'details' },
+  { id: 'drive-114a5838', ar: 1.5, cat: 'details' },
+  { id: 'drive-2026-01-12-23-40-52', ar: 0.667, cat: 'details' },
+  { id: 'drive-2026-01-12-23-40-17', ar: 1.5, cat: 'details' },
+  { id: 'drive-114a6979', ar: 1.5, cat: 'details' },
+  { id: 'drive-2026-01-12-23-40-16', ar: 1.5, cat: 'venues' },
+  { id: 'drive-2026-01-14-06-53-06', ar: 1.5, cat: 'venues' },
+  { id: 'drive-sufi-night-0160', ar: 1.78, cat: 'venues' },
+  { id: 'drive-roka-0014', ar: 1.78, cat: 'venues' },
+  { id: 'drive-2026-01-14-06-53-28', ar: 1.5, cat: 'venues' },
+  { id: 'drive-2026-01-14-06-53-19', ar: 0.667, cat: 'venues' },
+  { id: 'drive-whatsapp-image-2026-09-14-at-6-45-06-pm', ar: 1.499, cat: 'venues' },
 ]
 
 /**
