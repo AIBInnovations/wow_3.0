@@ -20,11 +20,17 @@ import { homeAtelier, homeAtelierCards as chapters } from '@/data/home'
 const BEND = 0.08
 const END = 0.95
 
-/** The cards: every section's photograph, then every section's second one. */
-const cards = [
-  ...chapters.map((c) => ({ image: c.image, large: c.imageLarge, w: c.imageWidth })),
-  ...chapters.map((c) => ({ image: c.second.image, large: c.second.imageLarge, w: c.second.imageWidth })),
-]
+/**
+ * The cards: each section's two photographs side by side, in the document's
+ * order. A section is at the centre when its first photograph is, so its
+ * second is the next card along and both read with its heading.
+ */
+const cards = chapters.flatMap((c) => [
+  { image: c.image, large: c.imageLarge, w: c.imageWidth },
+  { image: c.second.image, large: c.second.imageLarge, w: c.second.imageWidth },
+])
+/** Cards per section, and so how far the run moves from one section to the next. */
+const PER = 2
 const N = cards.length
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v))
@@ -43,7 +49,7 @@ const wrap = (s: number) => ((((s + N / 2) % N) + N) % N) - N / 2
  * out in a row from the first, the centre card largest; as the page scrolls
  * the row bends into a snake and the cards travel along it, each section's photograph coming through the
  * centre, largest there and in its own colours, the others smaller and washed
- * in wine. When a section's photograph reaches the centre its heading and
+ * in wine; behind them each section's colour rises from the foot of the frame. When a section's photograph reaches the centre its heading and
  * opening line roll up into place: they slide out of a mask, never fade.
  *
  * One scrubbed value drives everything; each frame places every card from it.
@@ -87,18 +93,40 @@ export default function HomeAtelier() {
       phone = window.innerWidth < 768
       const bandH = r.height
       // Sized so the snake's highest and lowest cards stay within the band.
-      W = phone ? Math.min(r.width * 0.56, bandH * 0.66) : Math.min(r.width * 0.25, bandH * 0.68)
+      W = phone ? Math.min(r.width * 0.62, bandH * 0.72) : Math.min(r.width * 0.29, bandH * 0.74)
       band.style.setProperty('--w', `${Math.round(W)}px`)
     }
 
+    const grounds = Array.from(track.querySelectorAll<HTMLElement>('.snake_ground'))
+    const groundClip = grounds.map(() => '')
     // What each card was last given, so a frame writes only what changed.
     const written = els.map(() => ({ transform: '', opacity: '', z: '', tint: '', out: false }))
     const state = { p: 0 }
     const render = () => {
       const p = state.p
       const bend = reduced ? 0 : smooth(p / BEND)
-      const c = clamp01((p - BEND) / (END - BEND)) * (chapters.length - 1)
-      setActive(Math.round(c))
+      // The card at the centre, counted along the run. Between sections the
+      // run eases, so it slows as each section's photographs reach the centre
+      // and lingers there.
+      const t = clamp01((p - BEND) / (END - BEND)) * (chapters.length - 1)
+      const step = Math.min(Math.floor(t), chapters.length - 2)
+      const c = (step + smooth(t - step)) * PER
+      // A section is named from the moment its first photograph is half a card
+      // from the centre until its second has passed it.
+      const named = Math.min(chapters.length - 1, Math.floor((c + 0.5) / PER))
+      setActive(named)
+
+      // Each section's colour rises from the foot of the frame over the last
+      // while its photographs come in, half way up as its name changes.
+      grounds.forEach((g, i) => {
+        if (i === 0) return
+        const rise = smooth(c - (i * PER - 1))
+        const clip = `inset(${((1 - rise) * 100).toFixed(2)}% 0 0 0)`
+        if (clip !== groundClip[i]) {
+          g.style.clipPath = clip
+          groundClip[i] = clip
+        }
+      })
 
       // Phones keep three cards either side in play, wider screens four.
       const reach = phone ? 3.2 : 4.2
@@ -123,7 +151,7 @@ export default function HomeAtelier() {
         const x = Math.sign(s) * W * (0.7 * a - 0.06 * a * a) * (phone ? 0.9 : 1)
         const scale = Math.max(0.3, 1 - 0.17 * a)
         // The snake: an S through the centre.
-        const y = W * 0.3 * Math.sin(s * 0.9) * bend
+        const y = W * 0.22 * Math.sin(s * 0.9) * bend
         const transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) scale(${scale.toFixed(3)})`
         // Only write what changed: while a chapter holds, nothing does.
         if (transform !== last.transform) {
@@ -183,6 +211,13 @@ export default function HomeAtelier() {
     <section data-theme="inherit" className="home-atelier_wrap">
       <div ref={trackRef} className="snake_track" style={{ '--n': chapters.length } as React.CSSProperties}>
         <div className="snake_stage">
+          {/* The sections' colours, each rising over the last from the foot. */}
+          <div className="snake_grounds" aria-hidden="true">
+            {chapters.map((chapter) => (
+              <span key={chapter.number} className="snake_ground" style={{ background: chapter.background }} />
+            ))}
+          </div>
+
           {/* The contact sheet's rules, and a dot where they cross. */}
           <div className="snake_rules" aria-hidden="true">
             <span className="snake_rule is-x1" />

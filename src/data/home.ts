@@ -37,8 +37,8 @@ export type AtelierCard = {
   imageLarge: string
   imageWidth: number
   alt: string
-  /** A second photograph of the section, for the snake's second run of cards. */
-  second: { image: string; imageLarge: string; imageWidth: number }
+  /** The section's second photograph, beside the first in the run. */
+  second: { image: string; imageLarge: string; imageWidth: number; alt: string }
   href: string
 }
 
@@ -55,14 +55,32 @@ export type AtelierCard = {
  */
 const cardGround: Record<string, string> = { ideology: '#10264a' }
 
-/** Each section's second photograph: rooms, flowers and light, like the first. */
-const secondPhoto: Record<string, LibraryName> = {
-  philosophy: 'pastel-canopy',
-  ideology: 'palm-walk',
-  influences: 'ice-sculpture',
-  portfolio: 'red-wall',
-  experience: 'welcome-procession',
-  destinations: 'aisle-dusk',
+/**
+ * Each section's two photographs, chosen for its heading (rooms, flowers and
+ * light; no faces, as the document keeps the clientele private):
+ *   Founder's Philosophy   the rose arch, the mehendi detail: culture, identity
+ *   Design Ideology        the floral corridor, the blue arch: architecture,
+ *                          florals, light
+ *   Artistic Influences    the chandeliered banquet, the palace by day: the
+ *                          salon and the palazzo
+ *   Signature Portfolio    the carved archway, the gathering from above:
+ *                          craftsmanship and scale
+ *   The Experience         the tented lounge, the gift boxes: hospitality and
+ *                          its personal touches
+ *   Destinations & Scale   the palace on the lake, the aisle by the sea
+ */
+const chapterPhotos: Record<string, [LibraryName, string, LibraryName, string]> = {
+  philosophy: ['rose-arch', 'An arch of red roses framing the palace courtyard', 'mehendi-detail', 'Embroidery and a hand in mehendi'],
+  ideology: ['floral-corridor', 'A corridor of blue florals and woven lanterns', 'blue-arch', 'A floral arch at the entrance to the celebration'],
+  influences: ['banquet-florals', 'A banquet beneath chandeliers and a canopy of florals', 'palace-day', 'A palace and its gardens by day'],
+  portfolio: ['red-archway', 'A carved archway lit red', 'stage-crowd', 'A celebration seen from above'],
+  experience: ['tented-lounge', 'A tented lounge dressed in blue and gold', 'gift-boxes', 'Gift boxes laid out for the guests'],
+  destinations: ['city-night', 'A palace on the lake at night', 'aisle-dusk', 'An aisle at dusk leading to the mandap by the sea'],
+}
+
+const photoOf = (name: LibraryName) => {
+  const { src800, src, w } = lib(name)
+  return { image: src800, imageLarge: src, imageWidth: w }
 }
 
 export const homeAtelierCards: AtelierCard[] = [
@@ -79,11 +97,9 @@ export const homeAtelierCards: AtelierCard[] = [
   lead: section.lead,
   text: section.body[0],
   closing: section.closing?.join(' '),
-  image: section.photo.src800,
-  imageLarge: section.photo.src,
-  imageWidth: section.photo.w,
-  alt: section.photo.alt,
-  second: (({ src800, src, w }) => ({ image: src800, imageLarge: src, imageWidth: w }))(lib(secondPhoto[section.id])),
+  ...photoOf(chapterPhotos[section.id][0]),
+  alt: chapterPhotos[section.id][1],
+  second: { ...photoOf(chapterPhotos[section.id][2]), alt: chapterPhotos[section.id][3] },
   href: '/about',
 }))
 

@@ -1096,14 +1096,32 @@
   --nav: 88px;
   --x1: 6%;
   --x2: 70%;
-  --y1: calc(var(--nav) + 120px);
-  --y2: calc(100% - 184px);
+  --y1: calc(var(--nav) + 100px);
+  --y2: calc(100% - 172px);
   --rule: rgb(245 215 153 / 0.32);
   position: sticky;
   top: 0;
   height: 100svh;
   overflow: hidden;
   color: var(--wow-cream, #fbf4e9);
+}
+
+/* ─── The grounds: each section's colour, wiped up from the foot ──────── */
+
+.snake_grounds {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.snake_ground {
+  position: absolute;
+  inset: 0;
+}
+
+/* Every colour after the first waits below the frame until its section. */
+.snake_ground + .snake_ground {
+  clip-path: inset(100% 0 0 0);
 }
 
 /* ─── The rules ───────────────────────────────────────────────────────── */
@@ -1177,14 +1195,15 @@
 
 .snake_heading {
   position: absolute;
-  top: calc(var(--nav) + 8px);
+  top: calc(var(--nav) - 4px);
   left: calc(var(--x2) + 24px);
   right: var(--padding-horizontal--main);
   z-index: 120;
   margin: 0;
   padding-top: var(--initial-reach);
   font-family: var(--font--primary-family);
-  font-size: clamp(2rem, 3.4vw, 3.5rem);
+  /* Two lines, clear of the photographs below the first rule. */
+  font-size: clamp(1.75rem, 2.4vw, 2.5rem);
   font-weight: 400;
   line-height: 1.05;
   letter-spacing: var(--tracking-heading);
@@ -1431,8 +1450,8 @@
     --nav: 64px;
     --x1: 16px;
     --x2: calc(100% - 16px);
-    --y1: calc(var(--nav) + 120px);
-    --y2: calc(100% - 208px);
+    --y1: calc(var(--nav) + 104px);
+    --y2: calc(100% - 196px);
   }
 
   .snake_label {
@@ -1488,4 +1507,192 @@
   .snake_lead {
     font-size: var(--step-0);
   }
+}
+
+/* ═══ What Distinguishes Our Celebrations ═══════════════════════════════ */
+
+/*
+ * Two rows on the twelve-column grid (see CelebrationSection): the heading
+ * with its paragraph and button beside it, then the photograph with the
+ * studio in numbers beside it, the three figures under its words.
+ */
+.cel_top,
+.cel_body {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--grid-gap--main, 24px);
+}
+
+.cel_top {
+  align-items: end;
+  margin-bottom: 64px;
+}
+
+.content-lo1_heading_txt.cel_title {
+  grid-column: 1 / span 7;
+  margin: 0;
+  padding-top: var(--initial-reach);
+  font-size: clamp(2.5rem, 5.2vw, 5.25rem);
+  line-height: 1.02;
+  text-align: left;
+}
+
+.cel_intro {
+  grid-column: 9 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  row-gap: 24px;
+}
+
+.cel_text {
+  margin: 0;
+  font-family: var(--font--body);
+  font-size: var(--step-1);
+  font-style: italic;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-wrap: pretty;
+}
+
+.btn-wrap.cel_btn {
+  margin: 0;
+  padding: 0;
+}
+
+/* The photograph stands as tall as the words beside it. */
+.cel_body {
+  align-items: stretch;
+}
+
+.cel_media {
+  position: relative;
+  grid-column: 1 / span 7;
+  min-height: 440px;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.cel_media img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cel_numbers {
+  grid-column: 8 / -1;
+  min-width: 0;
+  padding-left: 24px;
+}
+
+/* The figures, three across under the words, sized to the column. */
+.cel_wrap .home-stats_block {
+  margin: 0;
+}
+
+.cel_wrap .home-stats_layout {
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 40px;
+}
+
+.cel_wrap .home-stats_lead {
+  row-gap: 16px;
+}
+
+.cel_wrap .home-stats_statement + .home-stats_body,
+.cel_wrap .home-stats_body + .home-stats_body {
+  margin-top: 0;
+}
+
+.cel_wrap .home-stats_grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  row-gap: 0;
+}
+
+.cel_wrap .home-stats_num {
+  font-size: clamp(2.5rem, 4.4vw, 4.5rem);
+}
+
+.cel_wrap .home-stats_item,
+.cel_wrap .home-stats_item:nth-child(n + 3) {
+  grid-column: auto;
+  padding: 0 0 0 16px;
+  border-top: 0;
+  border-left: 1px solid var(--light-fade-2);
+}
+
+.cel_wrap .home-stats_label {
+  white-space: normal;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+
+/* Tablets: the heading over its paragraph, the photograph over the numbers. */
+@media (max-width: 1023px) {
+  .cel_top {
+    margin-bottom: 48px;
+  }
+
+  .content-lo1_heading_txt.cel_title,
+  .cel_intro,
+  .cel_media,
+  .cel_numbers {
+    grid-column: 1 / -1;
+  }
+
+  .cel_intro {
+    max-width: 560px;
+    margin-top: 24px;
+  }
+
+  .cel_media {
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+  }
+
+  .cel_numbers {
+    padding: 40px 0 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .content-lo1_heading_txt.cel_title {
+    font-size: clamp(2.25rem, 10.5vw, 3rem);
+  }
+
+  .cel_top {
+    margin-bottom: 40px;
+  }
+
+  .cel_media {
+    min-height: 0;
+    aspect-ratio: 4 / 5;
+  }
+
+  .cel_wrap .home-stats_num {
+    font-size: clamp(2.25rem, 11vw, 3rem);
+  }
+
+  .cel_wrap .home-stats_item,
+  .cel_wrap .home-stats_item:nth-child(n + 3) {
+    padding-left: 12px;
+  }
+
+  .cel_wrap .home-stats_label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+  }
+}
+
+/*
+ * site.css pulls whatever follows the destinations up under them by 9vw, and
+ * the photograph covered the top of What Distinguishes: its heading sat on
+ * the picture's edge. The section now starts where the destinations end.
+ */
+#stickygal.sticky-gallery_wrap.u-vflex-center-center {
+  margin-bottom: 0;
 }
