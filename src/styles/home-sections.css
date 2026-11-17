@@ -1742,8 +1742,9 @@
   content: '';
   position: absolute;
   inset: 0 0 auto;
-  height: 45vh;
-  background: linear-gradient(to bottom, rgb(28 22 17), rgb(28 22 17 / 0.85) 25%, rgb(28 22 17 / 0.35) 60%, rgb(28 22 17 / 0));
+  /* Short: just enough to dissolve the edge, so the photograph's own sky shows. */
+  height: 16vh;
+  background: linear-gradient(to bottom, rgb(28 22 17), rgb(28 22 17 / 0.6) 40%, rgb(28 22 17 / 0));
 }
 
 /*
@@ -1786,23 +1787,23 @@
 /* Each --top sets its tallest cloud's crown a little above the join at most,
    below the words over it; the ratios are the images' own. */
 .clouds_back {
-  --tile: 100vw;
+  --tile: 80vw;
   --ratio: 3.8462;
-  --top: -1vw;
+  --top: -1.6vw;
   --drift: 150s;
 }
 
 .clouds_core {
-  --tile: 130vw;
+  --tile: 100vw;
   --ratio: 4.2857;
-  --top: -1.4vw;
+  --top: -1.2vw;
   --drift: 110s;
 }
 
 .clouds_front {
-  --tile: 120vw;
+  --tile: 90vw;
   --ratio: 5.7143;
-  --top: 10vw;
+  --top: 3.5vw;
   --drift: 70s;
 }
 
@@ -1838,17 +1839,17 @@
 /* A phone: the clouds keep their size against a narrow screen. */
 @media (max-width: 767px) {
   .clouds_back {
-    --tile: 260vw;
-    --top: -2vw;
+    --tile: 210vw;
+    --top: -3vw;
   }
 
   .clouds_core {
-    --tile: 320vw;
-    --top: -5vw;
+    --tile: 250vw;
+    --top: -4vw;
   }
 
   .clouds_front {
-    --tile: 300vw;
-    --top: 30vw;
+    --tile: 230vw;
+    --top: 10vw;
   }
 }

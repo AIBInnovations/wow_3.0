@@ -6,7 +6,7 @@ import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 /** How fast the clouds rise, against the page, while they linger. */
-const LINGER = 0.45
+const LINGER = 0.75
 
 /**
  * Clouds over the join between Our Approach and the destinations.
@@ -22,8 +22,8 @@ const LINGER = 0.45
  * a fainter, hazed row behind and a nearer row in front right to left, the
  * nearer the faster), and the back and front rise at their own speeds as the
  * join passes up the screen. Once the join has gone past the top, the clouds
- * stop keeping pace: they rise at under half speed and thin away over the
- * first destination.
+ * lag only a little behind the page and thin away within a third of a
+ * screen, before they can settle over the photograph.
  *
  * Images: public/wow/clouds-core|back|front.webp, each a tile that wraps.
  */
@@ -38,17 +38,17 @@ export default function SectionClouds() {
     const ctx = gsap.context(() => {
       const rising = { trigger: band, start: 'top bottom', end: 'top top', scrub: true }
       gsap.fromTo('.clouds_back', { yPercent: 8 }, { yPercent: -8, ease: 'none', scrollTrigger: rising })
-      gsap.fromTo('.clouds_front', { yPercent: 22 }, { yPercent: -22, ease: 'none', scrollTrigger: rising })
+      gsap.fromTo('.clouds_front', { yPercent: 14 }, { yPercent: -30, ease: 'none', scrollTrigger: rising })
 
       // Lingering: from the join at the top of the screen, for about a screen.
       ScrollTrigger.create({
         trigger: band,
         start: 'top top',
         // Until the first destination has risen away: about half a screen.
-        end: () => `+=${Math.round(window.innerHeight * 0.5)}`,
+        end: () => `+=${Math.round(window.innerHeight * 0.35)}`,
         onUpdate: (self) => {
           const travelled = self.progress * (self.end - self.start)
-          const fade = Math.min(1, Math.max(0, (self.progress - 0.15) / 0.85))
+          const fade = Math.min(1, Math.max(0, self.progress))
           band.style.transform = `translate3d(0, ${(travelled * (1 - LINGER)).toFixed(1)}px, 0)`
           band.style.opacity = String(1 - fade * fade * (3 - 2 * fade))
         },
