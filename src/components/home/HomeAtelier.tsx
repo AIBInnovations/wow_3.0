@@ -26,8 +26,8 @@ const END = 0.95
  * second is the next card along and both read with its heading.
  */
 const cards = chapters.flatMap((c) => [
-  { image: c.image, large: c.imageLarge, w: c.imageWidth },
-  { image: c.second.image, large: c.second.imageLarge, w: c.second.imageWidth },
+  { image: c.image, large: c.imageLarge, w: c.imageWidth, ground: c.ground, blur: c.blur },
+  { image: c.second.image, large: c.second.imageLarge, w: c.second.imageWidth, ground: c.second.ground, blur: c.second.blur },
 ])
 /** Cards per section, and so how far the run moves from one section to the next. */
 const PER = 2
@@ -49,7 +49,8 @@ const wrap = (s: number) => ((((s + N / 2) % N) + N) % N) - N / 2
  * out in a row from the first, the centre card largest; as the page scrolls
  * the row bends into a snake and the cards travel along it, each section's photograph coming through the
  * centre, largest there and in its own colours, the others smaller and washed
- * in wine; behind them each section's colour rises from the foot of the frame. When a section's photograph reaches the centre its heading and
+ * in wine; behind them the colour of the photograph at the centre rises from
+ * the foot of the frame as it arrives. When a section's photograph reaches the centre its heading and
  * opening line roll up into place: they slide out of a mask, never fade.
  *
  * One scrubbed value drives everything; each frame places every card from it.
@@ -105,26 +106,27 @@ export default function HomeAtelier() {
     const render = () => {
       const p = state.p
       const bend = reduced ? 0 : smooth(p / BEND)
-      // The card at the centre, counted along the run. Between sections the
-      // run eases, so it slows as each section's photographs reach the centre
-      // and lingers there.
-      const t = clamp01((p - BEND) / (END - BEND)) * (chapters.length - 1)
-      const step = Math.min(Math.floor(t), chapters.length - 2)
-      const c = (step + smooth(t - step)) * PER
+      // The card at the centre, counted along the run. The run moves one
+      // photograph at a time, slowing as each reaches the centre and
+      // lingering there, through to the last.
+      const t = clamp01((p - BEND) / (END - BEND)) * (N - 1)
+      const step = Math.min(Math.floor(t), N - 2)
+      const c = step + smooth(t - step)
       // A section is named from the moment its first photograph is half a card
       // from the centre until its second has passed it.
       const named = Math.min(chapters.length - 1, Math.floor((c + 0.5) / PER))
       setActive(named)
 
-      // Each section's colour rises from the foot of the frame over the last
-      // while its photographs come in, half way up as its name changes.
-      grounds.forEach((g, i) => {
-        if (i === 0) return
-        const rise = smooth(c - (i * PER - 1))
+      // The ground is the colour of the photograph at the centre: each one's
+      // rises from the foot of the frame as it travels in, and is complete as
+      // it arrives.
+      grounds.forEach((g, k) => {
+        if (k === 0) return
+        const rise = clamp01(c - (k - 1))
         const clip = `inset(${((1 - rise) * 100).toFixed(2)}% 0 0 0)`
-        if (clip !== groundClip[i]) {
+        if (clip !== groundClip[k]) {
           g.style.clipPath = clip
-          groundClip[i] = clip
+          groundClip[k] = clip
         }
       })
 
@@ -211,10 +213,13 @@ export default function HomeAtelier() {
     <section data-theme="inherit" className="home-atelier_wrap">
       <div ref={trackRef} className="snake_track" style={{ '--n': chapters.length } as React.CSSProperties}>
         <div className="snake_stage">
-          {/* The sections' colours, each rising over the last from the foot. */}
+          {/* The photograph at the centre, blurred and washed in its own colour,
+              rising over the last as it comes in. */}
           <div className="snake_grounds" aria-hidden="true">
-            {chapters.map((chapter) => (
-              <span key={chapter.number} className="snake_ground" style={{ background: chapter.background }} />
+            {cards.map((card) => (
+              <span key={card.image} className="snake_ground" style={{ '--tone': card.ground } as React.CSSProperties}>
+                <span className="snake_ground_img" style={{ backgroundImage: `url(${card.blur})` }} />
+              </span>
             ))}
           </div>
 

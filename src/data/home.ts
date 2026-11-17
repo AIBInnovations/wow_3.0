@@ -36,9 +36,14 @@ export type AtelierCard = {
   image: string
   imageLarge: string
   imageWidth: number
+  /** The photograph's own colour, deepened: the ground while it is at the centre. */
+  ground: string
+  /** A 64px, pre-blurred copy of the photograph: stretched, it is the soft
+      picture behind the run while this photograph is at the centre. */
+  blur: string
   alt: string
   /** The section's second photograph, beside the first in the run. */
-  second: { image: string; imageLarge: string; imageWidth: number; alt: string }
+  second: { image: string; imageLarge: string; imageWidth: number; ground: string; blur: string; alt: string }
   href: string
 }
 
@@ -78,9 +83,30 @@ const chapterPhotos: Record<string, [LibraryName, string, LibraryName, string]> 
   destinations: ['city-night', 'A palace on the lake at night', 'aisle-dusk', 'An aisle at dusk leading to the mandap by the sea'],
 }
 
+/**
+ * Each photograph's own colour, for the ground behind it while it holds the
+ * centre: its colourful pixels' hue, weighted by how colourful each is (a pale
+ * photograph is read from its quieter colours), set deep at 20% lightness so
+ * cream type stays legible on it.
+ */
+const photoGround: Partial<Record<LibraryName, string>> = {
+  'rose-arch': '#4c1a1d',
+  'mehendi-detail': '#214529',
+  'floral-corridor': '#242a42',
+  'blue-arch': '#242e42',
+  'banquet-florals': '#47321f',
+  'palace-day': '#234343',
+  'red-archway': '#521417',
+  'stage-crowd': '#48281e',
+  'tented-lounge': '#4b341b',
+  'gift-boxes': '#47271f',
+  'city-night': '#1e2d48',
+  'aisle-dusk': '#423424',
+}
+
 const photoOf = (name: LibraryName) => {
   const { src800, src, w } = lib(name)
-  return { image: src800, imageLarge: src, imageWidth: w }
+  return { image: src800, imageLarge: src, imageWidth: w, ground: photoGround[name] ?? '#2a1a1c', blur: `/wow/lib-${name}-blur.webp` }
 }
 
 export const homeAtelierCards: AtelierCard[] = [

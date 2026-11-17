@@ -1114,9 +1114,30 @@
   pointer-events: none;
 }
 
+/* The photograph's colour, the photograph itself softly over it, and a
+   darkening at the head and foot where the words sit. The picture is a 64px
+   file stretched to fill: the browser's own smoothing is the blur, with no
+   filter to repaint. */
 .snake_ground {
   position: absolute;
   inset: 0;
+  overflow: hidden;
+  background: var(--tone);
+}
+
+.snake_ground_img {
+  position: absolute;
+  inset: -6%;
+  background-position: center;
+  background-size: cover;
+  opacity: 0.52;
+}
+
+.snake_ground::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgb(0 0 0 / 0.5), rgb(0 0 0 / 0.08) 32%, transparent 50%, rgb(0 0 0 / 0.08) 60%, rgb(0 0 0 / 0.55));
 }
 
 /* Every colour after the first waits below the frame until its section. */
