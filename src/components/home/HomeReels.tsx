@@ -7,6 +7,7 @@ import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useSmoothScroll } from '@/providers/SmoothScrollProvider'
 import Initial from '@/components/Initial'
+import CircleTextButton from '@/components/CircleTextButton'
 import { homeReels, type Reel } from '@/data/home'
 import { instagramUrl } from '@/data/footer'
 
@@ -29,7 +30,7 @@ const PLACES = [
  *
  * A small line at the head; the six reels as rounded cards at their own
  * heights, each with a pill to watch it, each drifting at its own speed as the
- * page scrolls; a ring to the Instagram profile over the first; and the
+ * page scrolls; the round button to the Instagram profile at the centre; and the
  * heading set huge along the foot, the cards over its top. A card opens the
  * reel itself over the page, in Instagram's player.
  *
@@ -61,10 +62,10 @@ export default function HomeReels() {
       <p className="reelgrid_lead">{homeReels.lead}</p>
 
       <div className="reelgrid_field">
-        <a className="reelgrid_ring" href={instagramUrl} target="_blank" rel="noopener noreferrer">
-          <span>Go to</span>
-          <span>Instagram</span>
-        </a>
+        {/* The same round button as the atelier statement's, at the centre. */}
+        <div className="reelgrid_ring">
+          <CircleTextButton href={instagramUrl} text="GO TO INSTAGRAM · OUR REELS · " label="Go to Instagram" />
+        </div>
 
         {items.map((item, i) => (
           <div
@@ -79,12 +80,6 @@ export default function HomeReels() {
               aria-label={`Watch reel ${i + 1}`}
             >
               <img src={item.cover} alt="" loading="lazy" decoding="async" draggable={false} />
-              {/* The site's own button, centred on the card; the card is the control. */}
-              <span className="btn_main_wrap reelgrid_cta" data-button-style="primary">
-                <span className="btn_main_layout u-gap-xsmall u-hflex-center-center">
-                  <span className="btn_main_text">View reel</span>
-                </span>
-              </span>
             </button>
           </div>
         ))}

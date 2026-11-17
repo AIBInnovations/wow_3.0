@@ -1469,9 +1469,10 @@
   position: relative;
   overflow: hidden;
   padding: 120px var(--padding-horizontal--main, 24px) 0;
+  /* The house olive (the preview deck's decor green), lit a little at the centre. */
   background:
-    radial-gradient(70% 55% at 50% 45%, rgb(122 37 52 / 0.35), transparent 70%),
-    #120708;
+    radial-gradient(70% 55% at 50% 45%, rgb(92 108 74 / 0.4), transparent 70%),
+    var(--wow-olive, #262d20);
   color: var(--wow-cream, #fbf4e9);
   text-align: center;
 }
@@ -1551,70 +1552,30 @@
   transform: scale(1.06);
 }
 
-/* The site's button, centred on the card. */
-.reelgrid_cta.btn_main_wrap {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  translate: -50% -50%;
-  display: block;
-  margin: 0;
-  white-space: nowrap;
-  pointer-events: none;
-}
-
-/* Over a photograph the outline needs a ground to read on. */
-.reelgrid_cta.btn_main_wrap {
-  background-color: rgb(20 8 9 / 0.35);
-  color: var(--wow-cream, #fbf4e9);
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-}
-
-/* The card is what is pointed at, so the button answers for it. */
-.reelgrid_card_btn:hover .reelgrid_cta.btn_main_wrap,
-.reelgrid_card_btn:focus-visible .reelgrid_cta.btn_main_wrap {
-  background-color: var(--swatch--brand);
-  border-color: #fff;
-  color: #fff;
-}
-
-.reelgrid_cta .btn_main_layout {
-  display: flex;
-}
-
-.reelgrid_cta .btn_main_text {
-  display: block;
-}
-
-/* The ring to the profile, over the first card's head. */
+/* The round button to the profile, at the centre of the field, over the
+   cards. site.css sizes it as half its parent; here it has a size of its own. */
 .reelgrid_ring {
   position: absolute;
   z-index: 3;
-  top: calc(22% - 96px);
-  left: calc((100% - 5 * 24px) / 12 - 72px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 144px;
-  height: 144px;
-  border: 1px solid rgb(251 244 233 / 0.7);
-  border-radius: 50%;
-  color: var(--wow-cream, #fbf4e9);
-  font-family: var(--font--inherit);
-  font-size: 11px;
-  line-height: 1.5;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  text-decoration: none;
-  transition: background-color 0.4s ease, color 0.4s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
 }
 
-.reelgrid_ring:hover,
-.reelgrid_ring:focus-visible {
-  background: var(--swatch--brand, #f5d799);
-  color: #2b0d0f;
-  transform: scale(1.06);
+.reelgrid_ring .circle-text-btn_wrap {
+  width: 13rem;
+  height: 13rem;
+}
+
+/* Over the photographs its turning words need a ground: a disc of the olive,
+   with a gold hairline, behind the button. */
+.reelgrid_ring::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: var(--wow-olive, #262d20);
+  box-shadow: 0 16px 40px rgb(0 0 0 / 0.45), inset 0 0 0 1px rgb(201 162 77 / 0.55);
 }
 
 /* ─── The heading along the foot ──────────────────────────────────────── */
@@ -1659,12 +1620,9 @@
     margin-top: 48px;
   }
 
-  .reelgrid_ring {
-    top: -40px;
-    left: -8px;
-    width: 104px;
-    height: 104px;
-    font-size: 10px;
+  .reelgrid_ring .circle-text-btn_wrap {
+    width: 11rem;
+    height: 11rem;
   }
 
   .reelgrid_word {
@@ -1704,18 +1662,9 @@
     border-radius: 12px;
   }
 
-  /* Narrower sides, so the button sits inside a card on a 360px screen. */
-  .reelgrid_cta.btn_main_wrap {
-    padding-inline: 1.25rem;
-  }
-
-  .reelgrid_ring {
-    top: -44px;
-    left: auto;
-    right: -4px;
-    width: 92px;
-    height: 92px;
-    font-size: 9px;
+  .reelgrid_ring .circle-text-btn_wrap {
+    width: 9.5rem;
+    height: 9.5rem;
   }
 
   .reelgrid_word {
