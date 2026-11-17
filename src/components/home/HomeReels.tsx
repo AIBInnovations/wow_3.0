@@ -16,12 +16,12 @@ import { instagramUrl } from '@/data/footer'
  * faster, negative rises). Every reel appears once.
  */
 const PLACES = [
-  { top: 34, speed: 18 },
-  { top: 12, speed: -14 },
-  { top: 28, speed: 26 },
-  { top: 6, speed: -22 },
-  { top: 30, speed: 10 },
-  { top: 14, speed: -18 },
+  { top: 22, speed: 14 },
+  { top: 6, speed: -12 },
+  { top: 18, speed: 20 },
+  { top: 2, speed: -18 },
+  { top: 20, speed: 8 },
+  { top: 8, speed: -14 },
 ]
 
 /**
@@ -79,7 +79,12 @@ export default function HomeReels() {
               aria-label={`Watch reel ${i + 1}`}
             >
               <img src={item.cover} alt="" loading="lazy" decoding="async" draggable={false} />
-              <span className={`reelgrid_pill${i % 2 ? ' is-top' : ''}`}>View reel</span>
+              {/* The site's own button, centred on the card; the card is the control. */}
+              <span className="btn_main_wrap reelgrid_cta" data-button-style="primary">
+                <span className="btn_main_layout u-gap-xsmall u-hflex-center-center">
+                  <span className="btn_main_text">View reel</span>
+                </span>
+              </span>
             </button>
           </div>
         ))}

@@ -1502,7 +1502,8 @@
 .reelgrid_field {
   position: relative;
   z-index: 2;
-  height: clamp(420px, 36vw, 560px);
+  /* Room for the tallest-placed portrait card. */
+  height: clamp(520px, 46vw, 700px);
   margin-top: 48px;
 }
 
@@ -1519,7 +1520,8 @@
   position: relative;
   display: block;
   width: 100%;
-  aspect-ratio: 4 / 5;
+  /* Portrait, as a phone holds a reel. */
+  aspect-ratio: 9 / 16;
   padding: 0;
   overflow: hidden;
   border: 1px solid rgb(251 244 233 / 0.55);
@@ -1549,40 +1551,46 @@
   transform: scale(1.06);
 }
 
-.reelgrid_pill {
+/* The site's button, centred on the card. */
+.reelgrid_cta.btn_main_wrap {
   position: absolute;
+  top: 50%;
   left: 50%;
-  bottom: 12px;
-  translate: -50% 0;
-  padding: 9px 18px;
-  border-radius: 999px;
-  background: var(--wow-cream, #fbf4e9);
-  color: #2b0d0f;
-  font-family: var(--font--inherit);
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  translate: -50% -50%;
+  display: block;
+  margin: 0;
   white-space: nowrap;
-  box-shadow: 0 6px 16px rgb(0 0 0 / 0.25);
-  transition: background-color 0.3s ease;
+  pointer-events: none;
 }
 
-.reelgrid_pill.is-top {
-  top: 12px;
-  bottom: auto;
+/* Over a photograph the outline needs a ground to read on. */
+.reelgrid_cta.btn_main_wrap {
+  background-color: rgb(20 8 9 / 0.35);
+  color: var(--wow-cream, #fbf4e9);
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
-.reelgrid_card_btn:hover .reelgrid_pill,
-.reelgrid_card_btn:focus-visible .reelgrid_pill {
-  background: var(--swatch--brand, #f5d799);
+/* The card is what is pointed at, so the button answers for it. */
+.reelgrid_card_btn:hover .reelgrid_cta.btn_main_wrap,
+.reelgrid_card_btn:focus-visible .reelgrid_cta.btn_main_wrap {
+  background-color: var(--swatch--brand);
+  border-color: #fff;
+  color: #fff;
+}
+
+.reelgrid_cta .btn_main_layout {
+  display: flex;
+}
+
+.reelgrid_cta .btn_main_text {
+  display: block;
 }
 
 /* The ring to the profile, over the first card's head. */
 .reelgrid_ring {
   position: absolute;
   z-index: 3;
-  top: calc(34% - 96px);
+  top: calc(22% - 96px);
   left: calc((100% - 5 * 24px) / 12 - 72px);
   display: flex;
   flex-direction: column;
@@ -1696,10 +1704,9 @@
     border-radius: 12px;
   }
 
-  .reelgrid_pill {
-    padding: 8px 12px;
-    font-size: 10px;
-    letter-spacing: 0.14em;
+  /* Narrower sides, so the button sits inside a card on a 360px screen. */
+  .reelgrid_cta.btn_main_wrap {
+    padding-inline: 1.25rem;
   }
 
   .reelgrid_ring {
