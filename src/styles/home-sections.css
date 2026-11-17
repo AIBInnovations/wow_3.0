@@ -1097,7 +1097,7 @@
   --x1: 6%;
   --x2: 70%;
   --y1: calc(var(--nav) + 100px);
-  --y2: calc(100% - 172px);
+  --y2: calc(100% - 196px);
   --rule: rgb(245 215 153 / 0.32);
   position: sticky;
   top: 0;
@@ -1471,8 +1471,8 @@
     --nav: 64px;
     --x1: 16px;
     --x2: calc(100% - 16px);
-    --y1: calc(var(--nav) + 104px);
-    --y2: calc(100% - 196px);
+    --y1: calc(var(--nav) + 96px);
+    --y2: calc(100% - 220px);
   }
 
   .snake_label {
@@ -1716,4 +1716,83 @@
  */
 #stickygal.sticky-gallery_wrap.u-vflex-center-center {
   margin-bottom: 0;
+}
+
+/* ═══ Clouds over the join into the destinations ═══════════════════════ */
+
+/*
+ * A zero-height band on the join (see SectionClouds), above both sections.
+ * Each cloud image is 2048 × 720 with the join 14% down it, and is drawn
+ * 108% of the screen wide at its own proportions; each layer's strip is two
+ * images wide and slides by one, so the drift never ends or jumps.
+ */
+.clouds {
+  --cloud-w: 108vw;
+  --cloud-h: calc(var(--cloud-w) * 720 / 2048);
+  position: relative;
+  z-index: 30;
+  height: 0;
+  /* The layers are wider than the screen: clipped sideways, so the page
+     never scrolls sideways, and left free above and below. */
+  overflow-x: clip;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.clouds_layer {
+  position: absolute;
+  left: calc((100vw - var(--cloud-w)) / 2);
+  top: calc(var(--cloud-h) * -0.14);
+  width: var(--cloud-w);
+  height: var(--cloud-h);
+  overflow: hidden;
+  will-change: transform;
+}
+
+.clouds_strip {
+  width: 200%;
+  height: 100%;
+  background-repeat: repeat-x;
+  background-size: 50% 100%;
+  animation: clouds-drift-left var(--drift, 120s) linear infinite;
+  will-change: transform;
+}
+
+.clouds_core .clouds_strip {
+  background-image: url('/wow/clouds-core.webp');
+  --drift: 160s;
+  animation-name: clouds-drift-right;
+}
+
+.clouds_back .clouds_strip {
+  background-image: url('/wow/clouds-back.webp');
+  --drift: 110s;
+}
+
+.clouds_front .clouds_strip {
+  background-image: url('/wow/clouds-front.webp');
+  --drift: 60s;
+}
+
+@keyframes clouds-drift-left {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes clouds-drift-right {
+  from { transform: translate3d(-50%, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clouds_strip {
+    animation: none;
+  }
+}
+
+/* A phone: the bank drawn wider than the screen, so its billows keep their size. */
+@media (max-width: 767px) {
+  .clouds {
+    --cloud-w: 210vw;
+  }
 }
