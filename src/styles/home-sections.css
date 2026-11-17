@@ -1748,17 +1748,17 @@
 
 /*
  * A zero-height band on the join (see SectionClouds), above both sections.
- * Each cloud image is 2048 × 720 with the join 14% down it, and is drawn
- * 108% of the screen wide at its own proportions; each layer's strip is two
- * images wide and slides by one, so the drift never ends or jumps.
+ * Each layer is one tile of its cloud image (--tile wide, at the image's
+ * --ratio), repeated sideways on a strip one tile wider than the screen; the
+ * strip slides by exactly one tile, so the drift never ends or jumps. Each
+ * image tiles cleanly: two copies mirrored, or one cloud alone on open sky.
+ * --top places the tile against the join; each image fades in at its top.
  */
 .clouds {
-  --cloud-w: 108vw;
-  --cloud-h: calc(var(--cloud-w) * 720 / 2048);
   position: relative;
   z-index: 30;
   height: 0;
-  /* The layers are wider than the screen: clipped sideways, so the page
+  /* The strips are wider than the screen: clipped sideways, so the page
      never scrolls sideways, and left free above and below. */
   overflow-x: clip;
   pointer-events: none;
@@ -1767,46 +1767,65 @@
 
 .clouds_layer {
   position: absolute;
-  left: calc((100vw - var(--cloud-w)) / 2);
-  top: calc(var(--cloud-h) * -0.14);
-  width: var(--cloud-w);
-  height: var(--cloud-h);
-  overflow: hidden;
+  left: 0;
+  top: var(--top);
+  width: 100vw;
+  height: calc(var(--tile) / var(--ratio));
   will-change: transform;
 }
 
 .clouds_strip {
-  width: 200%;
+  width: calc(100vw + var(--tile));
   height: 100%;
   background-repeat: repeat-x;
-  background-size: 50% 100%;
-  animation: clouds-drift-left var(--drift, 120s) linear infinite;
+  background-size: var(--tile) 100%;
+  animation: clouds-drift-left var(--drift) linear infinite;
   will-change: transform;
 }
 
-.clouds_core .clouds_strip {
-  background-image: url('/wow/clouds-core.webp');
-  --drift: 160s;
-  animation-name: clouds-drift-right;
+/* Each --top sets its tallest cloud's crown a little above the join at most,
+   below the words over it; the ratios are the images' own. */
+.clouds_back {
+  --tile: 100vw;
+  --ratio: 3.8462;
+  --top: -1vw;
+  --drift: 150s;
+}
+
+.clouds_core {
+  --tile: 130vw;
+  --ratio: 4.2857;
+  --top: -1.4vw;
+  --drift: 110s;
+}
+
+.clouds_front {
+  --tile: 120vw;
+  --ratio: 5.7143;
+  --top: 10vw;
+  --drift: 70s;
 }
 
 .clouds_back .clouds_strip {
   background-image: url('/wow/clouds-back.webp');
-  --drift: 110s;
+}
+
+.clouds_core .clouds_strip {
+  background-image: url('/wow/clouds-core.webp');
+  animation-name: clouds-drift-right;
 }
 
 .clouds_front .clouds_strip {
   background-image: url('/wow/clouds-front.webp');
-  --drift: 60s;
 }
 
 @keyframes clouds-drift-left {
   from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
+  to { transform: translate3d(calc(var(--tile) * -1), 0, 0); }
 }
 
 @keyframes clouds-drift-right {
-  from { transform: translate3d(-50%, 0, 0); }
+  from { transform: translate3d(calc(var(--tile) * -1), 0, 0); }
   to { transform: translate3d(0, 0, 0); }
 }
 
@@ -1816,9 +1835,20 @@
   }
 }
 
-/* A phone: the bank drawn wider than the screen, so its billows keep their size. */
+/* A phone: the clouds keep their size against a narrow screen. */
 @media (max-width: 767px) {
-  .clouds {
-    --cloud-w: 210vw;
+  .clouds_back {
+    --tile: 260vw;
+    --top: -2vw;
+  }
+
+  .clouds_core {
+    --tile: 320vw;
+    --top: -5vw;
+  }
+
+  .clouds_front {
+    --tile: 300vw;
+    --top: 30vw;
   }
 }

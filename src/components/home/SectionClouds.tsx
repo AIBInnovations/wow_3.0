@@ -9,24 +9,23 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 const LINGER = 0.45
 
 /**
- * Evening clouds over the join between Our Approach and the destinations.
+ * Clouds over the join between Our Approach and the destinations.
  *
  * The join is hidden by colour, not covered: Our Approach's foot deepens to
  * one dark tone and the first destination rises out of the same tone, so the
- * two meet without an edge. Over it float scattered cumulus in evening light,
- * warm on top and smoky beneath, with sky between them; they take no height
- * in the page and none rises more than a few pixels above the join, into the
- * room beneath that section's words.
+ * two meet without an edge. Over it float real cumulus, cut whole from
+ * photographs (free under the Unsplash License) and laid out in three layers
+ * that take no height in the page; no crown rises more than a few pixels
+ * above the join, into the room beneath that section's words.
  *
- * Three layers, each drifting sideways on its own (the middle one slowly left
- * to right, a fainter row behind and lower, nearer ones right to left, the
- * nearer the faster), and rising at their own speeds as the join passes up
- * the screen. Once the join has gone past the top, the clouds stop keeping
- * pace: they rise at under half speed and thin away over the first
- * destination.
+ * Each layer drifts sideways on its own (the middle one slowly left to right,
+ * a fainter, hazed row behind and a nearer row in front right to left, the
+ * nearer the faster), and the back and front rise at their own speeds as the
+ * join passes up the screen. Once the join has gone past the top, the clouds
+ * stop keeping pace: they rise at under half speed and thin away over the
+ * first destination.
  *
- * The clouds are original images rendered for the site from lit soft puffs
- * (public/wow/clouds-core|back|front.webp); each tiles left to right.
+ * Images: public/wow/clouds-core|back|front.webp, each a tile that wraps.
  */
 export default function SectionClouds() {
   const ref = useRef<HTMLDivElement>(null)
