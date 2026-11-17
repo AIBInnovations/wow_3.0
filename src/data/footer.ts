@@ -1,3 +1,6 @@
+/** The studio's Instagram. The handle is still to come from the client; set it here and every link follows. */
+export const instagramUrl = 'https://www.instagram.com/'
+
 export type FooterLink = { href: string; label: string; className?: string }
 export type FooterColumn = { heading: string; modifier: string; links: FooterLink[] }
 
@@ -30,7 +33,7 @@ export const footerColumns: FooterColumn[] = [
     modifier: 'right',
     links: [
       { href: 'mailto:enquiries@woweventsandweddings.com', label: 'Enquiries' },
-      { href: 'https://www.instagram.com/', label: 'Instagram' },
+      { href: instagramUrl, label: 'Instagram' },
       { href: '/privacy', label: 'Privacy Policy' },
       { href: '/terms', label: 'Legal Notice' },
     ],

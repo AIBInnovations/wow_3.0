@@ -1458,349 +1458,342 @@
   margin-bottom: 0;
 }
 
-/* ═══ The reels: a wall in motion ═══════════════════════════════════════ */
+/* ═══ The reels: connect on the grid ═══════════════════════════════════ */
 
 /*
- * The heading on the left, five columns of twelve; the wall on the right,
- * seven, three columns of 9:16 frames each running on its own (see
- * HomeReels). The wall is a screen tall and fades out at its head and foot.
- * On the 8px grid: 16px frame corners, 16px between frames.
+ * See HomeReels. A line at the head; a field of six cards at their own
+ * heights, with the Instagram ring over the first; the heading huge along the
+ * foot, the cards over its top. Cards: 16px corners, a hairline edge.
  */
-.reelwall {
+.reelgrid {
   position: relative;
-  isolation: isolate;
   overflow: hidden;
-  background-color: var(--swatch--dark);
-}
-
-.reelwall_backdrop {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-}
-
-.reelwall_backdrop img {
-  position: absolute;
-  inset: -10%;
-  width: 120%;
-  height: 120%;
-  object-fit: cover;
-  filter: blur(48px) saturate(1.25) brightness(0.62);
-  opacity: 0;
-  transition: opacity 1.4s ease;
-}
-
-.reelwall_backdrop img.is-on {
-  opacity: 1;
-}
-
-/* Deeper at the heading's side and at the head and foot, so the words read. */
-.reelwall_backdrop::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  /* Its head and foot dissolve into the sections either side, which share
-     the house wine, so there is no edge; the heading's side is deeper. */
+  padding: 120px var(--padding-horizontal--main, 24px) 0;
   background:
-    linear-gradient(rgb(43 13 15), rgb(43 13 15 / 0) 24%, rgb(43 13 15 / 0) 72%, rgb(43 13 15)),
-    linear-gradient(to right, rgb(32 10 12 / 0.82), rgb(32 10 12 / 0.35) 50%, rgb(32 10 12 / 0.2));
+    radial-gradient(70% 55% at 50% 45%, rgb(122 37 52 / 0.35), transparent 70%),
+    #120708;
+  color: var(--wow-cream, #fbf4e9);
+  text-align: center;
 }
 
-.reelwall_grid {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--grid-gap--main, 24px);
-  align-items: center;
-  min-height: max(100svh, 720px);
-  /* The container's own vertical padding is not wanted: the wall is the
-     section's full height and the heading centres against it. */
-  padding-block: 0;
-}
-
-/* ─── The heading ─────────────────────────────────────────────────────── */
-
-.reelwall_head {
-  grid-column: 1 / span 5;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  row-gap: 24px;
-  padding-block: 96px;
-}
-
-.reelwall_kicker.kicker {
+.reelgrid_eyebrow {
   margin: 0;
-  color: var(--swatch--brand, #f5d799);
-}
-
-.reelwall_title {
-  margin: 0;
-  padding-top: var(--initial-reach);
-  font-family: var(--font--primary-family);
-  font-size: clamp(3rem, 7vw, 7rem);
-  font-weight: 400;
-  line-height: 0.95;
-  letter-spacing: var(--tracking-heading);
-  text-transform: uppercase;
-}
-
-.reelwall_meta {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-top: 16px;
-}
-
-.reelwall_count {
-  font-family: var(--font--primary-family);
-  font-size: var(--step-3);
+  font-family: var(--font--inherit);
+  font-size: 12px;
   line-height: 1;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
   color: var(--swatch--brand, #f5d799);
 }
 
-.reelwall_rule {
-  width: 48px;
-  height: 1px;
-  background: rgb(251 244 233 / 0.4);
-}
-
-.reelwall_note {
+.reelgrid_lead {
+  max-width: 46ch;
+  margin: 20px auto 0;
   font-family: var(--font--body);
-  font-size: var(--step-0);
+  font-size: var(--step-1);
   font-style: italic;
-  opacity: 0.8;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-wrap: pretty;
 }
 
-/* ─── The wall ────────────────────────────────────────────────────────── */
+/* ─── The field of cards ──────────────────────────────────────────────── */
 
-.reelwall_wall {
-  grid-column: 6 / -1;
-  align-self: stretch;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  height: max(100svh, 720px);
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(transparent, #000 20%, #000 76%, transparent);
-  mask-image: linear-gradient(transparent, #000 20%, #000 76%, transparent);
+.reelgrid_field {
+  position: relative;
+  z-index: 2;
+  height: clamp(420px, 36vw, 560px);
+  margin-top: 48px;
 }
 
-/* The middle column starts half a frame lower, so the rows never line up. */
-.reelwall_col[data-col='1'] {
-  margin-top: -40%;
-}
-
-.reelwall_col {
-  min-width: 0;
+.reelgrid_card {
+  position: absolute;
+  top: var(--top);
+  /* Six across, each a sixth of the field less the gaps. */
+  left: calc(var(--i) * (100% - 5 * 24px) / 6 + var(--i) * 24px);
+  width: calc((100% - 5 * 24px) / 6);
   will-change: transform;
 }
 
-.reelwall_run {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  animation: reelwall-up var(--seconds) linear infinite;
-  will-change: transform;
-}
-
-.reelwall_run[data-dir='down'] {
-  animation-name: reelwall-down;
-}
-
-/* One set of six is half the run, gap included: moving by it never jumps. */
-@keyframes reelwall-up {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(0, calc(-50% - 8px), 0); }
-}
-
-@keyframes reelwall-down {
-  from { transform: translate3d(0, calc(-50% - 8px), 0); }
-  to { transform: translate3d(0, 0, 0); }
-}
-
-.reelwall_wall.is-held .reelwall_run {
-  animation-play-state: paused;
-}
-
-.reelwall_frame {
+.reelgrid_card_btn {
   position: relative;
   display: block;
-  flex: none;
-  aspect-ratio: 9 / 16;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  padding: 0;
   overflow: hidden;
+  border: 1px solid rgb(251 244 233 / 0.55);
   border-radius: 16px;
   background: rgb(0 0 0 / 0.3);
-  box-shadow: 0 16px 40px rgb(0 0 0 / 0.35);
-  outline: 1px solid rgb(251 244 233 / 0.08);
-  outline-offset: -1px;
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), filter 0.5s ease, box-shadow 0.5s ease;
+  box-shadow: 0 20px 48px rgb(0 0 0 / 0.45);
+  cursor: pointer;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease;
 }
 
-.reelwall_frame img {
+.reelgrid_card_btn img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
   -webkit-user-drag: none;
 }
 
-/* The reel pointed at comes forward; the others step back. */
-.reelwall_wall.is-held .reelwall_frame {
-  filter: brightness(0.45) saturate(0.7);
+.reelgrid_card_btn:hover,
+.reelgrid_card_btn:focus-visible {
+  transform: scale(1.03);
+  border-color: var(--swatch--brand, #f5d799);
 }
 
-.reelwall_wall.is-held .reelwall_frame:hover,
-.reelwall_frame:focus-visible {
-  filter: none;
-  transform: scale(1.04);
-  box-shadow: 0 24px 56px rgb(0 0 0 / 0.5);
-  z-index: 1;
-}
-
-.reelwall_frame:hover img {
+.reelgrid_card_btn:hover img {
   transform: scale(1.06);
 }
 
-.reelwall_frame:focus-visible {
-  outline: 2px solid var(--swatch--brand, #f5d799);
-  outline-offset: 2px;
-}
-
-.reelwall_tag {
+.reelgrid_pill {
   position: absolute;
-  left: 12px;
-  right: 12px;
+  left: 50%;
   bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
+  translate: -50% 0;
+  padding: 9px 18px;
   border-radius: 999px;
-  background: rgb(20 8 9 / 0.55);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  color: var(--wow-cream, #fbf4e9);
+  background: var(--wow-cream, #fbf4e9);
+  color: #2b0d0f;
   font-family: var(--font--inherit);
   font-size: 11px;
   line-height: 1;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   white-space: nowrap;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  box-shadow: 0 6px 16px rgb(0 0 0 / 0.25);
+  transition: background-color 0.3s ease;
 }
 
-.reelwall_tag svg {
-  flex: none;
-  width: 14px;
-  height: 14px;
-  fill: var(--swatch--brand, #f5d799);
+.reelgrid_pill.is-top {
+  top: 12px;
+  bottom: auto;
 }
 
-.reelwall_frame:hover .reelwall_tag,
-.reelwall_frame:focus-visible .reelwall_tag {
-  opacity: 1;
-  transform: none;
+.reelgrid_card_btn:hover .reelgrid_pill,
+.reelgrid_card_btn:focus-visible .reelgrid_pill {
+  background: var(--swatch--brand, #f5d799);
 }
 
-/* No pointer to hover with: the play mark always shows, small. */
-@media (hover: none) {
-  .reelwall_tag {
+/* The ring to the profile, over the first card's head. */
+.reelgrid_ring {
+  position: absolute;
+  z-index: 3;
+  top: calc(34% - 96px);
+  left: calc((100% - 5 * 24px) / 12 - 72px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 144px;
+  height: 144px;
+  border: 1px solid rgb(251 244 233 / 0.7);
+  border-radius: 50%;
+  color: var(--wow-cream, #fbf4e9);
+  font-family: var(--font--inherit);
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 0.4s ease, color 0.4s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reelgrid_ring:hover,
+.reelgrid_ring:focus-visible {
+  background: var(--swatch--brand, #f5d799);
+  color: #2b0d0f;
+  transform: scale(1.06);
+}
+
+/* ─── The heading along the foot ──────────────────────────────────────── */
+
+.reelgrid_word {
+  position: relative;
+  z-index: 1;
+  margin: clamp(-150px, -9vw, -60px) 0 0;
+  padding-top: var(--initial-reach);
+  font-family: var(--font--primary-family);
+  /* Sized to the width, so the whole word always fits with its margins. */
+  font-size: 14.6vw;
+  font-weight: 400;
+  line-height: 0.92;
+  padding-bottom: 0.12em;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--wow-cream, #fbf4e9);
+}
+
+/* ─── Tablets and phones: three across in two rows ────────────────────── */
+
+@media (max-width: 1023px) {
+  .reelgrid_field {
+    height: auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px 16px;
+    padding-bottom: 40px;
+  }
+
+  .reelgrid_card {
+    position: relative;
+    top: auto;
     left: auto;
-    right: 8px;
-    bottom: 8px;
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    justify-content: center;
-    font-size: 0;
-    letter-spacing: 0;
-    opacity: 1;
-    transform: none;
+    width: auto;
+  }
+
+  /* Staggered: the middle column sits lower. */
+  .reelgrid_card:nth-child(3n + 3) {
+    margin-top: 48px;
+  }
+
+  .reelgrid_ring {
+    top: -40px;
+    left: -8px;
+    width: 104px;
+    height: 104px;
+    font-size: 10px;
+  }
+
+  .reelgrid_word {
+    margin-top: -48px;
+  }
+}
+
+@media (max-width: 767px) {
+  .reelgrid {
+    padding-top: 96px;
+  }
+
+  .reelgrid_lead {
+    font-size: var(--step-0);
+  }
+
+  .reelgrid_field {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 12px;
+    margin-top: 56px;
+  }
+
+  .reelgrid_card:nth-child(3n + 3) {
+    margin-top: 0;
+  }
+
+  /* Two across: the right column sits lower. */
+  .reelgrid_card:nth-child(odd) {
+    margin-top: 40px;
+  }
+
+  .reelgrid_card:nth-child(2) {
+    margin-top: 0;
+  }
+
+  .reelgrid_card_btn {
+    border-radius: 12px;
+  }
+
+  .reelgrid_pill {
+    padding: 8px 12px;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+
+  .reelgrid_ring {
+    top: -44px;
+    left: auto;
+    right: -4px;
+    width: 92px;
+    height: 92px;
+    font-size: 9px;
+  }
+
+  .reelgrid_word {
+    margin-top: -24px;
+    font-size: 14.2vw;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reelwall_run {
-    animation: none;
-  }
-
-  .reelwall_backdrop img,
-  .reelwall_frame,
-  .reelwall_frame img {
-    transition: none;
+  .reelgrid_card,
+  .reelgrid_word {
+    transform: none !important;
   }
 }
 
-/* ─── Tablets ─────────────────────────────────────────────────────────── */
+/* ─── The reel, over the page ─────────────────────────────────────────── */
 
-@media (max-width: 1023px) {
-  .reelwall_head {
-    grid-column: 1 / span 5;
-  }
-
-  .reelwall_wall {
-    grid-column: 6 / -1;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .reelwall_col[data-col='2'] {
-    display: none;
-  }
+.reelplayer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  row-gap: 16px;
+  padding: 16px;
 }
 
-/* ─── Phones: the heading over two columns ────────────────────────────── */
+.reelplayer_scrim {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  background: rgb(13 6 7 / 0.88);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+}
 
-@media (max-width: 767px) {
-  .reelwall_grid {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    min-height: 0;
-    padding-block: 0;
-  }
+/* Instagram's player: the reel with its header and footer. */
+.reelplayer_frame {
+  position: relative;
+  width: min(400px, 92vw, calc((100svh - 120px) * 0.56));
+  height: min(760px, calc(100svh - 120px));
+  overflow: hidden;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 32px 80px rgb(0 0 0 / 0.6);
+}
 
-  .reelwall_head {
-    padding: 80px 0 24px;
-    row-gap: 16px;
-  }
+.reelplayer_frame iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
 
-  .reelwall_title {
-    font-size: clamp(2.75rem, 14vw, 4rem);
-  }
+.reelplayer_bar {
+  position: relative;
+  display: flex;
+  gap: 16px;
+}
 
-  .reelwall_meta {
-    margin-top: 8px;
-  }
+.reelplayer_link,
+.reelplayer_close {
+  padding: 12px 20px;
+  border: 1px solid rgb(251 244 233 / 0.5);
+  border-radius: 999px;
+  background: none;
+  color: var(--wow-cream, #fbf4e9);
+  font-family: var(--font--inherit);
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
 
-  .reelwall_backdrop::after {
-    background: linear-gradient(rgb(43 13 15), rgb(43 13 15 / 0.35) 30%, rgb(43 13 15 / 0.3) 75%, rgb(43 13 15));
-  }
-
-  .reelwall_wall {
-    height: min(150vw, 680px);
-    gap: 12px;
-    margin-bottom: 64px;
-  }
-
-  .reelwall_run {
-    gap: 12px;
-  }
-
-  @keyframes reelwall-up {
-    from { transform: translate3d(0, 0, 0); }
-    to { transform: translate3d(0, calc(-50% - 6px), 0); }
-  }
-
-  @keyframes reelwall-down {
-    from { transform: translate3d(0, calc(-50% - 6px), 0); }
-    to { transform: translate3d(0, 0, 0); }
-  }
-
-  .reelwall_frame {
-    border-radius: 12px;
-  }
+.reelplayer_link:hover,
+.reelplayer_close:hover,
+.reelplayer_close:focus-visible {
+  background: var(--swatch--brand, #f5d799);
+  border-color: var(--swatch--brand, #f5d799);
+  color: #2b0d0f;
 }

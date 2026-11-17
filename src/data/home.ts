@@ -274,6 +274,12 @@ const reelCodes = ['DXRlgyNglRb', 'DXLemBjAoqx', 'DXJ23uuAsPo', 'DW-kql2gllj', '
 export const homeReels = {
   kicker: 'In Motion',
   heading: 'The Reels',
-  note: 'Tap a reel to watch it on Instagram',
+  /** Opens with the Website Content PDF's own line (What Distinguishes). */
+  lead:
+    'Every celebration is singular. These are moments from a few of them: the arrivals, the light, '
+    + 'the details and the dancing, filmed as they unfolded.',
+  note: 'Choose a reel to watch it here',
+  /** Above the cards, as the reference sets its line. */
+  eyebrow: 'Moments from the celebrations',
   items: reelCodes.map((code) => ({ id: code, instagram: code, cover: `/reels/${code}.webp` })) as Reel[],
 }

@@ -1,167 +1,154 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { gsap, registerGsap } from '@/lib/gsap'
 import { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import { useLineAnimation } from '@/hooks/useSplitText'
+import { useSmoothScroll } from '@/providers/SmoothScrollProvider'
 import Initial from '@/components/Initial'
 import { homeReels, type Reel } from '@/data/home'
-
-/** How long the backdrop holds each reel's colours before moving to the next, in ms. */
-const CYCLE = 5000
+import { instagramUrl } from '@/data/footer'
 
 /**
- * Each column's reels, in its own order, and which way and how fast it runs.
- * Every column holds all six, so none is ever missing from view for long.
+ * Where each card stands, as a share of the section, and how far it travels
+ * against the page as the section passes (in % of its own height; more is
+ * faster, negative rises). Every reel appears once.
  */
-const COLUMNS: { order: number[]; dir: 'up' | 'down'; seconds: number }[] = [
-  { order: [0, 1, 2, 3, 4, 5], dir: 'up', seconds: 46 },
-  { order: [3, 5, 1, 4, 0, 2], dir: 'down', seconds: 58 },
-  { order: [4, 2, 5, 0, 3, 1], dir: 'up', seconds: 52 },
+const PLACES = [
+  { top: 34, speed: 18 },
+  { top: 12, speed: -14 },
+  { top: 28, speed: 26 },
+  { top: 6, speed: -22 },
+  { top: 30, speed: 10 },
+  { top: 14, speed: -18 },
 ]
 
 /**
- * The reels, as a wall in constant motion.
+ * The reels, as a grid to connect on.
  *
- * The heading stands on the left; on the right, three columns of the reels'
- * cover frames run endlessly, the middle one against the others, and drift a
- * little further apart as the page scrolls past. Pointing at the wall stops
- * it; the reel under the pointer comes forward, the rest dim, and the backdrop
- * takes on its colours (otherwise it moves through them all, slowly). Every
- * frame opens its reel on Instagram.
+ * A small line at the head; the six reels as rounded cards at their own
+ * heights, each with a pill to watch it, each drifting at its own speed as the
+ * page scrolls; a ring to the Instagram profile over the first; and the
+ * heading set huge along the foot, the cards over its top. A card opens the
+ * reel itself over the page, in Instagram's player.
  *
- * Each column's run is its reels twice over, moved by exactly one set, so it
- * never jumps; the second set is hidden from assistive technology and from
- * the keyboard. A phone shows two columns under the heading. Under reduced
- * motion the wall stands still.
+ * Under reduced motion the cards stand still.
  */
 export default function HomeReels() {
   const sectionRef = useRef<HTMLElement>(null)
-  const headingRef = useRef<HTMLHeadingElement>(null)
   const { items } = homeReels
-  const [shown, setShown] = useState(0)
-  const [hovered, setHovered] = useState<number | null>(null)
+  const [playing, setPlaying] = useState<Reel | null>(null)
   const reduced = useReducedMotion()
-  useLineAnimation(headingRef)
 
-  // The backdrop moves through the reels' colours while nothing is pointed at.
-  useEffect(() => {
-    if (hovered !== null || reduced) return
-    const t = window.setInterval(() => setShown((s) => (s + 1) % items.length), CYCLE)
-    return () => window.clearInterval(t)
-  }, [hovered, reduced, items.length])
-
-  // The columns part a little as the section passes: outer ones up, middle down.
   useIsomorphicLayoutEffect(() => {
     const section = sectionRef.current
     if (!section || reduced) return
     registerGsap()
     const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>('.reelwall_col').forEach((col, i) => {
-        const shift = i === 1 ? 10 : -10
-        gsap.fromTo(
-          col,
-          { yPercent: -shift / 2 },
-          {
-            yPercent: shift / 2,
-            ease: 'none',
-            scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: true },
-          },
-        )
+      const scrollTrigger = { trigger: section, start: 'top bottom', end: 'bottom top', scrub: true }
+      gsap.utils.toArray<HTMLElement>('.reelgrid_card').forEach((card, i) => {
+        const v = PLACES[i % PLACES.length].speed
+        gsap.fromTo(card, { yPercent: v }, { yPercent: -v, ease: 'none', scrollTrigger })
       })
     }, section)
     return () => ctx.revert()
   }, [reduced])
 
-  const lit = hovered ?? shown
-
   return (
-    <section ref={sectionRef} data-theme="inherit" className="reelwall">
-      <div className="reelwall_backdrop" aria-hidden="true">
+    <section ref={sectionRef} data-theme="inherit" className="reelgrid" aria-labelledby="reelgrid-title">
+      <p className="reelgrid_eyebrow">{homeReels.eyebrow}</p>
+      <p className="reelgrid_lead">{homeReels.lead}</p>
+
+      <div className="reelgrid_field">
+        <a className="reelgrid_ring" href={instagramUrl} target="_blank" rel="noopener noreferrer">
+          <span>Go to</span>
+          <span>Instagram</span>
+        </a>
+
         {items.map((item, i) => (
-          <img key={item.id} src={item.cover} alt="" className={i === lit ? 'is-on' : undefined} />
+          <div
+            key={item.id}
+            className="reelgrid_card"
+            style={{ '--i': i, '--top': `${PLACES[i % PLACES.length].top}%` } as React.CSSProperties}
+          >
+            <button
+              type="button"
+              className="reelgrid_card_btn"
+              onClick={() => setPlaying(item)}
+              aria-label={`Watch reel ${i + 1}`}
+            >
+              <img src={item.cover} alt="" loading="lazy" decoding="async" draggable={false} />
+              <span className={`reelgrid_pill${i % 2 ? ' is-top' : ''}`}>View reel</span>
+            </button>
+          </div>
         ))}
       </div>
 
-      <div className="u-container reelwall_grid">
-        <div className="reelwall_head">
-          <p className="kicker reelwall_kicker">{homeReels.kicker}</p>
-          <h2 ref={headingRef} className="reelwall_title" js-line-animation="">
-            <Initial>{homeReels.heading}</Initial>
-          </h2>
-          <div className="reelwall_meta">
-            <span className="reelwall_count">{String(items.length).padStart(2, '0')}</span>
-            <span className="reelwall_rule" aria-hidden="true" />
-            <span className="reelwall_note">{homeReels.note}</span>
-          </div>
-        </div>
+      <h2 id="reelgrid-title" className="reelgrid_word">
+        <Initial>{homeReels.heading}</Initial>
+      </h2>
 
-        <div
-          className={`reelwall_wall${hovered !== null ? ' is-held' : ''}`}
-          onPointerLeave={() => setHovered(null)}
-        >
-          {COLUMNS.map((col, c) => (
-            <div key={c} className="reelwall_col" data-col={c}>
-              <div
-                className="reelwall_run"
-                data-dir={col.dir}
-                style={{ '--seconds': `${col.seconds}s` } as React.CSSProperties}
-              >
-                {[0, 1].map((copy) =>
-                  col.order.map((index) => (
-                    <ReelFrame
-                      key={`${copy}-${index}`}
-                      item={items[index]}
-                      number={index + 1}
-                      echo={copy === 1}
-                      // Only the first column's first set is reachable from the
-                      // keyboard and read out: one link per reel.
-                      primary={c === 0 && copy === 0}
-                      onEnter={() => setHovered(index)}
-                    />
-                  )),
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      {playing ? <ReelPlayer reel={playing} onClose={() => setPlaying(null)} /> : null}
     </section>
   )
 }
 
-function ReelFrame({
-  item,
-  number,
-  echo,
-  primary,
-  onEnter,
-}: {
-  item: Reel
-  number: number
-  echo: boolean
-  primary: boolean
-  onEnter: () => void
-}) {
-  return (
-    <a
-      className="reelwall_frame"
-      href={`https://www.instagram.com/reel/${item.instagram}/`}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={primary ? `Watch reel ${number} on Instagram` : undefined}
-      aria-hidden={primary ? undefined : true}
-      tabIndex={primary ? undefined : -1}
-      onPointerEnter={onEnter}
-      onFocus={onEnter}
-      draggable={false}
-    >
-      <img src={item.cover} alt="" loading={echo ? 'lazy' : 'eager'} decoding="async" draggable={false} />
-      <span className="reelwall_tag" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><path d="M9 7v10l8-5z" /></svg>
-        Watch on Instagram
-      </span>
-    </a>
+/**
+ * The reel itself, over the page, in Instagram's own player. A cross-origin
+ * player takes every wheel event inside it, so smooth scrolling stops while it
+ * is open and starts again on the way out.
+ */
+function ReelPlayer({ reel, onClose }: { reel: Reel; onClose: () => void }) {
+  const { start, stop } = useSmoothScroll()
+  const closeRef = useRef<HTMLButtonElement>(null)
+  const onCloseRef = useRef(onClose)
+  onCloseRef.current = onClose
+  const close = useCallback(() => onCloseRef.current(), [])
+
+  useEffect(() => {
+    stop()
+    document.documentElement.style.overflow = 'hidden'
+    closeRef.current?.focus()
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.documentElement.style.overflow = ''
+      start()
+    }
+  }, [start, stop, close])
+
+  if (typeof document === 'undefined') return null
+
+  return createPortal(
+    <div className="reelplayer" role="dialog" aria-modal="true" aria-label="Reel">
+      <button type="button" className="reelplayer_scrim" aria-label="Close" onClick={close} />
+      <div className="reelplayer_frame">
+        <iframe
+          src={`https://www.instagram.com/reel/${reel.instagram}/embed/`}
+          title="Reel on Instagram"
+          allow="autoplay; encrypted-media; picture-in-picture; clipboard-write"
+          allowFullScreen
+          loading="eager"
+        />
+      </div>
+      <div className="reelplayer_bar">
+        <a
+          className="reelplayer_link"
+          href={`https://www.instagram.com/reel/${reel.instagram}/`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open on Instagram
+        </a>
+        <button ref={closeRef} type="button" className="reelplayer_close" onClick={close}>
+          Close
+        </button>
+      </div>
+    </div>,
+    document.body,
   )
 }
