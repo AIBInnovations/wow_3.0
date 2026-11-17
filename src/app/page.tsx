@@ -4,7 +4,6 @@ import GalleryScroll from '@/components/GalleryScroll'
 import HomeStatement from '@/components/home/HomeStatement'
 import HomeAtelier from '@/components/home/HomeAtelier'
 import HomeReels from '@/components/home/HomeReels'
-import SectionClouds from '@/components/home/SectionClouds'
 import StickyStories from '@/components/StickyStories'
 import CelebrationSection from '@/components/CelebrationSection'
 import HomeFilms from '@/components/home/HomeFilms'
@@ -20,7 +19,6 @@ export default function Home() {
         <GalleryScroll />
         <HomeStatement />
         <HomeAtelier />
-        <SectionClouds />
         <StickyStories />
         <HomeReels />
         <CelebrationSection />

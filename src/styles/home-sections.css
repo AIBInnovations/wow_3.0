@@ -623,311 +623,19 @@
   }
 }
 
-/* ═══ The reels ══════════════════════════════════════════════════════════ */
-
-/*
- * A ring of upright frames. Every card sits at the centre of the track and is
- * moved out by its --offset from the active one, so wrapping from the last to
- * the first is just a change of number. Cards more than two places out fade
- * away before they cross behind the others.
- */
-.home-reels_wrap {
-  position: relative;
-  overflow: hidden;
-  background-color: var(--swatch--dark);
-  padding-bottom: var(--padding-vertical--main, 6rem);
-}
-
-.home-reels_head {
-  text-align: center;
-}
-
-/* Room between the kicker and the taller opening capital of the title. */
-.home-reels_head .kicker {
-  margin-bottom: 0.75rem;
-}
-
-.home-reels_title {
-  margin: 0 auto;
-  font-family: var(--font--primary-family);
-  font-size: var(--step-6);
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-heading);
-  line-height: var(--leading-heading);
-}
-
-.reels_track {
-  --card-w: clamp(13rem, 24vw, 22rem);
-  --gap: calc(var(--card-w) * 0.78);
-  position: relative;
-  height: calc(var(--card-w) * 16 / 9);
-  margin-top: var(--rhythm-md, 2rem);
-  touch-action: pan-y;
-  cursor: grab;
-  user-select: none;
-  -webkit-user-select: none;
-  outline: none;
-}
-
-.reels_track.is-dragging {
-  cursor: grabbing;
-}
-
-.reels_card {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: var(--card-w);
-  aspect-ratio: 9 / 16;
-  overflow: hidden;
-  border-radius: 6px;
-  background-color: #000;
-  box-shadow: 0 24px 60px rgb(0 0 0 / 45%);
-  transform:
-    translateX(calc(-50% + var(--offset) * var(--gap) + var(--drag, 0px)))
-    scale(calc(1 - var(--abs) * 0.14));
-  opacity: calc(1 - var(--abs) * 0.3);
-  z-index: calc(10 - var(--abs));
-  transition:
-    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.8s ease;
-  filter: brightness(0.55);
-  cursor: pointer;
-}
-
-.reels_card.is-active {
-  filter: none;
-  cursor: inherit;
-}
-
-.reels_card[data-far] {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.reels_track.is-dragging .reels_card {
-  transition: none;
-}
-
-/* The reel's cover fills its card. */
-.reels_cover {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  pointer-events: none;
-  user-select: none;
-  -webkit-user-drag: none;
-  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.reels_card.is-active:hover .reels_cover {
-  transform: scale(1.04);
-}
-
-/* A small play mark in the corner of the centred reel, not a button over it. */
-.reels_play {
-  position: absolute;
-  right: 0.75rem;
-  bottom: 0.75rem;
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border: 1px solid rgb(251 244 233 / 55%);
-  border-radius: 50%;
-  background-color: rgb(0 0 0 / 25%);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
-
-.reels_play svg {
-  width: 1.1rem;
-  fill: var(--wow-cream);
-}
-
-.reels_card.is-active .reels_play {
-  opacity: 1;
-}
-
-/* A soft shade at the foot of each card, under the play mark. */
-.reels_card::after {
-  content: '';
-  position: absolute;
-  inset: auto 0 0;
-  height: 35%;
-  background: linear-gradient(transparent, rgb(0 0 0 / 45%));
-  pointer-events: none;
-}
-
-/* The current reel's cover, blurred and dimmed behind the whole band. */
-.home-reels_wrap {
-  isolation: isolate;
-}
-
-.reels_backdrop {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  background-color: var(--swatch--dark);
-}
-
-.reels_backdrop::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 75% 60% at 50% 55%, rgb(43 13 15 / 0%), rgb(43 13 15 / 55%) 85%),
-    linear-gradient(rgb(43 13 15 / 60%), rgb(43 13 15 / 10%) 35%, rgb(43 13 15 / 15%) 65%, rgb(43 13 15 / 80%));
-}
-
-.reels_backdrop_img {
-  position: absolute;
-  inset: -10%;
-  width: 120%;
-  height: 120%;
-  object-fit: cover;
-  filter: blur(32px) saturate(1.3) brightness(0.85);
-  opacity: 0;
-  transition: opacity 1.2s ease;
-}
-
-.reels_backdrop_img.is-active {
-  opacity: 1;
-}
-
-/* Beneath the carousel: arrows either side of a counter and its rule. */
-.reels_bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  column-gap: 1.25rem;
-  margin-top: var(--rhythm-md, 2rem);
-}
-
-.reels_arrow {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: 1px solid rgb(251 244 233 / 35%);
-  border-radius: 50%;
-  background: transparent;
-  color: var(--wow-cream);
-  cursor: pointer;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-.reels_arrow:hover,
-.reels_arrow:focus-visible {
-  border-color: var(--wow-gold);
-  background-color: rgb(201 162 77 / 15%);
-}
-
-.reels_arrow svg {
-  width: 18px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.5;
-}
-
-.reels_count {
-  display: flex;
-  align-items: center;
-  column-gap: 0.75rem;
-  font-family: var(--font--primary-family);
-  font-size: 0.9rem;
-  letter-spacing: 0.15em;
-  color: var(--wow-cream);
-}
-
-.reels_count_all {
-  opacity: 0.5;
-}
-
-.reels_count_line {
-  position: relative;
-  display: block;
-  width: 4.5rem;
-  height: 1px;
-  background-color: rgb(251 244 233 / 25%);
-}
-
-.reels_count_line span {
-  position: absolute;
-  inset: 0;
-  background-color: var(--wow-gold);
-  transform-origin: left center;
-  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.reels_note {
-  margin: 1rem 0 0;
-  font-family: var(--font--body);
-  font-size: 0.95rem;
-  font-style: italic;
-  text-align: center;
-  color: rgb(251 244 233 / 60%);
-}
-
-/* Laid over the centred reel: a click opens it on Instagram. */
-.reels_link {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  cursor: pointer;
-  -webkit-user-drag: none;
-}
-
-/* Room for the centred reel and both neighbours whole, at a larger size. */
-@media screen and (max-width: 767px) {
-  .reels_track {
-    --card-w: clamp(13rem, 36vw, 22rem);
-  }
-}
-
-/*
- * A phone has room for one reel. Instagram draws its play button and label in
- * the middle of every embed, so neighbours that sat half on the screen showed
- * theirs cut through by its edge. They are set far enough out that only a
- * clean sliver of each shows: the 72px is the half-width of that label, at
- * the neighbours' scale, with some to spare.
- */
-@media screen and (max-width: 479px) {
-  .reels_track {
-    --card-w: 70vw;
-    --gap: calc(50vw + 72px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .reels_card {
-    transition: none;
-  }
-}
-
 /* ═══ The atelier statement ══════════════════════════════════════════════ */
 
 /*
- * Type alone on the dark ground, over a lotus mandala. All four lines share
- * one face and one size. Phone first: the size is taken from the screen's
- * width so the longest line, IS INTENTIONAL., fits with room to spare; from
- * 768px it settles to a fixed scale. HomeStatement.tsx runs the fills, and the
- * mandala's drawing-in and turning.
+ * Type on the dark ground over a lotus mandala: the kicker between its rules,
+ * the statement as one line running right to left without end (see
+ * HomeStatement), the round button under it. A band, not a screen: its height
+ * is its content's. The marquee runs edge to edge, past the container.
  */
 .statement_wrap {
   position: relative;
   overflow: hidden;
   background-color: #0d0607;
-  padding-block: clamp(5rem, 18vw, 9rem);
+  padding-block: clamp(4.5rem, 9vw, 7rem);
   text-align: center;
 }
 
@@ -937,11 +645,11 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(150vw, 66rem);
+  width: min(34rem, 88vw);
   aspect-ratio: 1;
   translate: -50% -50%;
   color: var(--wow-gold);
-  opacity: 0.3;
+  opacity: 0.22;
   pointer-events: none;
 }
 
@@ -969,7 +677,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  row-gap: clamp(2rem, 7vw, 3.5rem);
+  row-gap: clamp(2rem, 4vw, 3rem);
 }
 
 .statement_kicker {
@@ -992,80 +700,99 @@
   transform-origin: left center;
 }
 
-.statement_lines {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0;
-  font-weight: 400;
-}
+/* ─── The marquee ─────────────────────────────────────────────────────── */
 
-.statement_line {
-  position: relative;
-  display: block;
+.statement_marquee {
+  /* Edge to edge, out of the container's side padding. */
+  width: 100vw;
+  margin: 0;
+  overflow: hidden;
   font-family: var(--font--primary-family);
-  font-size: 10vw;
-  line-height: 1.06;
+  font-weight: 400;
+  font-size: clamp(2.75rem, 7vw, 6.5rem);
+  /* Room above and below the capitals, so nothing is clipped. */
+  line-height: 1.25;
   letter-spacing: 0.01em;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
-.statement_outline {
-  display: block;
-  color: transparent;
-  -webkit-text-stroke: 1px rgb(201 162 77 / 75%);
+.statement_marquee {
+  display: flex;
+  flex-direction: column;
 }
 
-.statement_fill {
-  position: absolute;
-  inset: 0;
+.statement_marquee_row {
+  display: block;
+  overflow: hidden;
+}
+
+.statement_marquee_track {
+  display: inline-flex;
+  animation: statement-marquee 40s linear infinite;
+  will-change: transform;
+}
+
+/* The second line runs the other way. */
+.statement_marquee_track.is-reverse {
+  animation-name: statement-marquee-reverse;
+}
+
+@keyframes statement-marquee-reverse {
+  from { transform: translate3d(-50%, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+
+.statement_marquee_set {
+  display: inline-flex;
+  flex: none;
+}
+
+.statement_marquee_item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.statement_phrase {
   color: var(--wow-cream);
 }
 
+.statement_phrase.is-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(201 162 77 / 85%);
+}
+
+.statement_sep {
+  margin-inline: 0.5em;
+  font-size: 0.32em;
+  color: var(--wow-gold);
+}
+
+/* Right to left: the track moves by one whole set. */
+@keyframes statement-marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
 .statement_btn {
-  margin-top: clamp(0.5rem, 3vw, 1.5rem);
+  margin-top: clamp(0rem, 1vw, 0.5rem);
 }
 
-@media screen and (min-width: 768px) {
-  .statement_line { font-size: clamp(3.5rem, 7vw, 7.25rem); }
-}
-
-/*
- * On a desktop the section is exactly one screen tall. The type is sized from
- * both the width and the height, so the kicker, the four lines and the button
- * always fit inside it, and the mandala is sized to the screen's height.
- */
-@media screen and (min-width: 992px) {
-  .statement_wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: calc(100 * var(--vh-s));
-    min-height: 36rem;
-    padding-block: clamp(2rem, 6vh, 4rem);
+@media (max-width: 767px) {
+  .statement_marquee_track {
+    animation-duration: 26s;
   }
 
-  .statement_contain {
-    row-gap: clamp(1.25rem, 4.5vh, 3rem);
-  }
-
-  .statement_line {
-    font-size: min(7vw, calc(10.5 * var(--vh-s)), 7.25rem);
-  }
-
-  .statement_btn {
-    margin-top: 0;
-  }
-
-  .statement_mandala {
-    width: min(66rem, calc(118 * var(--vh-s)));
+  .statement_phrase.is-outline {
+    -webkit-text-stroke-width: 0.8px;
   }
 }
 
-/* Under reduced motion the words are simply filled. */
+/* Under reduced motion the line stands still. */
 @media (prefers-reduced-motion: reduce) {
-  .statement_fill { clip-path: none; }
+  .statement_marquee_track {
+    animation: none;
+  }
 }
 
 
@@ -1292,11 +1019,24 @@
   min-width: 0;
 }
 
-/* Positioned, so it clips the button's own positioned parts as well. */
+/* Positioned, so it clips the button's own positioned parts as well. It
+   clips only above and below, where the lines roll in and out: sideways the
+   last digit or a script capital's swash is never cut. The extra height,
+   given back by the margin, is room for the capitals' reach. */
 .snake_mask {
   position: relative;
   display: block;
-  overflow: hidden;
+  overflow-x: visible;
+  overflow-y: clip;
+  padding-block: 0.2em;
+  margin-block: -0.2em;
+}
+
+/* The links carry no capitals that reach; with that room the last section's
+   underline showed above the one in view. */
+.snake_way.snake_mask {
+  padding-block: 0 2px;
+  margin-block: 0;
 }
 
 /* Each line waits below its mask, rises into it, and leaves upwards: far
@@ -1718,113 +1458,349 @@
   margin-bottom: 0;
 }
 
-/* ═══ Clouds over the join into the destinations ═══════════════════════ */
+/* ═══ The reels: a wall in motion ═══════════════════════════════════════ */
 
 /*
- * A zero-height band on the join (see SectionClouds), above both sections.
- * Each layer is one tile of its cloud image (--tile wide, at the image's
- * --ratio), repeated sideways on a strip one tile wider than the screen; the
- * strip slides by exactly one tile, so the drift never ends or jumps. Each
- * image tiles cleanly: two copies mirrored, or one cloud alone on open sky.
- * --top places the tile against the join; each image fades in at its top.
+ * The heading on the left, five columns of twelve; the wall on the right,
+ * seven, three columns of 9:16 frames each running on its own (see
+ * HomeReels). The wall is a screen tall and fades out at its head and foot.
+ * On the 8px grid: 16px frame corners, 16px between frames.
  */
-.clouds {
+.reelwall {
   position: relative;
-  z-index: 30;
-  height: 0;
-  /* The strips are wider than the screen: clipped sideways, so the page
-     never scrolls sideways, and left free above and below. */
-  overflow-x: clip;
-  pointer-events: none;
-  will-change: transform, opacity;
+  isolation: isolate;
+  overflow: hidden;
+  background-color: var(--swatch--dark);
 }
 
-.clouds_layer {
+.reelwall_backdrop {
   position: absolute;
-  left: 0;
-  top: var(--top);
-  width: 100vw;
-  height: calc(var(--tile) / var(--ratio));
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.reelwall_backdrop img {
+  position: absolute;
+  inset: -10%;
+  width: 120%;
+  height: 120%;
+  object-fit: cover;
+  filter: blur(48px) saturate(1.25) brightness(0.62);
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+
+.reelwall_backdrop img.is-on {
+  opacity: 1;
+}
+
+/* Deeper at the heading's side and at the head and foot, so the words read. */
+.reelwall_backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* Its head and foot dissolve into the sections either side, which share
+     the house wine, so there is no edge; the heading's side is deeper. */
+  background:
+    linear-gradient(rgb(43 13 15), rgb(43 13 15 / 0) 24%, rgb(43 13 15 / 0) 72%, rgb(43 13 15)),
+    linear-gradient(to right, rgb(32 10 12 / 0.82), rgb(32 10 12 / 0.35) 50%, rgb(32 10 12 / 0.2));
+}
+
+.reelwall_grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--grid-gap--main, 24px);
+  align-items: center;
+  min-height: max(100svh, 720px);
+  /* The container's own vertical padding is not wanted: the wall is the
+     section's full height and the heading centres against it. */
+  padding-block: 0;
+}
+
+/* ─── The heading ─────────────────────────────────────────────────────── */
+
+.reelwall_head {
+  grid-column: 1 / span 5;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  row-gap: 24px;
+  padding-block: 96px;
+}
+
+.reelwall_kicker.kicker {
+  margin: 0;
+  color: var(--swatch--brand, #f5d799);
+}
+
+.reelwall_title {
+  margin: 0;
+  padding-top: var(--initial-reach);
+  font-family: var(--font--primary-family);
+  font-size: clamp(3rem, 7vw, 7rem);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: var(--tracking-heading);
+  text-transform: uppercase;
+}
+
+.reelwall_meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.reelwall_count {
+  font-family: var(--font--primary-family);
+  font-size: var(--step-3);
+  line-height: 1;
+  color: var(--swatch--brand, #f5d799);
+}
+
+.reelwall_rule {
+  width: 48px;
+  height: 1px;
+  background: rgb(251 244 233 / 0.4);
+}
+
+.reelwall_note {
+  font-family: var(--font--body);
+  font-size: var(--step-0);
+  font-style: italic;
+  opacity: 0.8;
+}
+
+/* ─── The wall ────────────────────────────────────────────────────────── */
+
+.reelwall_wall {
+  grid-column: 6 / -1;
+  align-self: stretch;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  height: max(100svh, 720px);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(transparent, #000 20%, #000 76%, transparent);
+  mask-image: linear-gradient(transparent, #000 20%, #000 76%, transparent);
+}
+
+/* The middle column starts half a frame lower, so the rows never line up. */
+.reelwall_col[data-col='1'] {
+  margin-top: -40%;
+}
+
+.reelwall_col {
+  min-width: 0;
   will-change: transform;
 }
 
-.clouds_strip {
-  width: calc(100vw + var(--tile));
-  height: 100%;
-  background-repeat: repeat-x;
-  background-size: var(--tile) 100%;
-  animation: clouds-drift-left var(--drift) linear infinite;
+.reelwall_run {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: reelwall-up var(--seconds) linear infinite;
   will-change: transform;
 }
 
-/* Each --top sets its tallest cloud's crown a little above the join at most,
-   below the words over it; the ratios are the images' own. */
-.clouds_back {
-  --tile: 80vw;
-  --ratio: 3.8462;
-  --top: -1.6vw;
-  --drift: 150s;
+.reelwall_run[data-dir='down'] {
+  animation-name: reelwall-down;
 }
 
-/* The bank: the join falls 1/6 of the way down its image, covered solid. */
-.clouds_core {
-  --tile: 90vw;
-  --ratio: 4;
-  /* 3px under the exact line: the bank is solid from 1/7 down, so the join
-     stays covered and the crowns keep clear of the words. */
-  --top: calc(var(--tile) / var(--ratio) * -0.1667 + 3px);
-  --drift: 110s;
-}
-
-.clouds_front {
-  --tile: 90vw;
-  --ratio: 5.7143;
-  --top: 3.5vw;
-  --drift: 70s;
-}
-
-.clouds_back .clouds_strip {
-  background-image: url('/wow/clouds-back.webp');
-}
-
-.clouds_core .clouds_strip {
-  background-image: url('/wow/clouds-core.webp');
-  animation-name: clouds-drift-right;
-}
-
-.clouds_front .clouds_strip {
-  background-image: url('/wow/clouds-front.webp');
-}
-
-@keyframes clouds-drift-left {
+/* One set of six is half the run, gap included: moving by it never jumps. */
+@keyframes reelwall-up {
   from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(calc(var(--tile) * -1), 0, 0); }
+  to { transform: translate3d(0, calc(-50% - 8px), 0); }
 }
 
-@keyframes clouds-drift-right {
-  from { transform: translate3d(calc(var(--tile) * -1), 0, 0); }
+@keyframes reelwall-down {
+  from { transform: translate3d(0, calc(-50% - 8px), 0); }
   to { transform: translate3d(0, 0, 0); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .clouds_strip {
-    animation: none;
+.reelwall_wall.is-held .reelwall_run {
+  animation-play-state: paused;
+}
+
+.reelwall_frame {
+  position: relative;
+  display: block;
+  flex: none;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border-radius: 16px;
+  background: rgb(0 0 0 / 0.3);
+  box-shadow: 0 16px 40px rgb(0 0 0 / 0.35);
+  outline: 1px solid rgb(251 244 233 / 0.08);
+  outline-offset: -1px;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), filter 0.5s ease, box-shadow 0.5s ease;
+}
+
+.reelwall_frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  -webkit-user-drag: none;
+}
+
+/* The reel pointed at comes forward; the others step back. */
+.reelwall_wall.is-held .reelwall_frame {
+  filter: brightness(0.45) saturate(0.7);
+}
+
+.reelwall_wall.is-held .reelwall_frame:hover,
+.reelwall_frame:focus-visible {
+  filter: none;
+  transform: scale(1.04);
+  box-shadow: 0 24px 56px rgb(0 0 0 / 0.5);
+  z-index: 1;
+}
+
+.reelwall_frame:hover img {
+  transform: scale(1.06);
+}
+
+.reelwall_frame:focus-visible {
+  outline: 2px solid var(--swatch--brand, #f5d799);
+  outline-offset: 2px;
+}
+
+.reelwall_tag {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgb(20 8 9 / 0.55);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  color: var(--wow-cream, #fbf4e9);
+  font-family: var(--font--inherit);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.reelwall_tag svg {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  fill: var(--swatch--brand, #f5d799);
+}
+
+.reelwall_frame:hover .reelwall_tag,
+.reelwall_frame:focus-visible .reelwall_tag {
+  opacity: 1;
+  transform: none;
+}
+
+/* No pointer to hover with: the play mark always shows, small. */
+@media (hover: none) {
+  .reelwall_tag {
+    left: auto;
+    right: 8px;
+    bottom: 8px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    justify-content: center;
+    font-size: 0;
+    letter-spacing: 0;
+    opacity: 1;
+    transform: none;
   }
 }
 
-/* A phone: the clouds keep their size against a narrow screen. */
+@media (prefers-reduced-motion: reduce) {
+  .reelwall_run {
+    animation: none;
+  }
+
+  .reelwall_backdrop img,
+  .reelwall_frame,
+  .reelwall_frame img {
+    transition: none;
+  }
+}
+
+/* ─── Tablets ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 1023px) {
+  .reelwall_head {
+    grid-column: 1 / span 5;
+  }
+
+  .reelwall_wall {
+    grid-column: 6 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .reelwall_col[data-col='2'] {
+    display: none;
+  }
+}
+
+/* ─── Phones: the heading over two columns ────────────────────────────── */
+
 @media (max-width: 767px) {
-  .clouds_back {
-    --tile: 210vw;
-    --top: -3vw;
+  .reelwall_grid {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 0;
+    padding-block: 0;
   }
 
-  .clouds_core {
-    --tile: 230vw;
+  .reelwall_head {
+    padding: 80px 0 24px;
+    row-gap: 16px;
   }
 
-  .clouds_front {
-    --tile: 230vw;
-    --top: 10vw;
+  .reelwall_title {
+    font-size: clamp(2.75rem, 14vw, 4rem);
+  }
+
+  .reelwall_meta {
+    margin-top: 8px;
+  }
+
+  .reelwall_backdrop::after {
+    background: linear-gradient(rgb(43 13 15), rgb(43 13 15 / 0.35) 30%, rgb(43 13 15 / 0.3) 75%, rgb(43 13 15));
+  }
+
+  .reelwall_wall {
+    height: min(150vw, 680px);
+    gap: 12px;
+    margin-bottom: 64px;
+  }
+
+  .reelwall_run {
+    gap: 12px;
+  }
+
+  @keyframes reelwall-up {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(0, calc(-50% - 6px), 0); }
+  }
+
+  @keyframes reelwall-down {
+    from { transform: translate3d(0, calc(-50% - 6px), 0); }
+    to { transform: translate3d(0, 0, 0); }
+  }
+
+  .reelwall_frame {
+    border-radius: 12px;
   }
 }

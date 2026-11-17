@@ -8,16 +8,17 @@ import CircleTextButton from '../CircleTextButton'
 import Mandala from './Mandala'
 import { atelier } from '@/data/content'
 
-/** The statement in the four lines it is set in, all one size. */
-const LINES = ['Nothing', 'is incidental.', 'Everything', 'is intentional.']
+/** The statement's two sentences, set filled and in outline in turn. */
+const PHRASES = ['Nothing is incidental.', 'Everything is intentional.']
 
 /**
  * The atelier statement, without a photograph.
  *
- * Type alone on the dark ground, over a lotus mandala. Every line arrives as a
- * gold outline and fills in solid from the left, one after another, as the
- * section scrolls up the screen. The mandala draws itself in from the centre
- * outward the first time the section is reached, and its three rings then turn
+ * Type alone on the dark ground, over a lotus mandala. The statement runs as
+ * two lines against each other without end: "Nothing is incidental." filled,
+ * right to left, and "Everything is intentional." in gold outline, left to
+ * right. The mandala draws itself in from the centre outward
+ * the first time the section is reached, and its three rings then turn
  * against each other as the page scrolls. Nothing pins.
  */
 export default function HomeStatement() {
@@ -35,14 +36,6 @@ export default function HomeStatement() {
         { scaleX: 0 },
         { scaleX: 1, ease: 'none', scrollTrigger: { trigger: section, start: 'top 80%', end: 'top 40%', scrub: 0.6 } }
       )
-
-      // The four lines fill one after another across the read.
-      const fill = gsap.timeline({
-        scrollTrigger: { trigger: '.statement_lines', start: 'top 80%', end: 'bottom 40%', scrub: 0.6 },
-      })
-      gsap.utils.toArray<HTMLElement>('.statement_fill').forEach((line, i) => {
-        fill.fromTo(line, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', ease: 'none', duration: 1 }, i * 0.85)
-      })
 
       // The mandala draws itself in, centre outward.
       const strokes = gsap.utils.toArray<SVGPathElement>('.mandala_line')
@@ -75,11 +68,24 @@ export default function HomeStatement() {
           <span className="statement_rule statement_rule--right" aria-hidden="true" />
         </p>
 
-        <h2 className="statement_lines">
-          {LINES.map((line) => (
-            <span key={line} className="statement_line">
-              <span className="statement_outline" aria-hidden="true">{line}</span>
-              <span className="statement_fill">{line}</span>
+        {/* Two lines running against each other without end: the first
+            sentence right to left, the second left to right. Each track is
+            two identical sets, moved by exactly one, so it never jumps. */}
+        <h2 className="statement_marquee" aria-label={atelier.statement}>
+          {PHRASES.map((phrase, row) => (
+            <span key={phrase} className="statement_marquee_row" aria-hidden="true">
+              <span className={`statement_marquee_track${row ? ' is-reverse' : ''}`}>
+                {[0, 1].map((copy) => (
+                  <span key={copy} className="statement_marquee_set">
+                    {[0, 1, 2].map((i) => (
+                      <span key={i} className="statement_marquee_item">
+                        <span className={row ? 'statement_phrase is-outline' : 'statement_phrase'}>{phrase}</span>
+                        <span className="statement_sep">✦</span>
+                      </span>
+                    ))}
+                  </span>
+                ))}
+              </span>
             </span>
           ))}
         </h2>
