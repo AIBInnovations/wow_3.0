@@ -1133,6 +1133,16 @@
   opacity: 0.52;
 }
 
+/* The foot deepens to the join's tone, which the destinations rise out of
+   (see SectionClouds); the cards and words lie above it. */
+.snake_grounds::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 30%;
+  background: linear-gradient(to bottom, rgb(28 22 17 / 0), rgb(28 22 17 / 0.85) 70%, rgb(28 22 17));
+}
+
 .snake_ground::after {
   content: '';
   position: absolute;
@@ -1719,6 +1729,22 @@
 }
 
 /* ═══ Clouds over the join into the destinations ═══════════════════════ */
+
+/* The first destination rises out of the tone Our Approach ends in. */
+.clouds_join {
+  position: relative;
+  z-index: 29;
+  height: 0;
+  pointer-events: none;
+}
+
+.clouds_join::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 45vh;
+  background: linear-gradient(to bottom, rgb(28 22 17), rgb(28 22 17 / 0.85) 25%, rgb(28 22 17 / 0.35) 60%, rgb(28 22 17 / 0));
+}
 
 /*
  * A zero-height band on the join (see SectionClouds), above both sections.

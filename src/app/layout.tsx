@@ -63,7 +63,9 @@ const stableViewport = `(function () {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${playfair.variable} ${garamond.variable} ${imperial.variable}`}>
+    // The head script below sets the viewport heights on <html> before React
+    // hydrates, so its style differs from the server's by design.
+    <html lang="en" className={`${playfair.variable} ${garamond.variable} ${imperial.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: stableViewport }} />
       </head>

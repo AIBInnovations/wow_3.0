@@ -9,25 +9,24 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 const LINGER = 0.45
 
 /**
- * A bank of cloud along the top of the destinations, so the first of them
- * rises out of it instead of starting at a line.
+ * Evening clouds over the join between Our Approach and the destinations.
  *
- * It takes no height in the page: a zero-height band on the join between the
- * sections. The bank's body is opaque from the join down and rides on the
- * page with it, pushing Our Approach up and away; only its crowns rise above
- * the join, into the space beneath that section's words. Below the join the
- * cloud thins into the photograph.
+ * The join is hidden by colour, not covered: Our Approach's foot deepens to
+ * one dark tone and the first destination rises out of the same tone, so the
+ * two meet without an edge. Over it float scattered cumulus in evening light,
+ * warm on top and smoky beneath, with sky between them; they take no height
+ * in the page and none rises more than a few pixels above the join, into the
+ * room beneath that section's words.
  *
- * Three layers, each drifting sideways on its own (the body slowly left to
- * right, a softer bank behind and loose wisps in front right to left, the
- * nearer the faster); as the join rises through the screen the two loose
- * layers move up at their own speeds over the photograph. Once the join has
- * gone past the top of the screen the bank stops keeping pace with the page:
- * it rises at under half speed, thinning as it goes, and is gone as the
- * first destination rises away beneath it.
+ * Three layers, each drifting sideways on its own (the middle one slowly left
+ * to right, a fainter row behind and lower, nearer ones right to left, the
+ * nearer the faster), and rising at their own speeds as the join passes up
+ * the screen. Once the join has gone past the top, the clouds stop keeping
+ * pace: they rise at under half speed and thin away over the first
+ * destination.
  *
- * The clouds are original images made for the site from thousands of lit soft
- * puffs (public/wow/clouds-core|back|front.webp); each tiles left to right.
+ * The clouds are original images rendered for the site from lit soft puffs
+ * (public/wow/clouds-core|back|front.webp); each tiles left to right.
  */
 export default function SectionClouds() {
   const ref = useRef<HTMLDivElement>(null)
@@ -68,10 +67,16 @@ export default function SectionClouds() {
   }, [reduced])
 
   return (
+    <>
+      {/* The join itself: the photograph rises out of the same deep tone
+          Our Approach ends in, so there is no line to see. It stays on the
+          join; only the clouds linger. */}
+      <div className="clouds_join" aria-hidden="true" />
     <div ref={ref} className="clouds" aria-hidden="true">
       <div className="clouds_layer clouds_back"><div className="clouds_strip" /></div>
       <div className="clouds_layer clouds_core"><div className="clouds_strip" /></div>
       <div className="clouds_layer clouds_front"><div className="clouds_strip" /></div>
     </div>
+    </>
   )
 }
