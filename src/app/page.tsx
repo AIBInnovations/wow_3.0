@@ -19,8 +19,8 @@ export default function Home() {
         <GalleryScroll />
         <HomeStatement />
         <HomeAtelier />
-        <HomeReels />
         <StickyStories />
+        <HomeReels />
         <CelebrationSection />
         <HomeFilms />
         <FinalCta lead={false} />
